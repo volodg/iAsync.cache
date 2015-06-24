@@ -9,9 +9,27 @@
 /* Begin PBXBuildFile section */
 		2D1307A81B3B3F90008E7B84 /* iAsync_cache-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1307A61B3B3F90008E7B84 /* iAsync_cache-Bridging-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D1307A91B3B3F90008E7B84 /* iAsync_cache-Bridging-Impl.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1307A71B3B3F90008E7B84 /* iAsync_cache-Bridging-Impl.m */; };
+		2D4FDE171B3B4923000EDFA5 /* JCacheAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE061B3B4923000EDFA5 /* JCacheAdapter.swift */; };
+		2D4FDE181B3B4923000EDFA5 /* JCacheDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE071B3B4923000EDFA5 /* JCacheDB.swift */; };
+		2D4FDE191B3B4923000EDFA5 /* UIImageView+CachedAsyncImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE091B3B4923000EDFA5 /* UIImageView+CachedAsyncImageLoader.swift */; };
+		2D4FDE1A1B3B4923000EDFA5 /* JCacheDBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE0B1B3B4923000EDFA5 /* JCacheDBInfo.swift */; };
+		2D4FDE1B1B3B4923000EDFA5 /* JCacheDBInfoStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE0C1B3B4923000EDFA5 /* JCacheDBInfoStorage.swift */; };
+		2D4FDE1C1B3B4923000EDFA5 /* JInternalCacheDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE0D1B3B4923000EDFA5 /* JInternalCacheDB.swift */; };
+		2D4FDE1D1B3B4923000EDFA5 /* JKeyValueDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE0E1B3B4923000EDFA5 /* JKeyValueDB.swift */; };
+		2D4FDE1E1B3B4923000EDFA5 /* JCacheError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE101B3B4923000EDFA5 /* JCacheError.swift */; };
+		2D4FDE1F1B3B4923000EDFA5 /* JCacheLoadImageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE111B3B4923000EDFA5 /* JCacheLoadImageError.swift */; };
+		2D4FDE201B3B4923000EDFA5 /* JCacheNoURLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE121B3B4923000EDFA5 /* JCacheNoURLError.swift */; };
+		2D4FDE211B3B4923000EDFA5 /* JCanNotCreateImageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE131B3B4923000EDFA5 /* JCanNotCreateImageError.swift */; };
+		2D4FDE221B3B4923000EDFA5 /* JCaches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE141B3B4923000EDFA5 /* JCaches.swift */; };
+		2D4FDE231B3B4923000EDFA5 /* JDBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE151B3B4923000EDFA5 /* JDBInfo.swift */; };
+		2D4FDE241B3B4923000EDFA5 /* JThumbnailStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4FDE161B3B4923000EDFA5 /* JThumbnailStorage.swift */; };
+		2D4FDE271B3B4930000EDFA5 /* JCacheDBInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D4FDE261B3B4930000EDFA5 /* JCacheDBInfo.plist */; };
 		2D6F4CE41B3B3CA700AC5D18 /* iAsync_cache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6F4CE31B3B3CA700AC5D18 /* iAsync_cache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D6F4CEB1B3B3CA700AC5D18 /* iAsync_cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F4CE01B3B3CA700AC5D18 /* iAsync_cache.framework */; };
 		2D6F4CF01B3B3CA700AC5D18 /* iAsync_cacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6F4CEF1B3B3CA700AC5D18 /* iAsync_cacheTests.swift */; };
+		66DB44B031544FB1DDDE8C2A /* Pods_iAsync_cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77A1D89FE8DDCAD23E95819F /* Pods_iAsync_cache.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A03C6A431B3B472100E6F1F1 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A03C6A421B3B472100E6F1F1 /* libsqlite3.dylib */; };
+		E8CADE437E67E79BC9EA3B11 /* Pods_iAsync_cacheTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B1712ED9567614919931B25 /* Pods_iAsync_cacheTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,14 +43,36 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		127BA591AADADB854163696B /* Pods-iAsync.cacheTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iAsync.cacheTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iAsync.cacheTests/Pods-iAsync.cacheTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1B1712ED9567614919931B25 /* Pods_iAsync_cacheTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iAsync_cacheTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D1307A61B3B3F90008E7B84 /* iAsync_cache-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iAsync_cache-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D1307A71B3B3F90008E7B84 /* iAsync_cache-Bridging-Impl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "iAsync_cache-Bridging-Impl.m"; sourceTree = "<group>"; };
+		2D4FDE061B3B4923000EDFA5 /* JCacheAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheAdapter.swift; sourceTree = "<group>"; };
+		2D4FDE071B3B4923000EDFA5 /* JCacheDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheDB.swift; sourceTree = "<group>"; };
+		2D4FDE091B3B4923000EDFA5 /* UIImageView+CachedAsyncImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+CachedAsyncImageLoader.swift"; sourceTree = "<group>"; };
+		2D4FDE0B1B3B4923000EDFA5 /* JCacheDBInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheDBInfo.swift; sourceTree = "<group>"; };
+		2D4FDE0C1B3B4923000EDFA5 /* JCacheDBInfoStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheDBInfoStorage.swift; sourceTree = "<group>"; };
+		2D4FDE0D1B3B4923000EDFA5 /* JInternalCacheDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JInternalCacheDB.swift; sourceTree = "<group>"; };
+		2D4FDE0E1B3B4923000EDFA5 /* JKeyValueDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JKeyValueDB.swift; sourceTree = "<group>"; };
+		2D4FDE101B3B4923000EDFA5 /* JCacheError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheError.swift; sourceTree = "<group>"; };
+		2D4FDE111B3B4923000EDFA5 /* JCacheLoadImageError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheLoadImageError.swift; sourceTree = "<group>"; };
+		2D4FDE121B3B4923000EDFA5 /* JCacheNoURLError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCacheNoURLError.swift; sourceTree = "<group>"; };
+		2D4FDE131B3B4923000EDFA5 /* JCanNotCreateImageError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCanNotCreateImageError.swift; sourceTree = "<group>"; };
+		2D4FDE141B3B4923000EDFA5 /* JCaches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JCaches.swift; sourceTree = "<group>"; };
+		2D4FDE151B3B4923000EDFA5 /* JDBInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JDBInfo.swift; sourceTree = "<group>"; };
+		2D4FDE161B3B4923000EDFA5 /* JThumbnailStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JThumbnailStorage.swift; sourceTree = "<group>"; };
+		2D4FDE261B3B4930000EDFA5 /* JCacheDBInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = JCacheDBInfo.plist; sourceTree = "<group>"; };
 		2D6F4CE01B3B3CA700AC5D18 /* iAsync_cache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iAsync_cache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6F4CE31B3B3CA700AC5D18 /* iAsync_cache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iAsync_cache.h; sourceTree = "<group>"; };
 		2D6F4CE51B3B3CA700AC5D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2D6F4CEA1B3B3CA700AC5D18 /* iAsync.cacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iAsync.cacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6F4CEF1B3B3CA700AC5D18 /* iAsync_cacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iAsync_cacheTests.swift; sourceTree = "<group>"; };
 		2D6F4CF11B3B3CA700AC5D18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		389854D0408190DDA38A5C84 /* Pods-iAsync.cache.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iAsync.cache.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iAsync.cache/Pods-iAsync.cache.debug.xcconfig"; sourceTree = "<group>"; };
+		4EBC22AED75220FE4A025A52 /* Pods-iAsync.cache.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iAsync.cache.release.xcconfig"; path = "Pods/Target Support Files/Pods-iAsync.cache/Pods-iAsync.cache.release.xcconfig"; sourceTree = "<group>"; };
+		77A1D89FE8DDCAD23E95819F /* Pods_iAsync_cache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iAsync_cache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A03C6A421B3B472100E6F1F1 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		A3008E304C1CBF8E25443838 /* Pods-iAsync.cacheTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iAsync.cacheTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iAsync.cacheTests/Pods-iAsync.cacheTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +80,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A03C6A431B3B472100E6F1F1 /* libsqlite3.dylib in Frameworks */,
+				66DB44B031544FB1DDDE8C2A /* Pods_iAsync_cache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,18 +90,89 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D6F4CEB1B3B3CA700AC5D18 /* iAsync_cache.framework in Frameworks */,
+				E8CADE437E67E79BC9EA3B11 /* Pods_iAsync_cacheTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21B65521B2A5AE80A4E969FF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				389854D0408190DDA38A5C84 /* Pods-iAsync.cache.debug.xcconfig */,
+				4EBC22AED75220FE4A025A52 /* Pods-iAsync.cache.release.xcconfig */,
+				127BA591AADADB854163696B /* Pods-iAsync.cacheTests.debug.xcconfig */,
+				A3008E304C1CBF8E25443838 /* Pods-iAsync.cacheTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		2D4FDE041B3B48F0000EDFA5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A03C6A421B3B472100E6F1F1 /* libsqlite3.dylib */,
+				77A1D89FE8DDCAD23E95819F /* Pods_iAsync_cache.framework */,
+				1B1712ED9567614919931B25 /* Pods_iAsync_cacheTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2D4FDE051B3B4923000EDFA5 /* CacheAdapter */ = {
+			isa = PBXGroup;
+			children = (
+				2D4FDE061B3B4923000EDFA5 /* JCacheAdapter.swift */,
+				2D4FDE071B3B4923000EDFA5 /* JCacheDB.swift */,
+			);
+			path = CacheAdapter;
+			sourceTree = "<group>";
+		};
+		2D4FDE081B3B4923000EDFA5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				2D4FDE091B3B4923000EDFA5 /* UIImageView+CachedAsyncImageLoader.swift */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		2D4FDE0A1B3B4923000EDFA5 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				2D4FDE0B1B3B4923000EDFA5 /* JCacheDBInfo.swift */,
+				2D4FDE0C1B3B4923000EDFA5 /* JCacheDBInfoStorage.swift */,
+				2D4FDE0D1B3B4923000EDFA5 /* JInternalCacheDB.swift */,
+				2D4FDE0E1B3B4923000EDFA5 /* JKeyValueDB.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
+		2D4FDE0F1B3B4923000EDFA5 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				2D4FDE101B3B4923000EDFA5 /* JCacheError.swift */,
+				2D4FDE111B3B4923000EDFA5 /* JCacheLoadImageError.swift */,
+				2D4FDE121B3B4923000EDFA5 /* JCacheNoURLError.swift */,
+				2D4FDE131B3B4923000EDFA5 /* JCanNotCreateImageError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		2D4FDE251B3B4930000EDFA5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2D4FDE261B3B4930000EDFA5 /* JCacheDBInfo.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		2D6F4CD61B3B3CA700AC5D18 = {
 			isa = PBXGroup;
 			children = (
 				2D6F4CE21B3B3CA700AC5D18 /* iAsync.cache */,
 				2D6F4CEE1B3B3CA700AC5D18 /* iAsync.cacheTests */,
 				2D6F4CE11B3B3CA700AC5D18 /* Products */,
+				2D4FDE041B3B48F0000EDFA5 /* Frameworks */,
+				21B65521B2A5AE80A4E969FF /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,10 +188,18 @@
 		2D6F4CE21B3B3CA700AC5D18 /* iAsync.cache */ = {
 			isa = PBXGroup;
 			children = (
+				2D4FDE051B3B4923000EDFA5 /* CacheAdapter */,
+				2D4FDE081B3B4923000EDFA5 /* Categories */,
+				2D4FDE0A1B3B4923000EDFA5 /* Details */,
+				2D4FDE0F1B3B4923000EDFA5 /* Errors */,
+				2D4FDE141B3B4923000EDFA5 /* JCaches.swift */,
+				2D4FDE151B3B4923000EDFA5 /* JDBInfo.swift */,
+				2D4FDE161B3B4923000EDFA5 /* JThumbnailStorage.swift */,
 				2D1307A61B3B3F90008E7B84 /* iAsync_cache-Bridging-Header.h */,
 				2D1307A71B3B3F90008E7B84 /* iAsync_cache-Bridging-Impl.m */,
 				2D6F4CE31B3B3CA700AC5D18 /* iAsync_cache.h */,
 				2D6F4CE51B3B3CA700AC5D18 /* Info.plist */,
+				2D4FDE251B3B4930000EDFA5 /* Resources */,
 			);
 			path = iAsync.cache;
 			sourceTree = "<group>";
@@ -111,10 +232,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D6F4CF41B3B3CA700AC5D18 /* Build configuration list for PBXNativeTarget "iAsync.cache" */;
 			buildPhases = (
+				E1B48C750366F78F570FE2A6 /* Check Pods Manifest.lock */,
 				2D6F4CDB1B3B3CA700AC5D18 /* Sources */,
 				2D6F4CDC1B3B3CA700AC5D18 /* Frameworks */,
 				2D6F4CDD1B3B3CA700AC5D18 /* Headers */,
 				2D6F4CDE1B3B3CA700AC5D18 /* Resources */,
+				8B3DE9E0698628DC0D76D0E7 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -129,9 +252,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D6F4CF71B3B3CA700AC5D18 /* Build configuration list for PBXNativeTarget "iAsync.cacheTests" */;
 			buildPhases = (
+				411FC7C5D9BD756D9B915A4B /* Check Pods Manifest.lock */,
 				2D6F4CE61B3B3CA700AC5D18 /* Sources */,
 				2D6F4CE71B3B3CA700AC5D18 /* Frameworks */,
 				2D6F4CE81B3B3CA700AC5D18 /* Resources */,
+				24EEB29E886CCC92452DC785 /* Embed Pods Frameworks */,
+				5ED5E67CAAA7DFDDBFEAF58E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -184,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D4FDE271B3B4930000EDFA5 /* JCacheDBInfo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,12 +323,104 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		24EEB29E886CCC92452DC785 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iAsync.cacheTests/Pods-iAsync.cacheTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		411FC7C5D9BD756D9B915A4B /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5ED5E67CAAA7DFDDBFEAF58E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iAsync.cacheTests/Pods-iAsync.cacheTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8B3DE9E0698628DC0D76D0E7 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iAsync.cache/Pods-iAsync.cache-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E1B48C750366F78F570FE2A6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2D6F4CDB1B3B3CA700AC5D18 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D4FDE1E1B3B4923000EDFA5 /* JCacheError.swift in Sources */,
+				2D4FDE181B3B4923000EDFA5 /* JCacheDB.swift in Sources */,
+				2D4FDE1F1B3B4923000EDFA5 /* JCacheLoadImageError.swift in Sources */,
+				2D4FDE221B3B4923000EDFA5 /* JCaches.swift in Sources */,
 				2D1307A91B3B3F90008E7B84 /* iAsync_cache-Bridging-Impl.m in Sources */,
+				2D4FDE1D1B3B4923000EDFA5 /* JKeyValueDB.swift in Sources */,
+				2D4FDE241B3B4923000EDFA5 /* JThumbnailStorage.swift in Sources */,
+				2D4FDE1C1B3B4923000EDFA5 /* JInternalCacheDB.swift in Sources */,
+				2D4FDE1A1B3B4923000EDFA5 /* JCacheDBInfo.swift in Sources */,
+				2D4FDE191B3B4923000EDFA5 /* UIImageView+CachedAsyncImageLoader.swift in Sources */,
+				2D4FDE201B3B4923000EDFA5 /* JCacheNoURLError.swift in Sources */,
+				2D4FDE231B3B4923000EDFA5 /* JDBInfo.swift in Sources */,
+				2D4FDE171B3B4923000EDFA5 /* JCacheAdapter.swift in Sources */,
+				2D4FDE211B3B4923000EDFA5 /* JCanNotCreateImageError.swift in Sources */,
+				2D4FDE1B1B3B4923000EDFA5 /* JCacheDBInfoStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +534,7 @@
 		};
 		2D6F4CF51B3B3CA700AC5D18 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 389854D0408190DDA38A5C84 /* Pods-iAsync.cache.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
@@ -333,6 +553,7 @@
 		};
 		2D6F4CF61B3B3CA700AC5D18 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4EBC22AED75220FE4A025A52 /* Pods-iAsync.cache.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
@@ -350,6 +571,7 @@
 		};
 		2D6F4CF81B3B3CA700AC5D18 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 127BA591AADADB854163696B /* Pods-iAsync.cacheTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = iAsync.cacheTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -360,6 +582,7 @@
 		};
 		2D6F4CF91B3B3CA700AC5D18 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A3008E304C1CBF8E25443838 /* Pods-iAsync.cacheTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = iAsync.cacheTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

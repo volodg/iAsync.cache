@@ -9,10 +9,10 @@ pod 'iAsync.network', :path => '../iAsync.network'
 
 end
 
-target 'iAsync.social', :exclusive => true do
+target 'iAsync.cache', :exclusive => true do
   import_pods
 end
 
-target 'iAsync.socialTests', :exclusive => true do
+target 'iAsync.cacheTests', :exclusive => true do
   import_pods
 end
