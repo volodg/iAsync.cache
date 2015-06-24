@@ -1,0 +1,1 @@
+# iAsync.cache
