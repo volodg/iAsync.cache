@@ -8,7 +8,7 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
 import UIKit
 
 private var jffAsycImageURLHolder: Void?

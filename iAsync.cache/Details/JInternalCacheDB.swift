@@ -9,7 +9,7 @@
 import Foundation
 
 import JRestKit
-import JUtils
+import iAsync_utils
 import JAsync
 
 private var autoremoveSchedulersByCacheName: [String:JTimer] = [:]
