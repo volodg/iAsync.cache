@@ -57,7 +57,7 @@ public class JThumbnailStorage : NSObject {
         if let url = url {
             
             if url.isNoImageDataURL {
-                return asyncWithError(JCacheNoURLError())
+                return async(error: JCacheNoURLError())
             }
             
             let loader = { (progressCallback: JAsyncProgressCallback?,
@@ -89,13 +89,13 @@ public class JThumbnailStorage : NSObject {
             return logErrorForLoader(loader)
         }
         
-        return asyncWithError(JCacheNoURLError())
+        return async(error: JCacheNoURLError())
     }
     
     public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> JAsyncTypes<UIImage>.JAsync {
         
         if urls.count == 0 {
-            return asyncWithError(JCacheNoURLError())
+            return async(error: JCacheNoURLError())
         }
         
         let loaders = urls.map { (url: NSURL) -> JAsyncTypes<UIImage>.JAsync in
@@ -115,13 +115,13 @@ public class JThumbnailStorage : NSObject {
         
         let dataLoaderForIdentifier = { (url: NSURL) -> JAsyncTypes<NSData>.JAsync in
 
-            let dataLoader = dataURLResponseLoader(url, nil, nil)
+            let dataLoader = dataURLResponseLoader(url, postData: nil, headers: nil)
             return dataLoader
         }
         
         let cacheKeyForIdentifier = { (loadDataIdentifier: NSURL) -> String in
             
-            return loadDataIdentifier.absoluteString!
+            return loadDataIdentifier.absoluteString
         }
         
         let args = JSmartDataLoaderFields(
@@ -138,7 +138,7 @@ public class JThumbnailStorage : NSObject {
         return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> JAsyncTypes<UIImage>.JAsync in
             
             let resultError = JCacheLoadImageError(nativeError: error)
-            return asyncWithError(resultError)
+            return async(error: resultError)
         })
     }
 
@@ -199,11 +199,11 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
             let image = UIImage(data: imageData)
             
             if let image = image {
-                return asyncWithResult(image)
+                return async(result: image)
             }
             
             let error = JCanNotCreateImageError(url: url)
-            return asyncWithError(error)
+            return async(error: error)
         }
         // TODO: Test perfomance
         //        return ^JFFAsyncOperation(NSData *imageData) {

@@ -29,16 +29,16 @@ public class JCacheAdapter : JAsyncRestKitCache {
     
     public func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull>.JAsync {
         
-        return asyncWithSyncOperationAndQueue({ () -> Result<NSNull, NSError> in
+        return async(job: { () -> Result<NSNull, NSError> in
             
             self.cacheFactory().setData(data, forKey:key)
             return Result.success(NSNull())
-        }, cacheQueueName)
+        }, queueName: cacheQueueName)
     }
     
     public func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData>.JAsync {
     
-        return asyncWithSyncOperationAndQueue({ () -> Result<JRestKitCachedData, NSError> in
+        return async(job: { () -> Result<JRestKitCachedData, NSError> in
             
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
             
@@ -49,6 +49,6 @@ public class JCacheAdapter : JAsyncRestKitCache {
             
             let description = "no cached data for key: \(key)"
             return Result.failure(Error(description:description))
-        }, cacheQueueName)
+        }, queueName: cacheQueueName)
     }
 }

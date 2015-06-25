@@ -26,7 +26,7 @@ public class JCacheLoadImageError : JCacheError {
     
     public override func copyWithZone(zone: NSZone) -> AnyObject {
         
-        return self.dynamicType(nativeError: nativeError)
+        return self.dynamicType.init(nativeError: nativeError)
     }
     
     override public var errorLogDescription: String {

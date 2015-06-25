@@ -22,7 +22,7 @@ public extension UIImageView {
             return objc_getAssociatedObject(self, &jffAsycImageURLHolder) as? NSURL
         }
         set (newValue) {
-            objc_setAssociatedObject(self, &jffAsycImageURLHolder, newValue, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &jffAsycImageURLHolder, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -48,8 +48,8 @@ public extension UIImageView {
                 if let self_ = self {
                     
                     switch result {
-                    case let .Success(v):
-                        let image = v.value
+                    case let .Success(value):
+                        let image = value
                         self_.jffSetImage(image, url:url)
                     case let .Failure(error):
                         self_.jffSetImage(nil, url:url)

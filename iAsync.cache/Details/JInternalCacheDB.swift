@@ -68,7 +68,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 }
                 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                let loader = asyncWithSyncOperationAndQueue(loadDataBlock, queueName)
+                let loader = async(job: loadDataBlock, queueName: queueName)
                 
                 let cancel = loader(
                     progressCallback: nil,

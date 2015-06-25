@@ -26,7 +26,7 @@ public class JCanNotCreateImageError : JCacheError {
     
     public override func copyWithZone(zone: NSZone) -> AnyObject {
         
-        return self.dynamicType(url: url)
+        return self.dynamicType.init(url: url)
     }
     
     override public func writeErrorWithJLogger() {}

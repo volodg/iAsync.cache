@@ -28,21 +28,21 @@ private extension String {
     func cacheDBFileLinkRemoveFileWithFolder(folder: String) {
         
         let path = cacheDBFileLinkPathWithFolder(folder)
-        NSFileManager.defaultManager().removeItemAtPath(path, error:nil)
+        try! NSFileManager.defaultManager().removeItemAtPath(path)
     }
     
     func cacheDBFileLinkSaveData(data: NSData, folder: String) {
         
         let path = cacheDBFileLinkPathWithFolder(folder)
         let url = NSURL(fileURLWithPath:path, isDirectory:false)
-        data.writeToURL(url!, atomically:false)
+        data.writeToURL(url, atomically:false)
         path.addSkipBackupAttribute()
     }
     
     func cacheDBFileLinkDataWithFolder(folder: String) -> NSData? {
         
         let path   = cacheDBFileLinkPathWithFolder(folder)
-        let result = NSData(contentsOfFile: path, options: NSDataReadingOptions.DataReadingMappedIfSafe, error: nil)
+        let result = try! NSData(contentsOfFile: path, options: NSDataReadingOptions.DataReadingMappedIfSafe)
         return result
     }
 }
@@ -203,7 +203,7 @@ internal class JKeyValueDB {
                             
                             //remove file
                             let filePath = fileLink.cacheDBFileLinkPathWithFolder(self.db.folder)
-                            let fileDictionary = NSFileManager.defaultManager().attributesOfItemAtPath(filePath, error:nil)!
+                            let fileDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath(filePath)
                             let fileSize = (fileDictionary[NSFileSize]! as! NSNumber).longLongValue
                             
                             ++filesRemoved
@@ -215,7 +215,7 @@ internal class JKeyValueDB {
                                 sizeToRemove = 0
                             }
                             
-                            NSFileManager.defaultManager().removeItemAtPath(filePath, error:nil)
+                            try! NSFileManager.defaultManager().removeItemAtPath(filePath)
                         }
                     }
                     bridging_sqlite3_finalize(statement)
@@ -420,7 +420,7 @@ internal class JKeyValueDB {
                 autoreleasepool {
                     
                     let path = (folderPath as String).stringByAppendingPathComponent(fileName)
-                    let fileDictionary = fileManager.attributesOfItemAtPath(path, error:nil)!
+                    let fileDictionary = try! fileManager.attributesOfItemAtPath(path)
                     
                     if let size: AnyObject = fileDictionary[NSFileSize] as? NSNumber {
                         fileSize += size.longLongValue
@@ -436,7 +436,7 @@ internal class JKeyValueDB {
 private func getOrCreateDispatchQueueForFile(file: String) -> dispatch_queue_t {
     
     let queueName = "com.jff.embedded_sources.dynamic.\(file)"
-    let result = dispatch_queue_get_or_create(queueName, DISPATCH_QUEUE_CONCURRENT)
+    let result = dispatch_queue_get_or_create(label: queueName, attr: DISPATCH_QUEUE_CONCURRENT)
     return result
 }
 
@@ -463,17 +463,16 @@ private class JSQLiteDB {
             
             let manager = NSFileManager.defaultManager()
             
-            var error: NSError?
-            let created = manager.fileExistsAtPath(self.folder)
-                || manager.createDirectoryAtPath(
-                    self.folder,
-                    withIntermediateDirectories: true,
-                    attributes                 : nil ,
-                    error                      : &error)
-            
-            if !created {
-                NSLog("can not create folder: \(self.folder) error: \(error)")
-                assert(created)
+            if !manager.fileExistsAtPath(self.folder) {
+                
+                do {
+                    try manager.createDirectoryAtPath(
+                        self.folder,
+                        withIntermediateDirectories: true,
+                        attributes: nil)
+                } catch {
+                    fatalError("can not create folder: \(self.folder) error: \(error)")
+                }
             }
             
             let openResult = dbPath.withCString({ (cStr: UnsafePointer<Int8>) -> Bool in
@@ -484,6 +483,7 @@ private class JSQLiteDB {
                 }
                 return result
             })
+            
             if !openResult {
                 assert(false)
                 return
