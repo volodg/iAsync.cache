@@ -9,8 +9,10 @@
 import Foundation
 
 import iAsync_utils
-import JRestKit
-import JAsync
+import iAsync_restkit
+import iAsync_async
+
+import Result
 
 public typealias JCacheFactory = () -> JCacheDB
 
@@ -27,26 +29,26 @@ public class JCacheAdapter : JAsyncRestKitCache {
     
     public func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull>.JAsync {
         
-        return asyncWithSyncOperationAndQueue({ () -> JResult<NSNull> in
+        return asyncWithSyncOperationAndQueue({ () -> Result<NSNull, NSError> in
             
             self.cacheFactory().setData(data, forKey:key)
-            return JResult.value(NSNull())
+            return Result.success(NSNull())
         }, cacheQueueName)
     }
     
     public func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData>.JAsync {
     
-        return asyncWithSyncOperationAndQueue({ () -> JResult<JRestKitCachedData> in
+        return asyncWithSyncOperationAndQueue({ () -> Result<JRestKitCachedData, NSError> in
             
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
             
             if let result = result {
                 let result = JResponseDataWithUpdateData(data: result.0, updateDate: result.1)
-                return JResult.value(result)
+                return Result.success(result)
             }
             
             let description = "no cached data for key: \(key)"
-            return JResult.error(JError(description:description))
+            return Result.failure(Error(description:description))
         }, cacheQueueName)
     }
 }

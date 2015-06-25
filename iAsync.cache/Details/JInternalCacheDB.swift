@@ -8,11 +8,13 @@
 
 import Foundation
 
-import JRestKit
+import iAsync_restkit
 import iAsync_utils
-import JAsync
+import iAsync_async
 
-private var autoremoveSchedulersByCacheName: [String:JTimer] = [:]
+import Result
+
+private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
 private let internalCacheDBLockObject = NSObject()
 
@@ -54,15 +56,15 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 return
             }
             
-            let timer = JTimer()
+            let timer = Timer()
             autoremoveSchedulersByCacheName[self.cacheDBInfo.dbPropertyName] = timer
             
-            let block = { (cancel: JSimpleBlock) -> () in
+            let block = { (cancel: SimpleBlock) -> () in
                 
-                let loadDataBlock = { () -> JResult<NSNull> in
+                let loadDataBlock = { () -> Result<NSNull, NSError> in
                     
                     self.removeOldData()
-                    return JResult.value(NSNull())
+                    return Result.success(NSNull())
                 }
                 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
@@ -71,9 +73,9 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 let cancel = loader(
                     progressCallback: nil,
                     stateCallback: nil,
-                    finishCallback: { (result: JResult<NSNull>) in
+                    finishCallback: { (result: Result<NSNull, NSError>) in
                     
-                    result.onError { $0.writeErrorWithJLogger() }
+                    result.error?.writeErrorWithJLogger()
                 })
             }
             block({})

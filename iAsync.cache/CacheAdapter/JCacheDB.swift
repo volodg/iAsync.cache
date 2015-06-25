@@ -20,5 +20,5 @@ public protocol JCacheDB {
     
     func removeRecordsForKey(key: String)
     
-    func removeAllRecordsWithCallback(callback: JSimpleBlock?)
+    func removeAllRecordsWithCallback(callback: SimpleBlock?)
 }

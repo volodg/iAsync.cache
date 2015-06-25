@@ -8,7 +8,7 @@
 
 import Foundation
 
-import JRestKit
+import iAsync_restkit
 
 private var sharedCachesInstance: JCaches?
 

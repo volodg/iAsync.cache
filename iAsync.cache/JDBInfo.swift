@@ -94,6 +94,6 @@ public class JDBInfo : NSObject {
     }
     
     class func currentDBInfoFilePath() -> String {
-        return NSString.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
+        return String.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
     }
 }
