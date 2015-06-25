@@ -8,9 +8,9 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
 
-public class JCacheError : JError {
+public class JCacheError : Error {
     
     public override class func jffErrorsDomain() -> String {
         return "com.just_for_fun.cache.library"

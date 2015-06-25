@@ -8,8 +8,10 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
+
 import UIKit
+import Result
 
 private var jffAsycImageURLHolder: Void?
 
@@ -41,15 +43,15 @@ public extension UIImageView {
         
         if let url = url {
             
-            let doneCallback = { [weak self] (result: JResult<UIImage>) -> () in
+            let doneCallback = { [weak self] (result: Result<UIImage, NSError>) -> () in
                 
                 if let self_ = self {
                     
                     switch result {
-                    case let .Value(v):
+                    case let .Success(v):
                         let image = v.value
                         self_.jffSetImage(image, url:url)
-                    case let .Error(error):
+                    case let .Failure(error):
                         self_.jffSetImage(nil, url:url)
                     }
                 }

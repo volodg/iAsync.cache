@@ -8,10 +8,10 @@
 
 import Foundation
 
-import JNetwork
-import JRestKit
-import JAsync
-import JUtils
+import iAsync_network
+import iAsync_restkit
+import iAsync_async
+import iAsync_utils
 
 import UIKit
 
@@ -125,13 +125,13 @@ public class JThumbnailStorage : NSObject {
         }
         
         let args = JSmartDataLoaderFields(
-            loadDataIdentifier:url,
-            dataLoaderForIdentifier:dataLoaderForIdentifier,
-            analyzerForData:imageDataToUIImageBinder(),
-            cacheKeyForIdentifier:cacheKeyForIdentifier,
-            doesNotIgnoreFreshDataLoadFail:false,
-            cache:createImageCacheAdapter(),
-            cacheDataLifeTimeInSeconds:self.dynamicType.cacheDataLifeTimeInSeconds)
+            loadDataIdentifier            : url,
+            dataLoaderForIdentifier       : dataLoaderForIdentifier,
+            analyzerForData               : imageDataToUIImageBinder(),
+            cacheKeyForIdentifier         : cacheKeyForIdentifier,
+            doesNotIgnoreFreshDataLoadFail: false,
+            cache                         : createImageCacheAdapter(),
+            cacheDataLifeTimeInSeconds    : self.dynamicType.cacheDataLifeTimeInSeconds)
 
         let loader = jSmartDataLoaderWithCache(args)
 

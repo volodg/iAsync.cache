@@ -8,7 +8,7 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
 
 public protocol JCacheDB {
     
@@ -20,5 +20,5 @@ public protocol JCacheDB {
     
     func removeRecordsForKey(key: String)
     
-    func removeAllRecordsWithCallback(callback: JSimpleBlock?)
+    func removeAllRecordsWithCallback(callback: SimpleBlock?)
 }

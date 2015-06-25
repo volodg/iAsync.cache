@@ -8,7 +8,7 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
 
 private let createRecords =
 "CREATE TABLE IF NOT EXISTS records ( " +
@@ -240,7 +240,7 @@ internal class JKeyValueDB {
         })
     }
     
-    func removeAllRecordsWithCallback(callback: JSimpleBlock?) {
+    func removeAllRecordsWithCallback(callback: SimpleBlock?) {
         
         ///First remove all files
         let query = "SELECT file_link FROM records;"
@@ -455,7 +455,7 @@ private class JSQLiteDB {
         
         dispatchQueue = getOrCreateDispatchQueueForFile(dbName)
         
-        let dbPath = NSString.documentsPathByAppendingPathComponent(dbName)
+        let dbPath = String.documentsPathByAppendingPathComponent(dbName)
         
         folder = (dbPath as NSString).stringByDeletingLastPathComponent
         

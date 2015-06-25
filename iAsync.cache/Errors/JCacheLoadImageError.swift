@@ -8,7 +8,7 @@
 
 import Foundation
 
-import JUtils
+import iAsync_utils
 
 public class JCacheLoadImageError : JCacheError {
     
@@ -36,6 +36,6 @@ public class JCacheLoadImageError : JCacheError {
     
     public override func writeErrorWithJLogger () {
         
-        jLogger.logError(errorLogDescription)
+        iAsync_utils_logger.logError(errorLogDescription)
     }
 }
