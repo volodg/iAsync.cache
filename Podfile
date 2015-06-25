@@ -3,6 +3,7 @@ use_frameworks!
 
 def import_pods
 
+pod 'Result'        , :path => '../../Result-swift-2.0'
 pod 'iAsync.async'  , :path => '../iAsync.async'
 pod 'iAsync.utils'  , :path => '../iAsync.utils'
 pod 'iAsync.network', :path => '../iAsync.network'
