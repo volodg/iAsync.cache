@@ -13,22 +13,22 @@ import iAsync_utils
 import UIKit
 import Result
 
-private var jffAsycImageURLHolder: Void?
+private var iAsync_AsycImageURLHolder: Void?
 
 public extension UIImageView {
     
-    private var jffAsycImageURL: NSURL? {
+    private var iAsync_cache_AsycImageURL: NSURL? {
         get {
-            return objc_getAssociatedObject(self, &jffAsycImageURLHolder) as? NSURL
+            return objc_getAssociatedObject(self, &iAsync_AsycImageURLHolder) as? NSURL
         }
         set (newValue) {
-            objc_setAssociatedObject(self, &jffAsycImageURLHolder, newValue, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &iAsync_AsycImageURLHolder, newValue, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
     private func jffSetImage(image: UIImage?, url: NSURL) {
         
-        if image == nil || jffAsycImageURL != url {
+        if image == nil || iAsync_cache_AsycImageURL != url {
             return
         }
         
@@ -39,7 +39,7 @@ public extension UIImageView {
         
         image = placeholder
         
-        jffAsycImageURL = url
+        iAsync_cache_AsycImageURL = url
         
         if let url = url {
             
@@ -61,8 +61,8 @@ public extension UIImageView {
             let loader  = storage.thumbnailLoaderForUrl(url)
             let cancel  = loader(
                 progressCallback: nil,
-                stateCallback: nil,
-                finishCallback: doneCallback)
+                stateCallback   : nil,
+                finishCallback  : doneCallback)
         }
     }
 }
