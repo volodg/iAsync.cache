@@ -28,7 +28,11 @@ private extension String {
     func cacheDBFileLinkRemoveFileWithFolder(folder: String) {
         
         let path = cacheDBFileLinkPathWithFolder(folder)
-        try! NSFileManager.defaultManager().removeItemAtPath(path)
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(path)
+        } catch {
+            print("iAsync_utils.DBError: can not remove file: \(path)")
+        }
     }
     
     func cacheDBFileLinkSaveData(data: NSData, folder: String) {
@@ -42,8 +46,12 @@ private extension String {
     func cacheDBFileLinkDataWithFolder(folder: String) -> NSData? {
         
         let path   = cacheDBFileLinkPathWithFolder(folder)
-        let result = try! NSData(contentsOfFile: path, options: NSDataReadingOptions.DataReadingMappedIfSafe)
-        return result
+        do {
+            let result = try NSData(contentsOfFile: path, options: NSDataReadingOptions.DataReadingMappedIfSafe)
+            return result
+        } catch {
+            return nil
+        }
     }
 }
 
@@ -215,7 +223,11 @@ internal class JKeyValueDB {
                                 sizeToRemove = 0
                             }
                             
-                            try! NSFileManager.defaultManager().removeItemAtPath(filePath)
+                            do {
+                                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+                            } catch {
+                                print("iAsync_utils.DBError2: can not remove file: \(filePath)")
+                            }
                         }
                     }
                     bridging_sqlite3_finalize(statement)

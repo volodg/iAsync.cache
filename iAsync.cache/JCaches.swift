@@ -75,7 +75,7 @@ public class JCaches : NSObject {
     
     public func migrateDBs() {
         
-        for (key, db) in cacheDbByName {
+        for (_, db) in cacheDbByName {
             
             db.migrateDB(dbInfo)
         }

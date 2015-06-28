@@ -51,7 +51,7 @@ public extension UIImageView {
                     case let .Success(value):
                         let image = value
                         self_.jffSetImage(image, url:url)
-                    case let .Failure(error):
+                    case .Failure(_):
                         self_.jffSetImage(nil, url:url)
                     }
                 }
@@ -59,7 +59,7 @@ public extension UIImageView {
             
             let storage = jThumbnailStorage
             let loader  = storage.thumbnailLoaderForUrl(url)
-            let cancel  = loader(
+            let _ = loader(
                 progressCallback: nil,
                 stateCallback   : nil,
                 finishCallback  : doneCallback)

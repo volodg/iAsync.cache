@@ -70,7 +70,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
                 let loader = async(job: loadDataBlock, queueName: queueName)
                 
-                let cancel = loader(
+                let _ = loader(
                     progressCallback: nil,
                     stateCallback: nil,
                     finishCallback: { (result: Result<NSNull, NSError>) in
@@ -80,7 +80,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
             }
             block({})
             
-            let cancel = timer.addBlock(block, duration:3600.0, leeway:1800.0)
+            let _ = timer.addBlock(block, duration:3600.0, leeway:1800.0)
         })
     }
     
