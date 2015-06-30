@@ -8,6 +8,7 @@
 
 import Foundation
 
+import iAsync_async
 import iAsync_utils
 
 import UIKit
@@ -59,10 +60,7 @@ public extension UIImageView {
             
             let storage = jThumbnailStorage
             let loader  = storage.thumbnailLoaderForUrl(url)
-            let _ = loader(
-                progressCallback: nil,
-                stateCallback   : nil,
-                finishCallback  : doneCallback)
+            runAsync(loader, onFinish: doneCallback)
         }
     }
 }
