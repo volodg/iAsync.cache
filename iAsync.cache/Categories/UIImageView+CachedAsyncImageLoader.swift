@@ -60,7 +60,7 @@ public extension UIImageView {
             
             let storage = jThumbnailStorage
             let loader  = storage.thumbnailLoaderForUrl(url)
-            runAsync(loader, doneCallback)
+            runAsync(loader, onFinish: doneCallback)
         }
     }
 }
