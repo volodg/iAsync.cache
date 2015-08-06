@@ -21,7 +21,7 @@ private extension String {
     
     func cacheDBFileLinkPathWithFolder(folder: String) -> String {
         
-        let result = folder.stringByAppendingPathComponent(self)
+        let result = (folder as NSString).stringByAppendingPathComponent(self)
         return result
     }
     
@@ -431,7 +431,7 @@ internal class JKeyValueDB {
                 
                 autoreleasepool {
                     
-                    let path = (folderPath as String).stringByAppendingPathComponent(fileName)
+                    let path = (folderPath as NSString).stringByAppendingPathComponent(fileName)
                     let fileDictionary = try! fileManager.attributesOfItemAtPath(path)
                     
                     if let size: AnyObject = fileDictionary[NSFileSize] as? NSNumber {
