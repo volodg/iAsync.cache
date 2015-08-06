@@ -115,7 +115,7 @@ public class JThumbnailStorage : NSObject {
         
         let dataLoaderForIdentifier = { (url: NSURL) -> JAsyncTypes<NSData>.JAsync in
 
-            let dataLoader = dataURLResponseLoader(url, nil, nil)
+            let dataLoader = perkyDataURLResponseLoader(url, nil, nil)
             return dataLoader
         }
         
