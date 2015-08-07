@@ -12,8 +12,6 @@ import iAsync_utils
 import iAsync_restkit
 import iAsync_async
 
-import Result
-
 public typealias JCacheFactory = () -> JCacheDB
 
 public class JCacheAdapter : JAsyncRestKitCache {
@@ -27,28 +25,28 @@ public class JCacheAdapter : JAsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
     
-    public func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull>.JAsync {
+    public func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull, NSError>.JAsync {
         
-        return async(job: { () -> Result<NSNull, NSError> in
+        return async(job: { () -> AsyncResult<NSNull, NSError> in
             
             self.cacheFactory().setData(data, forKey:key)
-            return Result.success(NSNull())
+            return AsyncResult.success(NSNull())
         }, queueName: cacheQueueName)
     }
     
-    public func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData>.JAsync {
+    public func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData, NSError>.JAsync {
     
-        return async(job: { () -> Result<JRestKitCachedData, NSError> in
+        return async(job: { () -> AsyncResult<JRestKitCachedData, NSError> in
             
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
             
             if let result = result {
                 let result = JResponseDataWithUpdateData(data: result.0, updateDate: result.1)
-                return Result.success(result)
+                return AsyncResult.success(result)
             }
             
             let description = "no cached data for key: \(key)"
-            return Result.failure(Error(description:description))
+            return AsyncResult.failure(Error(description:description))
         }, queueName: cacheQueueName)
     }
 }
