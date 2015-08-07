@@ -12,7 +12,6 @@ import iAsync_async
 import iAsync_utils
 
 import UIKit
-import Result
 
 private var iAsync_AsycImageURLHolder: Void?
 
@@ -44,7 +43,7 @@ public extension UIImageView {
         
         if let url = url {
             
-            let doneCallback = { [weak self] (result: Result<UIImage, NSError>) -> () in
+            let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
                 
                 if let self_ = self {
                     
@@ -54,6 +53,10 @@ public extension UIImageView {
                         self_.jffSetImage(image, url:url)
                     case let .Failure(error):
                         self_.jffSetImage(nil, url:url)
+                    case .Interrupted:
+                        break
+                    case .Unsubscribed:
+                        break
                     }
                 }
             }

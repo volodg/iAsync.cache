@@ -20,7 +20,7 @@ private let cacheQueueName = "com.embedded_sources.jffcache.thumbnail_storage.ca
 private let noDataUrlStr = "nodata://jff.cache.com"
 
 public extension NSURL {
-
+    
     public class var noImageDataURL: NSURL {
         struct Static {
             static let instance = NSURL(string: noDataUrlStr)!
@@ -48,11 +48,11 @@ public class JThumbnailStorage : NSObject {
             object: nil)
     }
     
-    private let cachedAsyncOp = JCachedAsync<NSURL, UIImage>()
+    private let cachedAsyncOp = JCachedAsync<NSURL, UIImage, NSError>()
     private let imagesByUrl   = NSCache()
     
     //TODO add load balancer here
-    public func thumbnailLoaderForUrl(url: NSURL?) -> JAsyncTypes<UIImage>.JAsync {
+    public func thumbnailLoaderForUrl(url: NSURL?) -> JAsyncTypes<UIImage, NSError>.JAsync {
         
         if let url = url {
             
@@ -60,18 +60,27 @@ public class JThumbnailStorage : NSObject {
                 return asyncWithError(JCacheNoURLError())
             }
             
-            let loader = { (progressCallback: JAsyncProgressCallback?,
-                            stateCallback   : JAsyncChangeStateCallback?,
-                            doneCallback    : JAsyncTypes<UIImage>.JDidFinishAsyncCallback?) -> JAsyncHandler in
+            let loader = { (
+                progressCallback: JAsyncProgressCallback?,
+                stateCallback   : JAsyncChangeStateCallback?,
+                doneCallback    : JAsyncTypes<UIImage, NSError>.JDidFinishAsyncCallback?) -> JAsyncHandler in
                 
                 let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
                 
-                let setter = { (value: UIImage) -> () in
-                    self.imagesByUrl.setObject(value, forKey: url)
+                let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
+                    
+                    if let value = value.value {
+                        self.imagesByUrl.setObject(value, forKey: url)
+                    }
                 }
                 
-                let getter = { () -> UIImage? in
-                    return self.imagesByUrl.objectForKey(url) as? UIImage
+                let getter = { () -> AsyncResult<UIImage, NSError>? in
+                    
+                    if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
+                        return AsyncResult.success(image)
+                    }
+                    
+                    return nil
                 }
                 
                 let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
@@ -92,17 +101,17 @@ public class JThumbnailStorage : NSObject {
         return asyncWithError(JCacheNoURLError())
     }
     
-    public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> JAsyncTypes<UIImage>.JAsync {
+    public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> JAsyncTypes<UIImage, NSError>.JAsync {
         
         if urls.count == 0 {
             return asyncWithError(JCacheNoURLError())
         }
         
-        let loaders = urls.map { (url: NSURL) -> JAsyncTypes<UIImage>.JAsync in
-
+        let loaders = urls.map { (url: NSURL) -> JAsyncTypes<UIImage, NSError>.JAsync in
+            
             return self.thumbnailLoaderForUrl(url)
         }
-    
+        
         return trySequenceOfAsyncsArray(loaders)
     }
     
@@ -111,10 +120,10 @@ public class JThumbnailStorage : NSObject {
         imagesByUrl.removeAllObjects()
     }
     
-    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> JAsyncTypes<UIImage>.JAsync {
+    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> JAsyncTypes<UIImage, NSError>.JAsync {
         
-        let dataLoaderForIdentifier = { (url: NSURL) -> JAsyncTypes<NSData>.JAsync in
-
+        let dataLoaderForIdentifier = { (url: NSURL) -> JAsyncTypes<NSData, NSError>.JAsync in
+            
             let dataLoader = perkyDataURLResponseLoader(url, nil, nil)
             return dataLoader
         }
@@ -132,16 +141,16 @@ public class JThumbnailStorage : NSObject {
             doesNotIgnoreFreshDataLoadFail: false,
             cache                         : createImageCacheAdapter(),
             cacheDataLifeTimeInSeconds    : self.dynamicType.cacheDataLifeTimeInSeconds)
-
+        
         let loader = jSmartDataLoaderWithCache(args)
-
-        return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> JAsyncTypes<UIImage>.JAsync in
+        
+        return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> JAsyncTypes<UIImage, NSError>.JAsync in
             
             let resultError = JCacheLoadImageError(nativeError: error)
             return asyncWithError(resultError)
         })
     }
-
+    
     private class var cacheDataLifeTimeInSeconds: NSTimeInterval {
         
         let dbInfoByNames = JCaches.sharedCaches().dbInfo.dbInfoByNames
@@ -150,7 +159,7 @@ public class JThumbnailStorage : NSObject {
     }
     
     private class JImageCacheAdapter : JCacheAdapter {
-    
+        
         init() {
             
             let cacheFactory = { () -> JCacheDB in
@@ -159,14 +168,14 @@ public class JThumbnailStorage : NSObject {
             
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
-    
-        override func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull>.JAsync {
+        
+        override func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull, NSError>.JAsync {
             
             let loader = super.loaderToSetData(data, forKey:key)
             return Transformer.transformLoadersType1(loader, transformer: balanced)
         }
-    
-        override func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData>.JAsync {
+        
+        override func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData, NSError>.JAsync {
             
             let loader = super.cachedDataLoaderForKey(key)
             return Transformer.transformLoadersType2(loader, transformer: balanced)
@@ -174,16 +183,16 @@ public class JThumbnailStorage : NSObject {
     }
     
     private func createImageCacheAdapter() -> JImageCacheAdapter {
-    
+        
         let result = JImageCacheAdapter()
         return result
     }
-
+    
     public func onMemoryWarning(notification: NSNotification) {
         
         resetCache()
     }
-
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -192,9 +201,9 @@ public class JThumbnailStorage : NSObject {
 //TODO try to use NSURLCache
 private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage>.JAsyncBinderForIdentifier
 {
-    return { (url: NSURL) -> JAsyncTypes2<NSData, UIImage>.JAsyncBinder in
+    return { (url: NSURL) -> JAsyncTypes2<NSData, UIImage, NSError>.JAsyncBinder in
         
-        return { (imageData: NSData) -> JAsyncTypes<UIImage>.JAsync in
+        return { (imageData: NSData) -> JAsyncTypes<UIImage, NSError>.JAsync in
             
             let image = UIImage(data: imageData)
             
@@ -219,18 +228,18 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
     }
 }
 
-private typealias Transformer = JAsyncTypesTransform<NSNull, JRestKitCachedData>
+private typealias Transformer = JAsyncTypesTransform<NSNull, JRestKitCachedData, NSError>
 
-private func balanced(loader: JAsyncTypes<Transformer.PackedType>.JAsync) -> JAsyncTypes<Transformer.PackedType>.JAsync
+private func balanced(loader: JAsyncTypes<Transformer.PackedType, NSError>.JAsync) -> JAsyncTypes<Transformer.PackedType, NSError>.JAsync
 {
     return cacheBalancer().balancedLoaderWithLoader(loader, barrier:false)
 }
 
 //TODO refactor this
-private func cacheBalancer() -> JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType>>
+private func cacheBalancer() -> JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>
 {
     struct Static {
-        static let instance = JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType>>()
+        static let instance = JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>()
     }
     return Static.instance
 }

@@ -12,8 +12,6 @@ import iAsync_restkit
 import iAsync_utils
 import iAsync_async
 
-import Result
-
 private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
 private let internalCacheDBLockObject = NSObject()
@@ -61,16 +59,16 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
             
             let block = { (cancel: SimpleBlock) -> () in
                 
-                let loadDataBlock = { () -> Result<NSNull, NSError> in
+                let loadDataBlock = { () -> AsyncResult<NSNull, NSError> in
                     
                     self.removeOldData()
-                    return Result.success(NSNull())
+                    return AsyncResult.success(NSNull())
                 }
                 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
                 let loader = asyncWithSyncOperationAndQueue(loadDataBlock, queueName)
                 
-                runAsync(loader, onFinish: { (result: Result<NSNull, NSError>) in
+                runAsync(loader, onFinish: { (result: AsyncResult<NSNull, NSError>) in
                     
                     result.error?.writeErrorWithJLogger()
                 })
