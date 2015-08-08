@@ -52,7 +52,7 @@ public class JThumbnailStorage : NSObject {
     private let imagesByUrl   = NSCache()
     
     //TODO add load balancer here
-    public func thumbnailLoaderForUrl(url: NSURL?) -> JAsyncTypes<UIImage, NSError>.JAsync {
+    public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
         
         if let url = url {
             
@@ -61,9 +61,9 @@ public class JThumbnailStorage : NSObject {
             }
             
             let loader = { (
-                progressCallback: JAsyncProgressCallback?,
-                stateCallback   : JAsyncChangeStateCallback?,
-                doneCallback    : JAsyncTypes<UIImage, NSError>.JDidFinishAsyncCallback?) -> JAsyncHandler in
+                progressCallback: AsyncProgressCallback?,
+                stateCallback   : AsyncChangeStateCallback?,
+                doneCallback    : AsyncTypes<UIImage, NSError>.JDidFinishAsyncCallback?) -> JAsyncHandler in
                 
                 let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
                 
@@ -101,13 +101,13 @@ public class JThumbnailStorage : NSObject {
         return asyncWithError(JCacheNoURLError())
     }
     
-    public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> JAsyncTypes<UIImage, NSError>.JAsync {
+    public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> AsyncTypes<UIImage, NSError>.Async {
         
         if urls.count == 0 {
             return asyncWithError(JCacheNoURLError())
         }
         
-        let loaders = urls.map { (url: NSURL) -> JAsyncTypes<UIImage, NSError>.JAsync in
+        let loaders = urls.map { (url: NSURL) -> AsyncTypes<UIImage, NSError>.Async in
             
             return self.thumbnailLoaderForUrl(url)
         }
@@ -120,9 +120,9 @@ public class JThumbnailStorage : NSObject {
         imagesByUrl.removeAllObjects()
     }
     
-    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> JAsyncTypes<UIImage, NSError>.JAsync {
+    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncTypes<UIImage, NSError>.Async {
         
-        let dataLoaderForIdentifier = { (url: NSURL) -> JAsyncTypes<NSData, NSError>.JAsync in
+        let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<NSData, NSError>.Async in
             
             let dataLoader = perkyDataURLResponseLoader(url, nil, nil)
             return dataLoader
@@ -144,7 +144,7 @@ public class JThumbnailStorage : NSObject {
         
         let loader = jSmartDataLoaderWithCache(args)
         
-        return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> JAsyncTypes<UIImage, NSError>.JAsync in
+        return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> AsyncTypes<UIImage, NSError>.Async in
             
             let resultError = JCacheLoadImageError(nativeError: error)
             return asyncWithError(resultError)
@@ -169,13 +169,13 @@ public class JThumbnailStorage : NSObject {
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
         
-        override func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull, NSError>.JAsync {
+        override func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<NSNull, NSError>.Async {
             
             let loader = super.loaderToSetData(data, forKey:key)
             return Transformer.transformLoadersType1(loader, transformer: balanced)
         }
         
-        override func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData, NSError>.JAsync {
+        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<JRestKitCachedData, NSError>.Async {
             
             let loader = super.cachedDataLoaderForKey(key)
             return Transformer.transformLoadersType2(loader, transformer: balanced)
@@ -201,9 +201,9 @@ public class JThumbnailStorage : NSObject {
 //TODO try to use NSURLCache
 private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage>.JAsyncBinderForIdentifier
 {
-    return { (url: NSURL) -> JAsyncTypes2<NSData, UIImage, NSError>.JAsyncBinder in
+    return { (url: NSURL) -> AsyncTypes2<NSData, UIImage, NSError>.JAsyncBinder in
         
-        return { (imageData: NSData) -> JAsyncTypes<UIImage, NSError>.JAsync in
+        return { (imageData: NSData) -> AsyncTypes<UIImage, NSError>.Async in
             
             let image = UIImage(data: imageData)
             
@@ -228,9 +228,9 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
     }
 }
 
-private typealias Transformer = JAsyncTypesTransform<NSNull, JRestKitCachedData, NSError>
+private typealias Transformer = AsyncTypesTransform<NSNull, JRestKitCachedData, NSError>
 
-private func balanced(loader: JAsyncTypes<Transformer.PackedType, NSError>.JAsync) -> JAsyncTypes<Transformer.PackedType, NSError>.JAsync
+private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async
 {
     return cacheBalancer().balancedLoaderWithLoader(loader, barrier:false)
 }

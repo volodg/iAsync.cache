@@ -25,7 +25,7 @@ public class JCacheAdapter : JAsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
     
-    public func loaderToSetData(data: NSData, forKey key: String) -> JAsyncTypes<NSNull, NSError>.JAsync {
+    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<NSNull, NSError>.Async {
         
         return asyncWithSyncOperationAndQueue({ () -> AsyncResult<NSNull, NSError> in
             
@@ -34,7 +34,7 @@ public class JCacheAdapter : JAsyncRestKitCache {
         }, cacheQueueName)
     }
     
-    public func cachedDataLoaderForKey(key: String) -> JAsyncTypes<JRestKitCachedData, NSError>.JAsync {
+    public func cachedDataLoaderForKey(key: String) -> AsyncTypes<JRestKitCachedData, NSError>.Async {
     
         return asyncWithSyncOperationAndQueue({ () -> AsyncResult<JRestKitCachedData, NSError> in
             
