@@ -208,7 +208,7 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
             let image = UIImage(data: imageData)
             
             if let image = image {
-                return async(result: image)
+                return async(value: image)
             }
             
             let error = JCanNotCreateImageError(url: url)
