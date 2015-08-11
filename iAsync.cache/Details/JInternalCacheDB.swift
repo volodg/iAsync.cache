@@ -9,8 +9,8 @@
 import Foundation
 
 import iAsync_restkit
-import iAsync_utils
 import iAsync_async
+import iAsync_utils
 
 private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
