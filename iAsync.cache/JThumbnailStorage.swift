@@ -122,9 +122,9 @@ public class JThumbnailStorage : NSObject {
     
     private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncTypes<UIImage, NSError>.Async {
         
-        let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<NSData, NSError>.Async in
+        let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
             
-            let dataLoader = perkyDataURLResponseLoader(url, nil, nil)
+            let dataLoader = perkyURLResponseLoader(url, nil, nil)
             return dataLoader
         }
         
@@ -134,13 +134,14 @@ public class JThumbnailStorage : NSObject {
         }
         
         let args = JSmartDataLoaderFields(
-            loadDataIdentifier            : url,
-            dataLoaderForIdentifier       : dataLoaderForIdentifier,
+            loadDataIdentifier            : url                       ,
+            dataLoaderForIdentifier       : dataLoaderForIdentifier   ,
             analyzerForData               : imageDataToUIImageBinder(),
-            cacheKeyForIdentifier         : cacheKeyForIdentifier,
-            doesNotIgnoreFreshDataLoadFail: false,
-            cache                         : createImageCacheAdapter(),
-            cacheDataLifeTimeInSeconds    : self.dynamicType.cacheDataLifeTimeInSeconds)
+            cacheKeyForIdentifier         : cacheKeyForIdentifier     ,
+            doesNotIgnoreFreshDataLoadFail: false                     ,
+            cache                         : createImageCacheAdapter() ,
+            cacheDataLifeTimeInSeconds    : self.dynamicType.cacheDataLifeTimeInSeconds
+        )
         
         let loader = jSmartDataLoaderWithCache(args)
         
@@ -169,13 +170,13 @@ public class JThumbnailStorage : NSObject {
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
         
-        override func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<NSNull, NSError>.Async {
+        override func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
             
             let loader = super.loaderToSetData(data, forKey:key)
             return Transformer.transformLoadersType1(loader, transformer: balanced)
         }
         
-        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<JRestKitCachedData, NSError>.Async {
+        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<(NSDate, NSData), NSError>.Async {
             
             let loader = super.cachedDataLoaderForKey(key)
             return Transformer.transformLoadersType2(loader, transformer: balanced)
@@ -199,13 +200,13 @@ public class JThumbnailStorage : NSObject {
 }
 
 //TODO try to use NSURLCache
-private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage>.JAsyncBinderForIdentifier
+private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
 {
-    return { (url: NSURL) -> AsyncTypes2<NSData, UIImage, NSError>.JAsyncBinder in
+    return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.JAsyncBinder in
         
-        return { (imageData: NSData) -> AsyncTypes<UIImage, NSError>.Async in
+        return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
             
-            let image = UIImage(data: imageData)
+            let image = UIImage(data: imageData.1)
             
             if let image = image {
                 return asyncWithValue(image)
@@ -228,7 +229,7 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
     }
 }
 
-private typealias Transformer = AsyncTypesTransform<NSNull, JRestKitCachedData, NSError>
+private typealias Transformer = AsyncTypesTransform<Void, (NSDate, NSData), NSError>
 
 private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async
 {
