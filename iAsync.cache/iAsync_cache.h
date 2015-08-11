@@ -2,7 +2,7 @@
 //  iAsync.cache.h
 //  iAsync.cache
 //
-//  Created by Volodymyr on 24.06.15.
+//  Created by Vladimir Gorbenko on 24.06.15.
 //  Copyright © 2015 EmbeddedSources. All rights reserved.
 //
 
