@@ -211,6 +211,7 @@ internal class JKeyValueDB {
                             
                             //remove file
                             let filePath = fileLink.cacheDBFileLinkPathWithFolder(self.db.folder)
+                            //TODO fix try!
                             let fileDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath(filePath)
                             let fileSize = (fileDictionary[NSFileSize]! as! NSNumber).longLongValue
                             
@@ -432,6 +433,7 @@ internal class JKeyValueDB {
                 autoreleasepool {
                     
                     let path = (folderPath as NSString).stringByAppendingPathComponent(fileName)
+                    //TODO fix try!
                     let fileDictionary = try! fileManager.attributesOfItemAtPath(path)
                     
                     if let size: AnyObject = fileDictionary[NSFileSize] as? NSNumber {
