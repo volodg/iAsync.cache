@@ -134,13 +134,13 @@ public class JThumbnailStorage : NSObject {
         }
         
         let args = JSmartDataLoaderFields(
-            loadDataIdentifier            : url                       ,
-            dataLoaderForIdentifier       : dataLoaderForIdentifier   ,
-            analyzerForData               : imageDataToUIImageBinder(),
-            cacheKeyForIdentifier         : cacheKeyForIdentifier     ,
-            doesNotIgnoreFreshDataLoadFail: false                     ,
-            cache                         : createImageCacheAdapter() ,
-            cacheDataLifeTimeInSeconds    : self.dynamicType.cacheDataLifeTimeInSeconds
+            loadDataIdentifier        : url                       ,
+            dataLoaderForIdentifier   : dataLoaderForIdentifier   ,
+            analyzerForData           : imageDataToUIImageBinder(),
+            cacheKeyForIdentifier     : cacheKeyForIdentifier     ,
+            ignoreFreshDataLoadFail   : true                      ,
+            cache                     : createImageCacheAdapter() ,
+            cacheDataLifeTimeInSeconds: self.dynamicType.cacheDataLifeTimeInSeconds
         )
         
         let loader = jSmartDataLoaderWithCache(args)
