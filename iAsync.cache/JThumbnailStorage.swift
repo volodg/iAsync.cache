@@ -63,7 +63,7 @@ public class JThumbnailStorage : NSObject {
             let loader = { (
                 progressCallback: AsyncProgressCallback?,
                 stateCallback   : AsyncChangeStateCallback?,
-                doneCallback    : AsyncTypes<UIImage, NSError>.JDidFinishAsyncCallback?) -> JAsyncHandler in
+                doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> JAsyncHandler in
                 
                 let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
                 
