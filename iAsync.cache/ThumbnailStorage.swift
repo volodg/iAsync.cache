@@ -202,7 +202,7 @@ public class ThumbnailStorage : NSObject {
 //TODO try to use NSURLCache
 private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
 {
-    return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.JAsyncBinder in
+    return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.AsyncBinder in
         
         return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
             
