@@ -1,6 +1,6 @@
 //
 //  UIImageView+CachedAsyncImageLoader.swift
-//  JCache
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 26.09.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -61,7 +61,7 @@ public extension UIImageView {
                 }
             }
             
-            let storage = jThumbnailStorage
+            let storage = thumbnailStorage
             let loader  = storage.thumbnailLoaderForUrl(url)
             runAsync(loader, onFinish: doneCallback)
         }
