@@ -1,6 +1,6 @@
 //
 //  JCacheDBInfo.swift
-//  JCache
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 31.07.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.

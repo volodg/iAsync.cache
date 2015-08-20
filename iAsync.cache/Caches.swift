@@ -1,6 +1,6 @@
 //
-//  JCaches.swift
-//  JCache
+//  Caches.swift
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 13.08.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -10,38 +10,38 @@ import Foundation
 
 import iAsync_restkit
 
-private var sharedCachesInstance: JCaches?
+private var sharedCachesInstance: Caches?
 
-public class JCaches : NSObject {
+public class Caches : NSObject {
     
-    public let dbInfo: JDBInfo
+    public let dbInfo: DBInfo
     
-    public class func sharedCaches() -> JCaches {
+    public class func sharedCaches() -> Caches {
         
         if let result = sharedCachesInstance {
             return result
         }
         
-        let dbInfo = JDBInfo.defaultDBInfo()
-        let result = JCaches(dbInfo:dbInfo)
+        let dbInfo = DBInfo.defaultDBInfo()
+        let result = Caches(dbInfo:dbInfo)
         sharedCachesInstance = result
         
         return result
     }
     
-    public class func setSharedCaches(caches: JCaches) {
+    public class func setSharedCaches(caches: Caches) {
         
         sharedCachesInstance = caches
     }
     
-    public init(dbInfo: JDBInfo) {
+    public init(dbInfo: DBInfo) {
         
         self.dbInfo = dbInfo
         super.init()
         self.setupCachesWithDBInfo()
     }
     
-    public class func createCacheForName(name: String, dbInfo: JDBInfo) -> JCacheDB {
+    public class func createCacheForName(name: String, dbInfo: DBInfo) -> JCacheDB {
         
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
         
@@ -60,17 +60,17 @@ public class JCaches : NSObject {
     
     func thumbnailDB() -> JCacheDB {
         
-        return cacheByName(JCaches.thumbnailDBName())!
+        return cacheByName(Caches.thumbnailDBName())!
     }
     
-    class func createThumbnailDB(dbInfo: JDBInfo) -> JCacheDB {
+    class func createThumbnailDB(dbInfo: DBInfo) -> JCacheDB {
         
-        return createCacheForName(JCaches.thumbnailDBName(), dbInfo: dbInfo)
+        return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
     }
     
-    func createThumbnailDB(dbInfo: JDBInfo? = nil) -> JCacheDB {
+    func createThumbnailDB(dbInfo: DBInfo? = nil) -> JCacheDB {
         
-        return self.dynamicType.createCacheForName(JCaches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
+        return self.dynamicType.createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
     }
     
     public func migrateDBs() {

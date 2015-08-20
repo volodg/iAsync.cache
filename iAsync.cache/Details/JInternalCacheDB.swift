@@ -1,6 +1,6 @@
 //
 //  JInternalCacheDB.swift
-//  JCache
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 13.08.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -80,7 +80,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
     }
     
     //JTODO check using of migrateDB method when multithreaded
-    func migrateDB(dbInfo: JDBInfo) {
+    func migrateDB(dbInfo: DBInfo) {
         
         let currentDbInfo = dbInfo.currentDbVersionsByName
         let currVersion   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber

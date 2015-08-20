@@ -1,6 +1,6 @@
 //
-//  JThumbnailStorage.swift
-//  JCache
+//  ThumbnailStorage.swift
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 22.09.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -33,9 +33,9 @@ public extension NSURL {
     }
 }
 
-public var jThumbnailStorage = JThumbnailStorage()
+public var thumbnailStorage = ThumbnailStorage()
 
-public class JThumbnailStorage : NSObject {
+public class ThumbnailStorage : NSObject {
     
     private override init() {
         
@@ -154,8 +154,8 @@ public class JThumbnailStorage : NSObject {
     
     private class var cacheDataLifeTimeInSeconds: NSTimeInterval {
         
-        let dbInfoByNames = JCaches.sharedCaches().dbInfo.dbInfoByNames
-        let info = dbInfoByNames.infoByDBName(JCaches.thumbnailDBName())!
+        let dbInfoByNames = Caches.sharedCaches().dbInfo.dbInfoByNames
+        let info = dbInfoByNames.infoByDBName(Caches.thumbnailDBName())!
         return info.timeToLiveInHours * 3600.0
     }
     
@@ -164,7 +164,7 @@ public class JThumbnailStorage : NSObject {
         init() {
             
             let cacheFactory = { () -> JCacheDB in
-                return JCaches.sharedCaches().createThumbnailDB()
+                return Caches.sharedCaches().createThumbnailDB()
             }
             
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
@@ -212,20 +212,20 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
                 return asyncWithValue(image)
             }
             
-            let error = JCanNotCreateImageError(url: url)
+            let error = CanNotCreateImageError(url: url)
             return asyncWithError(error)
         }
-        // TODO: Test perfomance
-        //        return ^JFFAsyncOperation(NSData *imageData) {
-        //            return asyncWithSyncOperation(^id(NSError *__autoreleasing *outError) {
-        //                UIImage *image = [UIImage imageWithData:imageData];
-        //
-        //                if (!image) {
-        //                    *outError = [JFFCanNotCreateImageError new];
-        //                }
-        //                return image;
-        //            });
-        //        };
+// TODO: Test perfomance
+//        return ^JFFAsyncOperation(NSData *imageData) {
+//            return asyncWithSyncOperation(^id(NSError *__autoreleasing *outError) {
+//                UIImage *image = [UIImage imageWithData:imageData];
+//
+//                if (!image) {
+//                    *outError = [JFFCanNotCreateImageError new];
+//                }
+//                return image;
+//            });
+//        };
     }
 }
 

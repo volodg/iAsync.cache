@@ -1,6 +1,6 @@
 //
 //  JFFKeyValueDB.swift
-//  JCache
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 11.08.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.

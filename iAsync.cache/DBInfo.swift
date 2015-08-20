@@ -1,6 +1,6 @@
 //
-//  JDBInfo.swift
-//  JCache
+//  DBInfo.swift
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 11.08.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -11,9 +11,9 @@ import Foundation
 import iAsync_utils
 
 private var dbInfoOnce: dispatch_once_t = 0
-private var dbInfoInstance: JDBInfo!
+private var dbInfoInstance: DBInfo!
 
-public class JDBInfo : NSObject {
+public class DBInfo : NSObject {
     
     public let dbInfoByNames: JCacheDBInfoStorage
     
@@ -29,7 +29,7 @@ public class JDBInfo : NSObject {
                 return result
             }
                 
-            let path = JDBInfo.currentDBInfoFilePath()
+            let path = DBInfo.currentDBInfoFilePath()
             let currentDbInfo: NSDictionary? = NSDictionary(contentsOfFile:path)
                 
             if let currentDbInfo = currentDbInfo {
@@ -53,15 +53,15 @@ public class JDBInfo : NSObject {
     }
     
     //TODO internal?
-    public class func defaultDBInfo() -> JDBInfo {
+    public class func defaultDBInfo() -> DBInfo {
         
         struct Static {
             static let instance = Static.createJDBInfo()
             
-            private static func createJDBInfo() -> JDBInfo {
-                let bundle      = NSBundle(forClass: JDBInfo.self)
+            private static func createJDBInfo() -> DBInfo {
+                let bundle      = NSBundle(forClass: DBInfo.self)
                 let defaultPath = bundle.pathForResource("JCacheDBInfo", ofType:"plist")
-                return JDBInfo(infoPath:defaultPath!)
+                return DBInfo(infoPath:defaultPath!)
             }
         }
         return Static.instance
@@ -87,7 +87,7 @@ public class JDBInfo : NSObject {
             
             self._currentDbVersionsByName = currentVersions
             
-            let path = JDBInfo.currentDBInfoFilePath()
+            let path = DBInfo.currentDBInfoFilePath()
             currentVersions.writeToFile(path, atomically:true)
             path.addSkipBackupAttribute()
         })
