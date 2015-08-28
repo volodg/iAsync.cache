@@ -8,7 +8,6 @@
 
 import Foundation
 
-//TODO remove public, it is internal
 public class JCacheDBInfoStorage : NSObject {
     
     internal let info: [String:JCacheDBInfo]
@@ -18,7 +17,7 @@ public class JCacheDBInfoStorage : NSObject {
         return info[dbName]
     }
     
-    public init(plistInfo: NSDictionary) {
+    init(plistInfo: NSDictionary) {
         
         var info: [String:JCacheDBInfo] = [:]
         
