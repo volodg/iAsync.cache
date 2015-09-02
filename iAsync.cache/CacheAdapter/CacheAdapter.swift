@@ -1,5 +1,5 @@
 //
-//  JCacheAdapter.swift
+//  CacheAdapter.swift
 //  JRestKit
 //
 //  Created by Vladimir Gorbenko on 05.08.14.
@@ -12,14 +12,14 @@ import iAsync_utils
 import iAsync_restkit
 import iAsync_async
 
-public typealias JCacheFactory = () -> JCacheDB
+public typealias CacheFactory = () -> JCacheDB
 
-public class JCacheAdapter : JAsyncRestKitCache {
+public class CacheAdapter : AsyncRestKitCache {
     
-    private let cacheFactory  : JCacheFactory
+    private let cacheFactory  : CacheFactory
     private let cacheQueueName: String
     
-    public init(cacheFactory: JCacheFactory, cacheQueueName: String) {
+    public init(cacheFactory: CacheFactory, cacheQueueName: String) {
         
         self.cacheQueueName = cacheQueueName
         self.cacheFactory   = cacheFactory
