@@ -159,7 +159,7 @@ public class ThumbnailStorage : NSObject {
         return info.timeToLiveInHours * 3600.0
     }
     
-    private class JImageCacheAdapter : JCacheAdapter {
+    private class ImageCacheAdapter : CacheAdapter {
         
         init() {
             
@@ -183,9 +183,9 @@ public class ThumbnailStorage : NSObject {
         }
     }
     
-    private func createImageCacheAdapter() -> JImageCacheAdapter {
+    private func createImageCacheAdapter() -> ImageCacheAdapter {
         
-        let result = JImageCacheAdapter()
+        let result = ImageCacheAdapter()
         return result
     }
     
