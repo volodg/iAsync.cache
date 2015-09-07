@@ -231,16 +231,10 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
 
 private typealias Transformer = AsyncTypesTransform<Void, (NSDate, NSData), NSError>
 
+//limit sqlite number of threads
+private let cacheBalancer = LimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>()
+
 private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async
 {
-    return cacheBalancer().balancedLoaderWithLoader(loader, barrier:false)
-}
-
-//TODO refactor this
-private func cacheBalancer() -> JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>
-{
-    struct Static {
-        static let instance = JLimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>()
-    }
-    return Static.instance
+    return cacheBalancer.balancedLoaderWithLoader(loader, barrier:false)
 }
