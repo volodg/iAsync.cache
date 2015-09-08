@@ -29,7 +29,7 @@ public class CanNotCreateImageError : JCacheError {
         return self.dynamicType(url: url)
     }
     
-    override public func writeErrorWithJLogger() {}
+    override public func writeErrorWithLogger() {}
     
     override public var errorLogDescription: String {
         return "\(self.dynamicType) : \(localizedDescription) url: \(url)"

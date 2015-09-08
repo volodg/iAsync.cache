@@ -70,7 +70,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 
                 runAsync(loader, onFinish: { (result: AsyncResult<NSNull, NSError>) in
                     
-                    result.error?.writeErrorWithJLogger()
+                    result.error?.writeErrorWithLogger()
                 })
             }
             block({})

@@ -34,7 +34,7 @@ public class JCacheLoadImageError : JCacheError {
         return result
     }
     
-    public override func writeErrorWithJLogger () {
+    public override func writeErrorWithLogger () {
         
         iAsync_utils_logger.logError(errorLogDescription)
     }

@@ -20,5 +20,5 @@ public class JCacheNoURLError : JCacheError {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func writeErrorWithJLogger () {}
+    public override func writeErrorWithLogger () {}
 }
