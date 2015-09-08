@@ -206,26 +206,18 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
         
         return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
             
-            let image = UIImage(data: imageData.1)
-            
-            if let image = image {
-                return async(value: image)
-            }
-            
-            let error = CanNotCreateImageError(url: url)
-            return async(error: error)
+            return async(job:{ () -> AsyncResult<UIImage, NSError> in
+                
+                let image = UIImage(data: imageData.1)
+                
+                if let image = image {
+                    return AsyncResult.success(image)
+                }
+                
+                let error = CanNotCreateImageError(url: url)
+                return AsyncResult.failure(error)
+            })
         }
-// TODO: Test perfomance
-//        return ^JFFAsyncOperation(NSData *imageData) {
-//            return asyncWithSyncOperation(^id(NSError *__autoreleasing *outError) {
-//                UIImage *image = [UIImage imageWithData:imageData];
-//
-//                if (!image) {
-//                    *outError = [JFFCanNotCreateImageError new];
-//                }
-//                return image;
-//            });
-//        };
     }
 }
 

@@ -48,10 +48,10 @@ public extension UIImageView {
                 if let self_ = self {
                     
                     switch result {
-                    case let .Success(value):
+                    case .Success(let value):
                         let image = value
                         self_.jffSetImage(image, url:url)
-                    case .Failure(_):
+                    case .Failure:
                         self_.jffSetImage(nil, url:url)
                     case .Interrupted:
                         break
