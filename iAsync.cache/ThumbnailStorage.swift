@@ -51,7 +51,6 @@ public class ThumbnailStorage : NSObject {
     private let cachedAsyncOp = JCachedAsync<NSURL, UIImage, NSError>()
     private let imagesByUrl   = NSCache()
     
-    //TODO add load balancer here
     public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
         
         if let url = url {
