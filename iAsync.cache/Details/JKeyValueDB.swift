@@ -484,6 +484,7 @@ private class JSQLiteDB {
                 }
                 return result
             })
+            
             if !openResult {
                 assert(false)
                 return

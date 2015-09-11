@@ -75,7 +75,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
             }
             block({})
             
-            let cancel = timer.addBlock(block, duration:3600.0, leeway:1800.0)
+            let _ = timer.addBlock(block, duration:3600.0, leeway:1800.0)
         })
     }
     
