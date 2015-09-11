@@ -62,7 +62,7 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 let loadDataBlock = { () -> AsyncResult<NSNull, NSError> in
                     
                     self.removeOldData()
-                    return AsyncResult.success(NSNull())
+                    return .Success(NSNull())
                 }
                 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"

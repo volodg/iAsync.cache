@@ -76,7 +76,7 @@ public class ThumbnailStorage : NSObject {
                 let getter = { () -> AsyncResult<UIImage, NSError>? in
                     
                     if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
-                        return AsyncResult.success(image)
+                        return .Success(image)
                     }
                     
                     return nil
@@ -210,11 +210,11 @@ private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage
                 let image = UIImage(data: imageData.1)
                 
                 if let image = image {
-                    return AsyncResult.success(image)
+                    return .Success(image)
                 }
                 
                 let error = CanNotCreateImageError(url: url)
-                return AsyncResult.failure(error)
+                return .Failure(error)
             })
         }
     }

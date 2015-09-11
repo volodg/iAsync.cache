@@ -30,7 +30,7 @@ public class CacheAdapter : AsyncRestKitCache {
         return async(job: { () -> AsyncResult<Void, NSError> in
             
             self.cacheFactory().setData(data, forKey:key)
-            return AsyncResult.success(())
+            return .Success(())
         }, queueName: cacheQueueName)
     }
     
@@ -41,11 +41,11 @@ public class CacheAdapter : AsyncRestKitCache {
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
             
             if let result = result {
-                return AsyncResult.success((result.1, result.0))
+                return .Success((result.1, result.0))
             }
             
             let description = "no cached data for key: \(key)"
-            return AsyncResult.failure(Error(description:description))
+            return .Failure(Error(description:description))
         }, queueName: cacheQueueName)
     }
 }
