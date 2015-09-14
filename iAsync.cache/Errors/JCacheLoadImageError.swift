@@ -10,7 +10,7 @@ import Foundation
 
 import iAsync_utils
 
-public class JCacheLoadImageError : JCacheError {
+final public class JCacheLoadImageError : JCacheError {
     
     let nativeError: NSError
     

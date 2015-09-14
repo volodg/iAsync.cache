@@ -17,7 +17,7 @@ private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 private let internalCacheDBLockObject = NSObject()
 
 //TODO move as private to JFFCaches
-internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
+final internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
     
     let cacheDBInfo: JCacheDBInfo
     

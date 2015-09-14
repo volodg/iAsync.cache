@@ -9,7 +9,7 @@
 import Foundation
 
 //TODO remove public, it is internal
-public class JCacheDBInfo : NSObject {
+final public class JCacheDBInfo : NSObject {
     
     public let dbPropertyName: String
     

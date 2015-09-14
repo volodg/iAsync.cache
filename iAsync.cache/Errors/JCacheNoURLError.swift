@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class JCacheNoURLError : JCacheError {
+final public class JCacheNoURLError : JCacheError {
     
     init() {
         

@@ -454,7 +454,7 @@ private func getOrCreateDispatchQueueForFile(file: String) -> dispatch_queue_t {
     return result
 }
 
-private class JSQLiteDB {
+final private class JSQLiteDB {
     
     private var db: COpaquePointer = nil
     let dispatchQueue: dispatch_queue_t
