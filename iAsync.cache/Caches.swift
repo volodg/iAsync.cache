@@ -12,11 +12,11 @@ import iAsync_restkit
 
 private var sharedCachesInstance: Caches?
 
-public class Caches : NSObject {
+final public class Caches {
     
     public let dbInfo: DBInfo
     
-    public class func sharedCaches() -> Caches {
+    public static func sharedCaches() -> Caches {
         
         if let result = sharedCachesInstance {
             return result
@@ -29,7 +29,7 @@ public class Caches : NSObject {
         return result
     }
     
-    public class func setSharedCaches(caches: Caches) {
+    public static func setSharedCaches(caches: Caches) {
         
         sharedCachesInstance = caches
     }
@@ -37,11 +37,10 @@ public class Caches : NSObject {
     public init(dbInfo: DBInfo) {
         
         self.dbInfo = dbInfo
-        super.init()
         self.setupCachesWithDBInfo()
     }
     
-    public class func createCacheForName(name: String, dbInfo: DBInfo) -> JCacheDB {
+    public static func createCacheForName(name: String, dbInfo: DBInfo) -> JCacheDB {
         
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
         
@@ -53,7 +52,7 @@ public class Caches : NSObject {
         return cacheDbByName[name]
     }
     
-    public class func thumbnailDBName() -> String {
+    public static func thumbnailDBName() -> String {
         
         return "J_THUMBNAIL_DB"
     }
@@ -63,7 +62,7 @@ public class Caches : NSObject {
         return cacheByName(Caches.thumbnailDBName())!
     }
     
-    class func createThumbnailDB(dbInfo: DBInfo) -> JCacheDB {
+    static func createThumbnailDB(dbInfo: DBInfo) -> JCacheDB {
         
         return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
     }

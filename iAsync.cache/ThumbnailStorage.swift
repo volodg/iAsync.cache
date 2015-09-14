@@ -21,7 +21,7 @@ private let noDataUrlStr = "nodata://jff.cache.com"
 
 public extension NSURL {
     
-    public class var noImageDataURL: NSURL {
+    public static var noImageDataURL: NSURL {
         struct Static {
             static let instance = NSURL(string: noDataUrlStr)!
         }
@@ -35,11 +35,9 @@ public extension NSURL {
 
 public var thumbnailStorage = ThumbnailStorage()
 
-public class ThumbnailStorage : NSObject {
+final public class ThumbnailStorage {
     
-    private override init() {
-        
-        super.init()
+    private init() {
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -151,14 +149,14 @@ public class ThumbnailStorage : NSObject {
         })
     }
     
-    private class var cacheDataLifeTimeInSeconds: NSTimeInterval {
+    private static var cacheDataLifeTimeInSeconds: NSTimeInterval {
         
         let dbInfoByNames = Caches.sharedCaches().dbInfo.dbInfoByNames
         let info = dbInfoByNames.infoByDBName(Caches.thumbnailDBName())!
         return info.timeToLiveInHours * 3600.0
     }
     
-    private class ImageCacheAdapter : CacheAdapter {
+    final private class ImageCacheAdapter : CacheAdapter {
         
         init() {
             
@@ -188,7 +186,7 @@ public class ThumbnailStorage : NSObject {
         return result
     }
     
-    public func onMemoryWarning(notification: NSNotification) {
+    @objc public func onMemoryWarning(notification: NSNotification) {
         
         resetCache()
     }

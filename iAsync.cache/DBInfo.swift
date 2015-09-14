@@ -13,7 +13,7 @@ import iAsync_utils
 private var dbInfoOnce: dispatch_once_t = 0
 private var dbInfoInstance: DBInfo!
 
-public class DBInfo : NSObject {
+final public class DBInfo {
     
     public let dbInfoByNames: JCacheDBInfoStorage
     
@@ -53,7 +53,7 @@ public class DBInfo : NSObject {
     }
     
     //TODO internal?
-    public class func defaultDBInfo() -> DBInfo {
+    public static func defaultDBInfo() -> DBInfo {
         
         struct Static {
             static let instance = Static.createJDBInfo()
@@ -93,7 +93,7 @@ public class DBInfo : NSObject {
         })
     }
     
-    class func currentDBInfoFilePath() -> String {
+    static func currentDBInfoFilePath() -> String {
         return String.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class JCacheDBInfoStorage : NSObject {
+final public class JCacheDBInfoStorage {
     
     internal let info: [String:JCacheDBInfo]
     
