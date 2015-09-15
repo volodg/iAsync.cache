@@ -41,29 +41,27 @@ public extension UIImageView {
         
         iAsync_cache_AsycImageURL = url
         
-        if let url = url {
+        guard let url = url else { return }
+        
+        let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
             
-            let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
-                
-                if let self_ = self {
-                    
-                    switch result {
-                    case .Success(let value):
-                        let image = value
-                        self_.jffSetImage(image, url:url)
-                    case .Failure:
-                        self_.jffSetImage(nil, url:url)
-                    case .Interrupted:
-                        break
-                    case .Unsubscribed:
-                        break
-                    }
-                }
+            guard let self_ = self else { return }
+            
+            switch result {
+            case .Success(let value):
+                let image = value
+                self_.jffSetImage(image, url:url)
+            case .Failure:
+                self_.jffSetImage(nil, url:url)
+            case .Interrupted:
+                break
+            case .Unsubscribed:
+                break
             }
-            
-            let storage = thumbnailStorage
-            let loader  = storage.thumbnailLoaderForUrl(url)
-            runAsync(loader, onFinish: doneCallback)
         }
+        
+        let storage = thumbnailStorage
+        let loader  = storage.thumbnailLoaderForUrl(url)
+        runAsync(loader, onFinish: doneCallback)
     }
 }
