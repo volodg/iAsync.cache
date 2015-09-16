@@ -55,6 +55,22 @@ private extension String {
     }
 }
 
+private func fileSizeForPath(path: String) -> Int64? {
+    
+    let fileDictionary: [String : AnyObject]?
+    do {
+        fileDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+    } catch let error as NSError {
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)")
+        fileDictionary = nil
+    } catch _ {
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path)")
+        fileDictionary = nil
+    }
+    
+    return (fileDictionary?[NSFileSize] as? NSNumber)?.longLongValue
+}
+
 internal class JKeyValueDB {
     
     private let cacheFileName: String
@@ -211,16 +227,12 @@ internal class JKeyValueDB {
                             
                             //remove file
                             let filePath = fileLink.cacheDBFileLinkPathWithFolder(self.db.folder)
-                            //TODO fix try!
-                            let fileDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath(filePath)
-                            let fileSize = (fileDictionary[NSFileSize]! as! NSNumber).longLongValue
+                            let fileSize = fileSizeForPath(filePath) ?? 0
                             
                             ++filesRemoved
                             if sizeToRemove > fileSize {
-                                
                                 sizeToRemove -= fileSize
                             } else {
-                                
                                 sizeToRemove = 0
                             }
                             
@@ -433,12 +445,7 @@ internal class JKeyValueDB {
                 autoreleasepool {
                     
                     let path = (folderPath as NSString).stringByAppendingPathComponent(fileName)
-                    //TODO fix try!
-                    let fileDictionary = try! fileManager.attributesOfItemAtPath(path)
-                    
-                    if let size: AnyObject = fileDictionary[NSFileSize] as? NSNumber {
-                        fileSize += size.longLongValue
-                    }
+                    fileSize += fileSizeForPath(path) ?? 0
                 }
             }
         }
