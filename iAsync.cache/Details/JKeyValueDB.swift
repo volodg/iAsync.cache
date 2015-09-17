@@ -259,7 +259,7 @@ internal class JKeyValueDB {
                         NSLog("\(removeQuery) - \(self.errorMessage)")
                     }
                     
-                    bridging_sqlite3_finalize(statement);
+                    bridging_sqlite3_finalize(statement)
                 }
             }
         })
@@ -296,7 +296,7 @@ internal class JKeyValueDB {
                     NSLog("\(removeQuery) - \(self.errorMessage)")
                 }
                 
-                bridging_sqlite3_finalize(statement);
+                bridging_sqlite3_finalize(statement)
             }
             
             callback?()
