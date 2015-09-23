@@ -197,6 +197,7 @@ final public class ThumbnailStorage {
 }
 
 //TODO try to use NSURLCache?
+//example - https://github.com/Alamofire/AlamofireImage
 private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
 {
     return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.AsyncBinder in
