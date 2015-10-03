@@ -15,6 +15,9 @@ import iAsync_utils
 
 import UIKit
 
+//alternatives:
+//1 - https://github.com/rs/SDWebImage
+
 private let cacheQueueName = "com.embedded_sources.jffcache.thumbnail_storage.cache"
 
 private let noDataUrlStr = "nodata://jff.cache.com"
