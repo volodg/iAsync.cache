@@ -43,8 +43,8 @@ final public class DBInfo {
     
     public init(infoPath: String) {
         
-        let infoDictionary = NSDictionary(contentsOfFile:infoPath)
-        dbInfoByNames = JCacheDBInfoStorage(plistInfo:infoDictionary!)//TODO fix "!"
+        let infoDictionary = NSDictionary(contentsOfFile: infoPath)
+        dbInfoByNames = JCacheDBInfoStorage(plistInfo: infoDictionary!)
     }
     
     init(infoDictionary: NSDictionary) {
@@ -52,8 +52,7 @@ final public class DBInfo {
         dbInfoByNames = JCacheDBInfoStorage(plistInfo:infoDictionary)
     }
     
-    //TODO internal?
-    public static func defaultDBInfo() -> DBInfo {
+    internal static func defaultDBInfo() -> DBInfo {
         
         struct Static {
             static let instance = Static.createJDBInfo()
