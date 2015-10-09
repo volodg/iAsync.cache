@@ -124,8 +124,11 @@ final public class ThumbnailStorage {
         
         let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
             
-            let dataLoader = perkyURLResponseLoader(url, postData: nil, headers: nil)
-            return dataLoader
+            let dataLoader = perkyDataURLResponseLoader(url, postData: nil, headers: nil)
+            
+            return bindSequenceOfAsyncs(dataLoader, { response -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
+                return async(value: (response.response, response.responseData))
+            })
         }
         
         let cacheKeyForIdentifier = { (loadDataIdentifier: NSURL) -> String in
