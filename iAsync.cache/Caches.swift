@@ -40,14 +40,14 @@ final public class Caches {
         self.setupCachesWithDBInfo()
     }
     
-    public static func createCacheForName(name: String, dbInfo: DBInfo) -> JCacheDB {
+    public static func createCacheForName(name: String, dbInfo: DBInfo) -> CacheDB {
         
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
         
-        return JInternalCacheDB(cacheDBInfo:cacheInfo)
+        return InternalCacheDB(cacheDBInfo:cacheInfo)
     }
     
-    func cacheByName(name: String) -> JCacheDB? {
+    func cacheByName(name: String) -> CacheDB? {
         
         return cacheDbByName[name]
     }
@@ -57,17 +57,17 @@ final public class Caches {
         return "J_THUMBNAIL_DB"
     }
     
-    func thumbnailDB() -> JCacheDB {
+    func thumbnailDB() -> CacheDB {
         
         return cacheByName(Caches.thumbnailDBName())!
     }
     
-    static func createThumbnailDB(dbInfo: DBInfo) -> JCacheDB {
+    static func createThumbnailDB(dbInfo: DBInfo) -> CacheDB {
         
         return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
     }
     
-    func createThumbnailDB(dbInfo: DBInfo? = nil) -> JCacheDB {
+    func createThumbnailDB(dbInfo: DBInfo? = nil) -> CacheDB {
         
         return self.dynamicType.createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
     }
@@ -82,16 +82,15 @@ final public class Caches {
         dbInfo.saveCurrentDBInfoVersions()
     }
     
-    private var cacheDbByName: [String:JInternalCacheDB] = [:]
+    private var cacheDbByName: [String:InternalCacheDB] = [:]
     
-    private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: JCacheDBInfo) -> JCacheDB {
+    private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
         
         if let result = self.cacheDbByName[dbPropertyName] {
-            
             return result
         }
         
-        let result = JInternalCacheDB(cacheDBInfo:cacheDBInfo)
+        let result = InternalCacheDB(cacheDBInfo:cacheDBInfo)
         result.runAutoRemoveDataSchedulerIfNeeds()
         cacheDbByName[dbPropertyName] = result
         

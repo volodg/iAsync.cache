@@ -1,5 +1,5 @@
 //
-//  JInternalCacheDB.swift
+//  InternalCacheDB.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 13.08.14.
@@ -17,11 +17,11 @@ private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 private let internalCacheDBLockObject = NSObject()
 
 //TODO move as private to JFFCaches
-final internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
+final internal class InternalCacheDB : KeyValueDB, CacheDB {
     
-    let cacheDBInfo: JCacheDBInfo
+    let cacheDBInfo: CacheDBInfo
     
-    init(cacheDBInfo: JCacheDBInfo) {
+    init(cacheDBInfo: CacheDBInfo) {
         
         self.cacheDBInfo = cacheDBInfo
         

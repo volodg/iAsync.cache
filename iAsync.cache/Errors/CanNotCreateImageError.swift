@@ -10,7 +10,7 @@ import Foundation
 
 import iAsync_utils
 
-final public class CanNotCreateImageError : JCacheError {
+final public class CanNotCreateImageError : CacheError {
     
     private let url: NSURL
     

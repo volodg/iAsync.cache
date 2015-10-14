@@ -15,7 +15,7 @@ private var dbInfoInstance: DBInfo!
 
 final public class DBInfo {
     
-    public let dbInfoByNames: JCacheDBInfoStorage
+    public let dbInfoByNames: CacheDBInfoStorage
     
     private var _currentDbVersionsByName: NSDictionary?
     var currentDbVersionsByName: NSDictionary? {
@@ -44,12 +44,12 @@ final public class DBInfo {
     public init(infoPath: String) {
         
         let infoDictionary = NSDictionary(contentsOfFile: infoPath)
-        dbInfoByNames = JCacheDBInfoStorage(plistInfo: infoDictionary!)
+        dbInfoByNames = CacheDBInfoStorage(plistInfo: infoDictionary!)
     }
     
     init(infoDictionary: NSDictionary) {
         
-        dbInfoByNames = JCacheDBInfoStorage(plistInfo:infoDictionary)
+        dbInfoByNames = CacheDBInfoStorage(plistInfo:infoDictionary)
     }
     
     internal static func defaultDBInfo() -> DBInfo {

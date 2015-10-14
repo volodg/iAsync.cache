@@ -1,5 +1,5 @@
 //
-//  JCacheDBInfo.swift
+//  CacheDBInfo.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 31.07.14.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-final public class JCacheDBInfo : NSObject {
+final public class CacheDBInfo : NSObject {
     
     public let dbPropertyName: String
     

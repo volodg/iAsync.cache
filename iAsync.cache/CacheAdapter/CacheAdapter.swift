@@ -1,6 +1,6 @@
 //
 //  CacheAdapter.swift
-//  JRestKit
+//  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 05.08.14.
 //  Copyright (c) 2014 EmbeddedSources. All rights reserved.
@@ -12,7 +12,7 @@ import iAsync_utils
 import iAsync_restkit
 import iAsync_async
 
-public typealias CacheFactory = () -> JCacheDB
+public typealias CacheFactory = () -> CacheDB
 
 public class CacheAdapter : AsyncRestKitCache {
     
@@ -34,14 +34,14 @@ public class CacheAdapter : AsyncRestKitCache {
         }, queueName: cacheQueueName)
     }
     
-    public func cachedDataLoaderForKey(key: String) -> AsyncTypes<(NSDate, NSData), NSError>.Async {
+    public func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
     
-        return async(job: { () -> AsyncResult<(NSDate, NSData), NSError> in
+        return async(job: { () -> AsyncResult<(date: NSDate, data: NSData), NSError> in
             
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
             
             if let result = result {
-                return .Success((result.1, result.0))
+                return .Success((date: result.1, data: result.0))
             }
             
             let description = "no cached data for key: \(key)"

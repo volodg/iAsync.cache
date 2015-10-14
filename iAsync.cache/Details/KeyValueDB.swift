@@ -71,7 +71,7 @@ private func fileSizeForPath(path: String) -> Int64? {
     return (fileDictionary?[NSFileSize] as? NSNumber)?.longLongValue
 }
 
-internal class JKeyValueDB {
+internal class KeyValueDB {
     
     private let cacheFileName: String
     
