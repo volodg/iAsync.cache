@@ -88,7 +88,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         if let currVersion = currVersion {
             
             let lastVersion    = cacheDBInfo.version
-            let currentVersion = currVersion.unsignedIntegerValue
+            let currentVersion = currVersion.integerValue
             
             if lastVersion > currentVersion {
                 removeAllRecordsWithCallback(nil)
