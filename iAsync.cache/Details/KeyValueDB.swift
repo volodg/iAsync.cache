@@ -492,7 +492,7 @@ final private class JSQLiteDB {
                         withIntermediateDirectories: true,
                         attributes: nil)
                 } catch {
-                    fatalError("can not create folder: \(self.folder) error: \(error)")
+                    iAsync_utils_logger.logError("unexpected system state 3")
                 }
             }
             
