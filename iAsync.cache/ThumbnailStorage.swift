@@ -187,16 +187,16 @@ final public class ThumbnailStorage {
     }
     
     private func createImageCacheAdapter() -> ImageCacheAdapter {
-        
+
         let result = ImageCacheAdapter()
         return result
     }
-    
+
     @objc public func onMemoryWarning(notification: NSNotification) {
         
         resetCache()
     }
-    
+
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -207,21 +207,36 @@ final public class ThumbnailStorage {
 private func imageDataToUIImageBinder() -> SmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
 {
     return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.AsyncBinder in
-        
+
         return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
-            
+
             return async(job:{ () -> AsyncResult<UIImage, NSError> in
-                
-                let image = UIImage(data: imageData.1)
-                
+
+                let image = UIImage.safeThreadImageWithData(imageData.1)
+
                 if let image = image {
                     return .Success(image)
                 }
-                
+
                 let error = CanNotCreateImageError(url: url)
                 return .Failure(error)
             })
         }
+    }
+}
+
+extension UIImage {
+
+    static func safeThreadImageWithData(data: NSData) -> UIImage? {
+
+        class Singleton  {
+            static let sharedInstance = NSLock()
+        }
+        
+        Singleton.sharedInstance.lock()
+        let result = UIImage(data: data)
+        Singleton.sharedInstance.unlock()
+        return result
     }
 }
 
