@@ -35,31 +35,31 @@ public extension UIImageView {
         self.image = image
     }
     
-    func setImageWithURL(url: NSURL?, placeholder: UIImage?) {
-        
+    func setImageWithURL(url: NSURL?, placeholder: UIImage? = nil, noImage: UIImage? = nil) {
+
         image = placeholder
-        
+
         iAsync_cache_AsycImageURL = url
-        
+
         guard let url = url else { return }
-        
+
         let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
-            
+
             guard let self_ = self else { return }
-            
+
             switch result {
             case .Success(let value):
                 let image = value
                 self_.jffSetImage(image, url:url)
             case .Failure:
-                self_.jffSetImage(nil, url:url)
+                self_.jffSetImage(noImage, url:url)
             case .Interrupted:
                 break
             case .Unsubscribed:
                 break
             }
         }
-        
+
         let storage = thumbnailStorage
         let loader  = storage.thumbnailLoaderForUrl(url)
         runAsync(loader, onFinish: doneCallback)
