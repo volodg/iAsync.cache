@@ -18,15 +18,15 @@ private let createRecords =
 ", access_time real );"
 
 private extension String {
-    
+
     func cacheDBFileLinkPathWithFolder(folder: String) -> String {
-        
+
         let result = (folder as NSString).stringByAppendingPathComponent(self)
         return result
     }
-    
+
     func cacheDBFileLinkRemoveFileWithFolder(folder: String) {
-        
+
         let path = cacheDBFileLinkPathWithFolder(folder)
         do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
@@ -34,17 +34,17 @@ private extension String {
             print("iAsync_utils.DBError: can not remove file: \(path)")
         }
     }
-    
+
     func cacheDBFileLinkSaveData(data: NSData, folder: String) {
-        
+
         let path = cacheDBFileLinkPathWithFolder(folder)
         let url = NSURL(fileURLWithPath:path, isDirectory:false)
         data.writeToURL(url, atomically:false)
         path.addSkipBackupAttribute()
     }
-    
+
     func cacheDBFileLinkDataWithFolder(folder: String) -> NSData? {
-        
+
         let path   = cacheDBFileLinkPathWithFolder(folder)
         do {
             let result = try NSData(contentsOfFile: path, options: NSDataReadingOptions.DataReadingMappedIfSafe)
@@ -56,7 +56,7 @@ private extension String {
 }
 
 private func fileSizeForPath(path: String) -> Int64? {
-    
+
     let fileDictionary: [String : AnyObject]?
     do {
         fileDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
@@ -67,38 +67,38 @@ private func fileSizeForPath(path: String) -> Int64? {
         iAsync_utils_logger.logError("no file attributes for file with path: \(path)")
         fileDictionary = nil
     }
-    
+
     return (fileDictionary?[NSFileSize] as? NSNumber)?.longLongValue
 }
 
 internal class KeyValueDB {
-    
+
     private let cacheFileName: String
-    
+
     private var _db: JSQLiteDB?
     private var db: JSQLiteDB {
         if let db = _db {
-                
+
             return db
         }
-            
+
         let db = JSQLiteDB(dbName:cacheFileName)
-            
+
         _db = db
-            
+
         dispatch_barrier_async(db.dispatchQueue, {
             self.db.execQuery(createRecords)
             return ()
         })
-        
+
         return db
     }
-    
+
     init(cacheFileName: String) {
-        
+
         self.cacheFileName = cacheFileName
     }
-    
+
     func dataForKey(key: String) -> NSData? {
         
         let result = dataAndLastUpdateDateForKey(key)
@@ -135,12 +135,12 @@ internal class KeyValueDB {
                 bridging_sqlite3_finalize(statement)
             }
         })
-        
+
         if let result = result {
             updateAccessTime(recordId)
             return result
         }
-        
+
         return nil
     }
     
@@ -156,7 +156,7 @@ internal class KeyValueDB {
             }
             return
         }
-        
+
         if let data = data {
             addData(data, forRecord:recordId)
         }
@@ -195,7 +195,7 @@ internal class KeyValueDB {
         
         let fileLink = fileLinkForRecordId(recordId)
         if let fileLink = fileLink {
-            
+
             removeRecordsForRecordId(recordId, fileLink:fileLink)
         }
     }
@@ -439,11 +439,11 @@ internal class KeyValueDB {
         var fileSize: Int64 = 0
         
         if let filesEnumerator = filesEnumerator {
-            
+
             while let fileName = filesEnumerator.nextObject() as? String {
-                
+
                 autoreleasepool {
-                    
+
                     let path = (folderPath as NSString).stringByAppendingPathComponent(fileName)
                     fileSize += fileSizeForPath(path) ?? 0
                 }

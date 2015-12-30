@@ -83,16 +83,15 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
     func migrateDB(dbInfo: DBInfo) {
         
         let currentDbInfo = dbInfo.currentDbVersionsByName
-        let currVersion   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
-        
-        if let currVersion = currVersion {
-            
-            let lastVersion    = cacheDBInfo.version
-            let currentVersion = currVersion.integerValue
-            
-            if lastVersion > currentVersion {
-                removeAllRecordsWithCallback(nil)
-            }
+        let currVersionNum   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
+
+        guard let currVersionNum_ = currVersionNum else { return }
+
+        let lastVersion    = cacheDBInfo.version
+        let currentVersion = currVersionNum_.integerValue
+
+        if lastVersion > currentVersion {
+            removeAllRecordsWithCallback(nil)
         }
     }
 }

@@ -39,66 +39,59 @@ public extension NSURL {
 public var thumbnailStorage = ThumbnailStorage()
 
 final public class ThumbnailStorage {
-    
+
     private init() {
-        
+
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: Selector("onMemoryWarning:"),
             name: UIApplicationDidReceiveMemoryWarningNotification,
             object: nil)
     }
-    
+
     private let cachedAsyncOp = CachedAsync<NSURL, UIImage, NSError>()
     private let imagesByUrl   = NSCache()
-    
+
     public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
-        
-        if let url = url {
+
+        guard let url = url where !url.isNoImageDataURL else { return async(error: CacheNoURLError()) }
+
+        let loader = { (
+            progressCallback: AsyncProgressCallback?,
+            stateCallback   : AsyncChangeStateCallback?,
+            doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> AsyncHandler in
             
-            if url.isNoImageDataURL {
-                return async(error: CacheNoURLError())
+            let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
+            
+            let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
+                
+                if let value = value.value {
+                    self.imagesByUrl.setObject(value, forKey: url)
+                }
             }
             
-            let loader = { (
-                progressCallback: AsyncProgressCallback?,
-                stateCallback   : AsyncChangeStateCallback?,
-                doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> AsyncHandler in
+            let getter = { () -> AsyncResult<UIImage, NSError>? in
                 
-                let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
-                
-                let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
-                    
-                    if let value = value.value {
-                        self.imagesByUrl.setObject(value, forKey: url)
-                    }
+                if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
+                    return .Success(image)
                 }
                 
-                let getter = { () -> AsyncResult<UIImage, NSError>? in
-                    
-                    if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
-                        return .Success(image)
-                    }
-                    
-                    return nil
-                }
-                
-                let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
-                    setter,
-                    getter   : getter,
-                    uniqueKey: url   ,
-                    loader   : imageLoader)
-                
-                return loader(
-                    progressCallback: progressCallback,
-                    stateCallback   : stateCallback,
-                    finishCallback  : doneCallback)
+                return nil
             }
             
-            return logErrorForLoader(loader)
+            let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
+                setter,
+                getter   : getter,
+                uniqueKey: url   ,
+                loader   : imageLoader)
+            
+            return loader(
+                progressCallback: progressCallback,
+                stateCallback   : stateCallback,
+                finishCallback  : doneCallback)
         }
         
-        return async(error: CacheNoURLError())
+        return logErrorForLoader(loader)
     }
     
     public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> AsyncTypes<UIImage, NSError>.Async {

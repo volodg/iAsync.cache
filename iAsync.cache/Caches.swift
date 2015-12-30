@@ -21,11 +21,11 @@ final public class Caches {
         if let result = sharedCachesInstance {
             return result
         }
-        
+
         let dbInfo = DBInfo.defaultDBInfo()
         let result = Caches(dbInfo:dbInfo)
         sharedCachesInstance = result
-        
+
         return result
     }
     
@@ -85,15 +85,15 @@ final public class Caches {
     private var cacheDbByName: [String:InternalCacheDB] = [:]
     
     private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
-        
+
         if let result = self.cacheDbByName[dbPropertyName] {
             return result
         }
-        
+
         let result = InternalCacheDB(cacheDBInfo:cacheDBInfo)
         result.runAutoRemoveDataSchedulerIfNeeds()
         cacheDbByName[dbPropertyName] = result
-        
+
         return result
     }
     

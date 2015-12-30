@@ -19,19 +19,20 @@ final public class DBInfo {
     
     private var _currentDbVersionsByName: NSDictionary?
     var currentDbVersionsByName: NSDictionary? {
-            
+
         if let result = _currentDbVersionsByName {
             return result
         }
-            
+
         return synced(self, { () -> NSDictionary? in
+
             if let result = self._currentDbVersionsByName {
                 return result
             }
-                
+
             let path = DBInfo.currentDBInfoFilePath()
             let currentDbInfo: NSDictionary? = NSDictionary(contentsOfFile:path)
-                
+
             if let currentDbInfo = currentDbInfo {
                 if currentDbInfo.count > 0 {
                     self._currentDbVersionsByName = currentDbInfo
