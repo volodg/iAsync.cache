@@ -495,30 +495,30 @@ final private class JSQLiteDB {
                     iAsync_utils_logger.logError("unexpected system state 3")
                 }
             }
-            
+
             let openResult = dbPath.withCString({ (cStr: UnsafePointer<Int8>) -> Bool in
-                
+
                 let result = bridging_sqlite3_open(cStr, &self.db) == BRIDGING_SQLITE_OK
                 if !result {
                     NSLog("open - \(self.errorMessage) path: \(dbPath)")
                 }
                 return result
             })
-            
+
             if !openResult {
                 assert(false)
                 return
             }
-            
-            (dbPath as NSString).addSkipBackupAttribute()
-            
+
+            dbPath.addSkipBackupAttribute()
+
             let cacheSizePragma = "PRAGMA cache_size = 1000"
-            
+
             let pragmaResult = cacheSizePragma.withCString({ (cStr: UnsafePointer<Int8>) -> Bool in
-                
+
                 return bridging_sqlite3_exec(self.db, cStr, nil, nil, nil) == BRIDGING_SQLITE_OK
             })
-            
+
             if !pragmaResult {
                 NSLog("Error: failed to execute pragma statement: \(cacheSizePragma) with message '\(self.errorMessage)'.")
                 //assert(false)
