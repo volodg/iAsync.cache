@@ -10,7 +10,7 @@ import Foundation
 
 import iAsync_utils
 
-public class CanNotCreateImageError : JCacheError {
+final public class CanNotCreateImageError : CacheError {
     
     private let url: NSURL
     
@@ -26,7 +26,7 @@ public class CanNotCreateImageError : JCacheError {
     
     public override func copyWithZone(zone: NSZone) -> AnyObject {
         
-        return self.dynamicType(url: url)
+        return self.dynamicType.init(url: url)
     }
     
     override public func writeErrorWithLogger() {}

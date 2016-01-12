@@ -22,7 +22,7 @@ public extension UIImageView {
             return objc_getAssociatedObject(self, &iAsync_AsycImageURLHolder) as? NSURL
         }
         set (newValue) {
-            objc_setAssociatedObject(self, &iAsync_AsycImageURLHolder, newValue, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &iAsync_AsycImageURLHolder, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -35,35 +35,33 @@ public extension UIImageView {
         self.image = image
     }
     
-    func setImageWithURL(url: NSURL?, placeholder: UIImage?) {
-        
+    func setImageWithURL(url: NSURL?, placeholder: UIImage? = nil, noImage: UIImage? = nil) {
+
         image = placeholder
-        
+
         iAsync_cache_AsycImageURL = url
-        
-        if let url = url {
-            
-            let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
-                
-                if let self_ = self {
-                    
-                    switch result {
-                    case .Success(let v):
-                        let image = v.value
-                        self_.jffSetImage(image, url:url)
-                    case .Failure(let error):
-                        self_.jffSetImage(nil, url:url)
-                    case .Interrupted:
-                        break
-                    case .Unsubscribed:
-                        break
-                    }
-                }
+
+        guard let url = url else { return }
+
+        let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
+
+            guard let self_ = self else { return }
+
+            switch result {
+            case .Success(let value):
+                let image = value
+                self_.jffSetImage(image, url:url)
+            case .Failure:
+                self_.jffSetImage(noImage, url:url)
+            case .Interrupted:
+                break
+            case .Unsubscribed:
+                break
             }
-            
-            let storage = thumbnailStorage
-            let loader  = storage.thumbnailLoaderForUrl(url)
-            runAsync(loader, onFinish: doneCallback)
         }
+
+        let storage = thumbnailStorage
+        let loader  = storage.thumbnailLoaderForUrl(url)
+        runAsync(loader, onFinish: doneCallback)
     }
 }

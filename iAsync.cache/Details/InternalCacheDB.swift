@@ -1,5 +1,5 @@
 //
-//  JInternalCacheDB.swift
+//  InternalCacheDB.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 13.08.14.
@@ -17,11 +17,11 @@ private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 private let internalCacheDBLockObject = NSObject()
 
 //TODO move as private to JFFCaches
-internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
+final internal class InternalCacheDB : KeyValueDB, CacheDB {
     
-    let cacheDBInfo: JCacheDBInfo
+    let cacheDBInfo: CacheDBInfo
     
-    init(cacheDBInfo: JCacheDBInfo) {
+    init(cacheDBInfo: CacheDBInfo) {
         
         self.cacheDBInfo = cacheDBInfo
         
@@ -62,11 +62,11 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
                 let loadDataBlock = { () -> AsyncResult<NSNull, NSError> in
                     
                     self.removeOldData()
-                    return AsyncResult.success(NSNull())
+                    return .Success(NSNull())
                 }
                 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                let loader = asyncWithSyncOperationAndQueue(loadDataBlock, queueName)
+                let loader = async(job: loadDataBlock, queueName: queueName)
                 
                 runAsync(loader, onFinish: { (result: AsyncResult<NSNull, NSError>) in
                     
@@ -83,16 +83,15 @@ internal class JInternalCacheDB : JKeyValueDB, JCacheDB {
     func migrateDB(dbInfo: DBInfo) {
         
         let currentDbInfo = dbInfo.currentDbVersionsByName
-        let currVersion   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
-        
-        if let currVersion = currVersion {
-            
-            let lastVersion    = cacheDBInfo.version
-            let currentVersion = currVersion.unsignedIntegerValue
-            
-            if lastVersion > currentVersion {
-                removeAllRecordsWithCallback(nil)
-            }
+        let currVersionNum   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
+
+        guard let currVersionNum_ = currVersionNum else { return }
+
+        let lastVersion    = cacheDBInfo.version
+        let currentVersion = currVersionNum_.integerValue
+
+        if lastVersion > currentVersion {
+            removeAllRecordsWithCallback(nil)
         }
     }
 }

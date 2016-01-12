@@ -12,24 +12,24 @@ import iAsync_restkit
 
 private var sharedCachesInstance: Caches?
 
-public class Caches : NSObject {
+final public class Caches {
     
     public let dbInfo: DBInfo
     
-    public class func sharedCaches() -> Caches {
+    public static func sharedCaches() -> Caches {
         
         if let result = sharedCachesInstance {
             return result
         }
-        
+
         let dbInfo = DBInfo.defaultDBInfo()
         let result = Caches(dbInfo:dbInfo)
         sharedCachesInstance = result
-        
+
         return result
     }
     
-    public class func setSharedCaches(caches: Caches) {
+    public static func setSharedCaches(caches: Caches) {
         
         sharedCachesInstance = caches
     }
@@ -37,38 +37,37 @@ public class Caches : NSObject {
     public init(dbInfo: DBInfo) {
         
         self.dbInfo = dbInfo
-        super.init()
         self.setupCachesWithDBInfo()
     }
     
-    public class func createCacheForName(name: String, dbInfo: DBInfo) -> JCacheDB {
+    public static func createCacheForName(name: String, dbInfo: DBInfo) -> CacheDB {
         
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
         
-        return JInternalCacheDB(cacheDBInfo:cacheInfo)
+        return InternalCacheDB(cacheDBInfo:cacheInfo)
     }
     
-    func cacheByName(name: String) -> JCacheDB? {
+    func cacheByName(name: String) -> CacheDB? {
         
         return cacheDbByName[name]
     }
     
-    public class func thumbnailDBName() -> String {
+    public static func thumbnailDBName() -> String {
         
         return "J_THUMBNAIL_DB"
     }
     
-    func thumbnailDB() -> JCacheDB {
+    func thumbnailDB() -> CacheDB {
         
         return cacheByName(Caches.thumbnailDBName())!
     }
     
-    class func createThumbnailDB(dbInfo: DBInfo) -> JCacheDB {
+    static func createThumbnailDB(dbInfo: DBInfo) -> CacheDB {
         
         return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
     }
     
-    func createThumbnailDB(dbInfo: DBInfo? = nil) -> JCacheDB {
+    func createThumbnailDB(dbInfo: DBInfo? = nil) -> CacheDB {
         
         return self.dynamicType.createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
     }
@@ -83,19 +82,18 @@ public class Caches : NSObject {
         dbInfo.saveCurrentDBInfoVersions()
     }
     
-    private var cacheDbByName: [String:JInternalCacheDB] = [:]
+    private var cacheDbByName: [String:InternalCacheDB] = [:]
     
-    private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: JCacheDBInfo) -> JCacheDB {
-        
+    private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
+
         if let result = self.cacheDbByName[dbPropertyName] {
-            
             return result
         }
-        
-        let result = JInternalCacheDB(cacheDBInfo:cacheDBInfo)
+
+        let result = InternalCacheDB(cacheDBInfo:cacheDBInfo)
         result.runAutoRemoveDataSchedulerIfNeeds()
         cacheDbByName[dbPropertyName] = result
-        
+
         return result
     }
     

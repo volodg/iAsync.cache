@@ -1,5 +1,5 @@
 //
-//  JCacheLoadImageError.swift
+//  CacheLoadImageError.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 22.09.14.
@@ -10,7 +10,7 @@ import Foundation
 
 import iAsync_utils
 
-public class JCacheLoadImageError : JCacheError {
+final public class CacheLoadImageError : CacheError {
     
     let nativeError: NSError
     
@@ -26,7 +26,7 @@ public class JCacheLoadImageError : JCacheError {
     
     public override func copyWithZone(zone: NSZone) -> AnyObject {
         
-        return self.dynamicType(nativeError: nativeError)
+        return self.dynamicType.init(nativeError: nativeError)
     }
     
     override public var errorLogDescription: String {

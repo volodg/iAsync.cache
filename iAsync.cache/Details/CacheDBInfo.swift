@@ -1,5 +1,5 @@
 //
-//  JCacheDBInfo.swift
+//  CacheDBInfo.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 31.07.14.
@@ -8,8 +8,7 @@
 
 import Foundation
 
-//TODO remove public, it is internal
-public class JCacheDBInfo : NSObject {
+final public class CacheDBInfo : NSObject {
     
     public let dbPropertyName: String
     
@@ -28,10 +27,8 @@ public class JCacheDBInfo : NSObject {
     }
     
     public var autoRemoveByLastAccessDate: NSTimeInterval {
-        if let number = autoRemove?["lastAccessDateInHours"] as? NSTimeInterval {
-            return number * 3600.0
-        }
-        return 0.0
+
+        return (autoRemove?["lastAccessDateInHours"] as? NSTimeInterval).flatMap { $0 * 3600.0 } ?? 0.0
     }
     
     private var autoRemove: NSDictionary? {
@@ -39,10 +36,8 @@ public class JCacheDBInfo : NSObject {
     }
     
     public var autoRemoveByMaxSizeInMB: Double {
-        if let number = autoRemove?["maxSizeInMB"] as? NSNumber {
-            return number.doubleValue
-        }
-        return 0.0
+
+        return (autoRemove?["maxSizeInMB"] as? NSNumber).flatMap { $0.doubleValue } ?? 0.0
     }
     
     public init(plistInfo: NSDictionary, dbPropertyName: String) {

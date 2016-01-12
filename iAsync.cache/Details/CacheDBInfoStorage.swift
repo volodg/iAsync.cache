@@ -1,5 +1,5 @@
 //
-//  JCacheDBInfoStorage.swift
+//  CacheDBInfoStorage.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 29.07.14.
@@ -8,23 +8,23 @@
 
 import Foundation
 
-public class JCacheDBInfoStorage : NSObject {
+final public class CacheDBInfoStorage {
     
-    internal let info: [String:JCacheDBInfo]
+    internal let info: [String:CacheDBInfo]
     
-    public func infoByDBName(dbName: String) -> JCacheDBInfo? {
+    public func infoByDBName(dbName: String) -> CacheDBInfo? {
         
         return info[dbName]
     }
     
     init(plistInfo: NSDictionary) {
         
-        var info: [String:JCacheDBInfo] = [:]
+        var info: [String:CacheDBInfo] = [:]
         
         plistInfo.enumerateKeysAndObjectsUsingBlock( { (key: AnyObject!, value: AnyObject!, stop: UnsafeMutablePointer<ObjCBool>) -> () in
             
             let keyStr = key as! String
-            info[keyStr] = JCacheDBInfo(plistInfo:value as! NSDictionary, dbPropertyName:keyStr)
+            info[keyStr] = CacheDBInfo(plistInfo:value as! NSDictionary, dbPropertyName:keyStr)
         })
         
         self.info = info

@@ -13,25 +13,26 @@ import iAsync_utils
 private var dbInfoOnce: dispatch_once_t = 0
 private var dbInfoInstance: DBInfo!
 
-public class DBInfo : NSObject {
+final public class DBInfo {
     
-    public let dbInfoByNames: JCacheDBInfoStorage
+    public let dbInfoByNames: CacheDBInfoStorage
     
     private var _currentDbVersionsByName: NSDictionary?
     var currentDbVersionsByName: NSDictionary? {
-            
+
         if let result = _currentDbVersionsByName {
             return result
         }
-            
+
         return synced(self, { () -> NSDictionary? in
+
             if let result = self._currentDbVersionsByName {
                 return result
             }
-                
+
             let path = DBInfo.currentDBInfoFilePath()
             let currentDbInfo: NSDictionary? = NSDictionary(contentsOfFile:path)
-                
+
             if let currentDbInfo = currentDbInfo {
                 if currentDbInfo.count > 0 {
                     self._currentDbVersionsByName = currentDbInfo
@@ -43,17 +44,16 @@ public class DBInfo : NSObject {
     
     public init(infoPath: String) {
         
-        let infoDictionary = NSDictionary(contentsOfFile:infoPath)
-        dbInfoByNames = JCacheDBInfoStorage(plistInfo:infoDictionary!)//TODO fix "!"
+        let infoDictionary = NSDictionary(contentsOfFile: infoPath)
+        dbInfoByNames = CacheDBInfoStorage(plistInfo: infoDictionary!)
     }
     
     init(infoDictionary: NSDictionary) {
         
-        dbInfoByNames = JCacheDBInfoStorage(plistInfo:infoDictionary)
+        dbInfoByNames = CacheDBInfoStorage(plistInfo:infoDictionary)
     }
     
-    //TODO internal?
-    public class func defaultDBInfo() -> DBInfo {
+    internal static func defaultDBInfo() -> DBInfo {
         
         struct Static {
             static let instance = Static.createJDBInfo()
@@ -93,7 +93,7 @@ public class DBInfo : NSObject {
         })
     }
     
-    class func currentDBInfoFilePath() -> String {
+    static func currentDBInfoFilePath() -> String {
         return String.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
     }
 }

@@ -15,13 +15,16 @@ import iAsync_utils
 
 import UIKit
 
+//alternatives:
+//1 - https://github.com/rs/SDWebImage
+
 private let cacheQueueName = "com.embedded_sources.jffcache.thumbnail_storage.cache"
 
 private let noDataUrlStr = "nodata://jff.cache.com"
 
 public extension NSURL {
     
-    public class var noImageDataURL: NSURL {
+    public static var noImageDataURL: NSURL {
         struct Static {
             static let instance = NSURL(string: noDataUrlStr)!
         }
@@ -35,75 +38,66 @@ public extension NSURL {
 
 public var thumbnailStorage = ThumbnailStorage()
 
-public class ThumbnailStorage : NSObject {
-    
-    private override init() {
-        
-        super.init()
-        
+final public class ThumbnailStorage {
+
+    private init() {
+
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: Selector("onMemoryWarning:"),
             name: UIApplicationDidReceiveMemoryWarningNotification,
             object: nil)
     }
-    
-    private let cachedAsyncOp = JCachedAsync<NSURL, UIImage, NSError>()
+
+    private let cachedAsyncOp = CachedAsync<NSURL, UIImage, NSError>()
     private let imagesByUrl   = NSCache()
-    
+
     public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
-        
-        if let url = url {
+
+        guard let url = url where !url.isNoImageDataURL else { return async(error: CacheNoURLError()) }
+
+        let loader = { (
+            progressCallback: AsyncProgressCallback?,
+            stateCallback   : AsyncChangeStateCallback?,
+            doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> AsyncHandler in
             
-            if url.isNoImageDataURL {
-                return asyncWithError(JCacheNoURLError())
+            let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
+            
+            let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
+                
+                if let value = value.value {
+                    self.imagesByUrl.setObject(value, forKey: url)
+                }
             }
             
-            let loader = { (
-                progressCallback: AsyncProgressCallback?,
-                stateCallback   : AsyncChangeStateCallback?,
-                doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> JAsyncHandler in
+            let getter = { () -> AsyncResult<UIImage, NSError>? in
                 
-                let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
-                
-                let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
-                    
-                    if let value = value.value {
-                        self.imagesByUrl.setObject(value, forKey: url)
-                    }
+                if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
+                    return .Success(image)
                 }
                 
-                let getter = { () -> AsyncResult<UIImage, NSError>? in
-                    
-                    if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
-                        return AsyncResult.success(image)
-                    }
-                    
-                    return nil
-                }
-                
-                let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
-                    setter,
-                    getter   : getter,
-                    uniqueKey: url   ,
-                    loader   : imageLoader)
-                
-                return loader(
-                    progressCallback: progressCallback,
-                    stateCallback   : stateCallback,
-                    finishCallback  : doneCallback)
+                return nil
             }
             
-            return logErrorForLoader(loader)
+            let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
+                setter,
+                getter   : getter,
+                uniqueKey: url   ,
+                loader   : imageLoader)
+            
+            return loader(
+                progressCallback: progressCallback,
+                stateCallback   : stateCallback,
+                finishCallback  : doneCallback)
         }
         
-        return asyncWithError(JCacheNoURLError())
+        return logErrorForLoader(loader)
     }
     
     public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> AsyncTypes<UIImage, NSError>.Async {
         
         if urls.count == 0 {
-            return asyncWithError(JCacheNoURLError())
+            return async(error: CacheNoURLError())
         }
         
         let loaders = urls.map { (url: NSURL) -> AsyncTypes<UIImage, NSError>.Async in
@@ -123,16 +117,19 @@ public class ThumbnailStorage : NSObject {
         
         let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
             
-            let dataLoader = perkyURLResponseLoader(url, nil, nil)
-            return dataLoader
+            let dataLoader = perkyDataURLResponseLoader(url, postData: nil, headers: nil)
+            
+            return bindSequenceOfAsyncs(dataLoader, { response -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
+                return async(value: (response.response, response.responseData))
+            })
         }
         
         let cacheKeyForIdentifier = { (loadDataIdentifier: NSURL) -> String in
             
-            return loadDataIdentifier.absoluteString!
+            return loadDataIdentifier.absoluteString
         }
         
-        let args = JSmartDataLoaderFields(
+        let args = SmartDataLoaderFields(
             loadDataIdentifier        : url                       ,
             dataLoaderForIdentifier   : dataLoaderForIdentifier   ,
             analyzerForData           : imageDataToUIImageBinder(),
@@ -146,23 +143,23 @@ public class ThumbnailStorage : NSObject {
         
         return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> AsyncTypes<UIImage, NSError>.Async in
             
-            let resultError = JCacheLoadImageError(nativeError: error)
-            return asyncWithError(resultError)
+            let resultError = CacheLoadImageError(nativeError: error)
+            return async(error: resultError)
         })
     }
     
-    private class var cacheDataLifeTimeInSeconds: NSTimeInterval {
+    private static var cacheDataLifeTimeInSeconds: NSTimeInterval {
         
         let dbInfoByNames = Caches.sharedCaches().dbInfo.dbInfoByNames
         let info = dbInfoByNames.infoByDBName(Caches.thumbnailDBName())!
         return info.timeToLiveInHours * 3600.0
     }
     
-    private class ImageCacheAdapter : CacheAdapter {
+    final private class ImageCacheAdapter : CacheAdapter {
         
         init() {
             
-            let cacheFactory = { () -> JCacheDB in
+            let cacheFactory = { () -> CacheDB in
                 return Caches.sharedCaches().createThumbnailDB()
             }
             
@@ -175,7 +172,7 @@ public class ThumbnailStorage : NSObject {
             return Transformer.transformLoadersType1(loader, transformer: balanced)
         }
         
-        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<(NSDate, NSData), NSError>.Async {
+        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
             
             let loader = super.cachedDataLoaderForKey(key)
             return Transformer.transformLoadersType2(loader, transformer: balanced)
@@ -183,47 +180,63 @@ public class ThumbnailStorage : NSObject {
     }
     
     private func createImageCacheAdapter() -> ImageCacheAdapter {
-        
+
         let result = ImageCacheAdapter()
         return result
     }
-    
-    public func onMemoryWarning(notification: NSNotification) {
+
+    @objc public func onMemoryWarning(notification: NSNotification) {
         
         resetCache()
     }
-    
+
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 }
 
-//TODO try to use NSURLCache
-private func imageDataToUIImageBinder() -> JSmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
+//TODO try to use NSURLCache?
+//example - https://github.com/Alamofire/AlamofireImage
+private func imageDataToUIImageBinder() -> SmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier
 {
     return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.AsyncBinder in
-        
+
         return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
-            
-            return asyncWithSyncOperation({ () -> AsyncResult<UIImage, NSError> in
-                
-                let image = UIImage(data: imageData.1)
-                
+
+            return async(job:{ () -> AsyncResult<UIImage, NSError> in
+
+                let image = UIImage.safeThreadImageWithData(imageData.1)
+
                 if let image = image {
-                    return AsyncResult.success(image)
+                    return .Success(image)
                 }
-                
+
                 let error = CanNotCreateImageError(url: url)
-                return AsyncResult.failure(error)
+                return .Failure(error)
             })
         }
     }
 }
 
-private typealias Transformer = AsyncTypesTransform<Void, (NSDate, NSData), NSError>
+extension UIImage {
+
+    static func safeThreadImageWithData(data: NSData) -> UIImage? {
+
+        class Singleton  {
+            static let sharedInstance = NSLock()
+        }
+        
+        Singleton.sharedInstance.lock()
+        let result = UIImage(data: data)
+        Singleton.sharedInstance.unlock()
+        return result
+    }
+}
+
+private typealias Transformer = AsyncTypesTransform<Void, (date: NSDate, data: NSData), NSError>
 
 //limit sqlite number of threads
-private let cacheBalancer = LimitedLoadersQueue<JStrategyFifo<Transformer.PackedType, NSError>>()
+private let cacheBalancer = LimitedLoadersQueue<StrategyFifo<Transformer.PackedType, NSError>>()
 
 private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async
 {
