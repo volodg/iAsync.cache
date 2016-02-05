@@ -117,7 +117,7 @@ final public class ThumbnailStorage {
 
         let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
 
-            let dataLoader = network.dataStream(url, postData: nil, headers: nil).mapNext { _ in NSNull() }.streamToAsync()
+            let dataLoader = network.dataStream(url, postData: nil, headers: nil).networkStreamToAsync()
 
             return bindSequenceOfAsyncs(dataLoader, { response -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
                 return async(value: (response.response, response.responseData))
