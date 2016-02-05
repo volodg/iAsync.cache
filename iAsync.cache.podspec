@@ -125,5 +125,6 @@ Pod::Spec.new do |s|
   s.dependency "iAsync.utils"#, "~> 0.0.1"
   s.dependency "iAsync.network"#, "~> 0.0.1"
   s.dependency "iAsync.restkit"#, "~> 0.0.1"
+  s.dependency 'iAsync.reactiveKit'#, "~> 0.0.1"
 
 end
