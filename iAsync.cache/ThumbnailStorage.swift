@@ -94,20 +94,6 @@ final public class ThumbnailStorage {
         return logErrorForLoader(loader)
     }
 
-    public func tryThumbnailLoaderForUrls(urls: [NSURL]) -> AsyncTypes<UIImage, NSError>.Async {
-
-        if urls.count == 0 {
-            return async(error: CacheNoURLError())
-        }
-
-        let loaders = urls.map { (url: NSURL) -> AsyncTypes<UIImage, NSError>.Async in
-
-            return self.thumbnailLoaderForUrl(url)
-        }
-
-        return trySequenceOfAsyncsArray(loaders)
-    }
-
     public func resetCache() {
 
         imagesByUrl.removeAllObjects()
