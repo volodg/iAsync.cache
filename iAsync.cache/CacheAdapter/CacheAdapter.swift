@@ -11,6 +11,9 @@ import Foundation
 import iAsync_utils
 import iAsync_restkit
 import iAsync_async
+import iAsync_reactiveKit
+
+import ReactiveKit
 
 public typealias CacheFactory = () -> CacheDB
 
@@ -27,16 +30,16 @@ public class CacheAdapter : AsyncRestKitCache {
 
     public func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
 
-        return async(job: { () -> AsyncResult<Void, NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<Void, NSError> in
 
             self.cacheFactory().setData(data, forKey:key)
             return .Success(())
-        }, queueName: cacheQueueName)
+        }).toAsync()
     }
 
     public func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
 
-        return async(job: { () -> AsyncResult<(date: NSDate, data: NSData), NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<(date: NSDate, data: NSData), NSError> in
 
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
 
@@ -46,6 +49,6 @@ public class CacheAdapter : AsyncRestKitCache {
 
             let description = "no cached data for key: \(key)"
             return .Failure(SilentError(description:description))
-        }, queueName: cacheQueueName)
+        }).toAsync()
     }
 }

@@ -11,6 +11,9 @@ import Foundation
 import iAsync_restkit
 import iAsync_async
 import iAsync_utils
+import iAsync_reactiveKit
+
+import ReactiveKit
 
 private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
@@ -59,14 +62,14 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
             let block = { (cancel: SimpleBlock) -> () in
 
-                let loadDataBlock = { () -> AsyncResult<NSNull, NSError> in
+                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<NSNull, NSError> in
 
                     self.removeOldData()
                     return .Success(NSNull())
                 }
 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                let loader = async(job: loadDataBlock, queueName: queueName)
+                let loader = asyncStreamWithJob(queueName, job: loadDataBlock).toAsync()
 
                 runAsync(loader, onFinish: { (result: AsyncResult<NSNull, NSError>) in
 

@@ -12,6 +12,9 @@ import iAsync_network
 import iAsync_restkit
 import iAsync_async
 import iAsync_utils
+import iAsync_reactiveKit
+
+import ReactiveKit
 
 import UIKit
 
@@ -189,7 +192,7 @@ private func imageDataToUIImageBinder() -> SmartDataLoaderFields<NSURL, UIImage,
 
         return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
 
-            return async(job:{ () -> AsyncResult<UIImage, NSError> in
+            return asyncStreamWithJob { (progress: AnyObject -> Void) -> Result<UIImage, NSError> in
 
                 let image = UIImage.safeThreadImageWithData(imageData.1)
 
@@ -199,7 +202,7 @@ private func imageDataToUIImageBinder() -> SmartDataLoaderFields<NSURL, UIImage,
 
                 let error = CanNotCreateImageError(url: url)
                 return .Failure(error)
-            })
+            }.toAsync()
         }
     }
 }
