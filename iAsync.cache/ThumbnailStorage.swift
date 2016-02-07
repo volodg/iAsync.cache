@@ -223,7 +223,7 @@ extension UIImage {
 private typealias Transformer = AsyncTypesTransform<Void, (date: NSDate, data: NSData), NSError>
 
 //limit sqlite number of threads
-private let cacheBalancer = LimitedLoadersQueue<StrategyFifo<Transformer.PackedType, NSError>>()
+private let cacheBalancer = LimitedLoadersQueue<iAsync_async.StrategyFifo<Transformer.PackedType, NSError>>()
 
 private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async {
 
