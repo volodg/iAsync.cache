@@ -155,14 +155,14 @@ final public class ThumbnailStorage {
 
         override func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
 
-            let loader = super.loaderToSetData(data, forKey:key)
-            return Transformer.transformLoadersType1(loader, transformer: balanced)
+            let stream = asyncToStream(super.loaderToSetData(data, forKey:key))
+            return Transformer.transformStreamsType(stream, transformer: balanced).toAsync()
         }
 
         override func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
 
-            let loader = super.cachedDataLoaderForKey(key)
-            return Transformer.transformLoadersType2(loader, transformer: balanced)
+            let stream = asyncToStream(super.cachedDataLoaderForKey(key))
+            return Transformer.transformStreamsType(stream, transformer: balanced).toAsync()
         }
     }
 
@@ -220,12 +220,12 @@ extension UIImage {
     }
 }
 
-private typealias Transformer = AsyncTypesTransform<Void, (date: NSDate, data: NSData), NSError>
+private typealias Transformer = AsyncStreamTypesTransform<Void, (date: NSDate, data: NSData), AnyObject, AnyObject, NSError, NSError>
 
 //limit sqlite number of threads
-private let cacheBalancer = LimitedAsyncStreamsQueue<StrategyFifo<Transformer.PackedType, AnyObject, NSError>>()
+private let cacheBalancer = LimitedAsyncStreamsQueue<StrategyFifo<Transformer.PackedValueT, Transformer.PackedNextT, Transformer.PackedErrorT>>()
 
-private func balanced(loader: AsyncTypes<Transformer.PackedType, NSError>.Async) -> AsyncTypes<Transformer.PackedType, NSError>.Async {
+private func balanced(stream: Transformer.PackedAsyncStream) -> Transformer.PackedAsyncStream {
 
-    return cacheBalancer.balancedStream(asyncToStream(loader), barrier:false).toAsync()
+    return cacheBalancer.balancedStream(stream, barrier:false)
 }
