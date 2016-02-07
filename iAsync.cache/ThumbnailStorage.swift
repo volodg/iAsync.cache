@@ -61,7 +61,6 @@ final public class ThumbnailStorage {
 
         let loader = { (
             progressCallback: AsyncProgressCallback?,
-            stateCallback   : AsyncChangeStateCallback?,
             doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> AsyncHandler in
 
             let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
@@ -90,7 +89,6 @@ final public class ThumbnailStorage {
 
             return loader(
                 progressCallback: progressCallback,
-                stateCallback   : stateCallback,
                 finishCallback  : doneCallback)
         }
 
