@@ -52,7 +52,7 @@ final public class ThumbnailStorage {
             object: nil)
     }
 
-    private let cachedAsyncOp = CachedAsync<NSURL, UIImage, NSError>()
+    private let cachedAsyncOp = MergedAsyncStream<NSURL, UIImage, AnyObject, NSError>()
     private let imagesByUrl   = NSCache()
 
     public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
@@ -65,27 +65,21 @@ final public class ThumbnailStorage {
 
             let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
 
-            let setter = { (value: AsyncResult<UIImage, NSError>) -> () in
+            let stream = asyncToStream(imageLoader)
 
-                if let value = value.value {
-                    self.imagesByUrl.setObject(value, forKey: url)
-                }
-            }
-
-            let getter = { () -> AsyncResult<UIImage, NSError>? in
-
+            let loader = self.cachedAsyncOp.mergedStream({ stream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, NSError>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
                     return .Success(image)
                 }
-
                 return nil
-            }
-
-            let loader = self.cachedAsyncOp.asyncOpWithPropertySetter(
-                setter,
-                getter   : getter,
-                uniqueKey: url   ,
-                loader   : imageLoader)
+            }, setter: { event -> Void in
+                switch event {
+                case .Success(let value):
+                    self.imagesByUrl.setObject(value, forKey: url)
+                default:
+                    break
+                }
+            }).toAsync()
 
             return loader(
                 progressCallback: progressCallback,

@@ -55,14 +55,16 @@ public extension UIImageView {
                 callBack?(image)
 
                 self_.jffSetImage(image, url:url)
-            case .Failure:
+            case .Failure(let error):
+
+                if error is AsyncInterruptedError {
+                    callBack?(nil)
+                    return
+                }
 
                 callBack?(noImage)
 
                 self_.jffSetImage(noImage, url:url)
-            case .Interrupted:
-                callBack?(nil)
-                break
             case .Unsubscribed:
                 callBack?(nil)
                 break
