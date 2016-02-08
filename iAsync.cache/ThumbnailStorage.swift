@@ -147,16 +147,16 @@ final public class ThumbnailStorage {
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
 
-        override func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
+        override func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, NSError> {
 
-            let stream = asyncToStream(super.loaderToSetData(data, forKey:key))
-            return Transformer.transformStreamsType(stream, transformer: balanced).toAsync()
+            let stream = super.loaderToSetData(data, forKey:key)
+            return Transformer.transformStreamsType(stream, transformer: balanced)
         }
 
-        override func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
+        override func cachedDataLoaderForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
 
-            let stream = asyncToStream(super.cachedDataLoaderForKey(key))
-            return Transformer.transformStreamsType(stream, transformer: balanced).toAsync()
+            let stream = super.cachedDataLoaderForKey(key)
+            return Transformer.transformStreamsType(stream, transformer: balanced)
         }
     }
 

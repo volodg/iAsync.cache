@@ -28,16 +28,16 @@ public class CacheAdapter : AsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
 
-    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
+    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, NSError> {
 
         return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<Void, NSError> in
 
             self.cacheFactory().setData(data, forKey:key)
             return .Success(())
-        }).toAsync()
+        })
     }
 
-    public func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
+    public func cachedDataLoaderForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
 
         return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<(date: NSDate, data: NSData), NSError> in
 
@@ -49,6 +49,6 @@ public class CacheAdapter : AsyncRestKitCache {
 
             let description = "no cached data for key: \(key)"
             return .Failure(SilentError(description:description))
-        }).toAsync()
+        })
     }
 }
