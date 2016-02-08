@@ -96,27 +96,22 @@ final public class ThumbnailStorage {
 
     private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncTypes<UIImage, NSError>.Async {
 
-        let dataLoaderForIdentifier = { (url: NSURL) -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
-
-            let dataLoader = network.dataStream(url, postData: nil, headers: nil).networkStreamToAsync()
-
-            return bindSequenceOfAsyncs(dataLoader, { response -> AsyncTypes<(NSHTTPURLResponse, NSData), NSError>.Async in
-                return async(value: (response.response, response.responseData))
-            })
-        }
-
-        let cacheKeyForIdentifier = { (loadDataIdentifier: NSURL) -> String in
-
-            return loadDataIdentifier.absoluteString
-        }
+        let dataLoader = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
+            switch info {
+            case .Download(let chunk):
+                return chunk
+            case .Upload(let chunk):
+                return chunk
+            }
+        }.map { ($0.response, $0.responseData) }
 
         let args = SmartDataLoaderFields(
-            loadDataIdentifier        : url                       ,
-            dataLoaderForIdentifier   : dataLoaderForIdentifier   ,
-            analyzerForData           : imageDataToUIImageBinder(),
-            cacheKeyForIdentifier     : cacheKeyForIdentifier     ,
-            ignoreFreshDataLoadFail   : true                      ,
-            cache                     : createImageCacheAdapter() ,
+            loadDataIdentifier        : url                          ,
+            dataLoader                : dataLoader                   ,
+            analyzerForData           : imageDataToUIImageBinder(url),
+            cacheKey                  : url.absoluteString           ,
+            ignoreFreshDataLoadFail   : true                         ,
+            cache                     : createImageCacheAdapter()    ,
             cacheDataLifeTimeInSeconds: self.dynamicType.cacheDataLifeTimeInSeconds
         )
 
@@ -178,23 +173,20 @@ final public class ThumbnailStorage {
 
 //TODO try to use NSURLCache?
 //example - https://github.com/Alamofire/AlamofireImage
-private func imageDataToUIImageBinder() -> SmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.JAsyncBinderForIdentifier {
+private func imageDataToUIImageBinder(url: NSURL) -> SmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.AnalyzerType {
 
-    return { (url: NSURL) -> AsyncTypes2<(DataRequestContext<NSHTTPURLResponse>, NSData), UIImage, NSError>.AsyncBinder in
+    return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncStream<UIImage, AnyObject, NSError> in
 
-        return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncTypes<UIImage, NSError>.Async in
+        return asyncStreamWithJob { (progress: AnyObject -> Void) -> Result<UIImage, NSError> in
 
-            return asyncStreamWithJob { (progress: AnyObject -> Void) -> Result<UIImage, NSError> in
+            let image = UIImage.safeThreadImageWithData(imageData.1)
 
-                let image = UIImage.safeThreadImageWithData(imageData.1)
+            if let image = image {
+                return .Success(image)
+            }
 
-                if let image = image {
-                    return .Success(image)
-                }
-
-                let error = CanNotCreateImageError(url: url)
-                return .Failure(error)
-            }.toAsync()
+            let error = CanNotCreateImageError(url: url)
+            return .Failure(error)
         }
     }
 }
