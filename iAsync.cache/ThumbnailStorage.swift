@@ -115,7 +115,7 @@ final public class ThumbnailStorage {
             cacheDataLifeTimeInSeconds: self.dynamicType.cacheDataLifeTimeInSeconds
         )
 
-        let loader = jSmartDataLoaderWithCache(args)
+        let loader = jSmartDataLoaderWithCache(args).toAsync()
 
         return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> AsyncTypes<UIImage, NSError>.Async in
 
