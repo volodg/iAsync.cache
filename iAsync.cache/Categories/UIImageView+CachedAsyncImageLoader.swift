@@ -43,33 +43,25 @@ public extension UIImageView {
 
         guard let url = url else { return }
 
-        let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
+        let onSuccess = { [weak self] (result: UIImage) -> () in
 
-            guard let self_ = self else { return }
+            let image = result
+            callBack?(image)
+            self?.jffSetImage(image, url:url)
+        }
+        let onFailure = { [weak self] (error: NSError) -> () in
 
-            switch result {
-            case .Success(let value):
-
-                let image = value
-
-                callBack?(image)
-
-                self_.jffSetImage(image, url:url)
-            case .Failure(let error):
-
-                if error is AsyncInterruptedError {
-                    callBack?(nil)
-                    return
-                }
-
-                callBack?(noImage)
-
-                self_.jffSetImage(noImage, url:url)
+            if error is AsyncInterruptedError {
+                callBack?(nil)
+                return
             }
+
+            callBack?(noImage)
+            self?.jffSetImage(noImage, url:url)
         }
 
-        let storage = thumbnailStorage
-        let loader  = storage.thumbnailLoaderForUrl(url)
-        runAsync(loader, onFinish: doneCallback)
+        let thumb = thumbnailStorage.thumbnailStreamForUrl(url)
+        let stream = thumb.on(success: { onSuccess($0) }, failure: { onFailure($0) })
+        stream.run()
     }
 }

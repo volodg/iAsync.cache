@@ -10,7 +10,6 @@ import Foundation
 
 import iAsync_network
 import iAsync_restkit
-import iAsync_async
 import iAsync_utils
 import iAsync_reactiveKit
 
@@ -55,17 +54,15 @@ final public class ThumbnailStorage {
     private let cachedAsyncOp = MergedAsyncStream<NSURL, UIImage, AnyObject, NSError>()
     private let imagesByUrl   = NSCache()
 
-    public func thumbnailLoaderForUrl(url: NSURL?) -> AsyncTypes<UIImage, NSError>.Async {
+    public typealias AsyncT = AsyncStream<UIImage, AnyObject, NSError>
 
-        guard let url = url where !url.isNoImageDataURL else { return async(error: CacheNoURLError()) }
+    public func thumbnailStreamForUrl(url: NSURL?) -> AsyncT {
 
-        let loader = { (
-            progressCallback: AsyncProgressCallback?,
-            doneCallback    : AsyncTypes<UIImage, NSError>.DidFinishAsyncCallback?) -> AsyncHandler in
+        guard let url = url where !url.isNoImageDataURL else { return AsyncT.failed(with: CacheNoURLError()) }
 
-            let imageLoader = self.cachedInDBImageDataLoaderForUrl(url)
+        let stream: AsyncT = create(producer: { observer -> DisposableType? in
 
-            let stream = asyncToStream(imageLoader)
+            let stream = self.cachedInDBImageDataLoaderForUrl(url)
 
             let loader = self.cachedAsyncOp.mergedStream({ stream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, NSError>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
@@ -79,14 +76,12 @@ final public class ThumbnailStorage {
                 default:
                     break
                 }
-            }).toAsync()
+            })
 
-            return loader(
-                progressCallback: progressCallback,
-                finishCallback  : doneCallback)
-        }
+            return loader.observe(on: nil, observer: observer)
+        })
 
-        return logErrorForLoader(loader)
+        return stream.on(failure: { $0.writeErrorWithLogger() })
     }
 
     public func resetCache() {
@@ -94,7 +89,7 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncTypes<UIImage, NSError>.Async {
+    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncT {
 
         let dataLoader = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
             switch info {
@@ -115,13 +110,8 @@ final public class ThumbnailStorage {
             cacheDataLifeTimeInSeconds: self.dynamicType.cacheDataLifeTimeInSeconds
         )
 
-        let loader = jSmartDataLoaderWithCache(args).toAsync()
-
-        return bindTrySequenceOfAsyncs(loader, { (error: NSError) -> AsyncTypes<UIImage, NSError>.Async in
-
-            let resultError = CacheLoadImageError(nativeError: error)
-            return async(error: resultError)
-        })
+        let stream = jSmartDataLoaderWithCache(args)
+        return stream.mapError { CacheLoadImageError(nativeError: $0) }
     }
 
     private static var cacheDataLifeTimeInSeconds: NSTimeInterval {
