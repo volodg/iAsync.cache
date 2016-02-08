@@ -65,9 +65,6 @@ public extension UIImageView {
                 callBack?(noImage)
 
                 self_.jffSetImage(noImage, url:url)
-            case .Unsubscribed:
-                callBack?(nil)
-                break
             }
         }
 
