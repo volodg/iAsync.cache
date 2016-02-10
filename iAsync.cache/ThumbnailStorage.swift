@@ -91,7 +91,7 @@ final public class ThumbnailStorage {
 
     private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncT {
 
-        let dataLoader = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
+        let dataStream = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
             switch info {
             case .Download(let chunk):
                 return chunk
@@ -102,7 +102,7 @@ final public class ThumbnailStorage {
 
         let args = SmartDataLoaderFields(
             loadDataIdentifier        : url                          ,
-            dataLoader                : dataLoader                   ,
+            dataStream                : dataStream                   ,
             analyzerForData           : imageDataToUIImageBinder(url),
             cacheKey                  : url.absoluteString           ,
             ignoreFreshDataLoadFail   : true                         ,
