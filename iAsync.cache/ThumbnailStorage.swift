@@ -185,7 +185,7 @@ extension UIImage {
 
     static func safeThreadImageWithData(data: NSData) -> UIImage? {
 
-        class Singleton  {
+        final class Singleton  {
             static let sharedInstance = NSLock()
         }
 
