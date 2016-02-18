@@ -81,7 +81,7 @@ final public class ThumbnailStorage {
             return loader.observe(on: nil, observer: observer)
         })
 
-        return stream.on(failure: { $0.writeErrorWithLogger() })
+        return stream.logError()
     }
 
     public func resetCache() {
