@@ -98,7 +98,15 @@ final public class ThumbnailStorage {
             case .Upload(let chunk):
                 return chunk
             }
-        }.map { ($0.response, $0.responseData) }
+            }.map { ($0.response, $0.responseData) }.retry(3, delay: 2.0, until: { result -> Bool in
+
+                switch result {
+                case .Success:
+                    return true
+                case .Failure(let error):
+                    return !error.isNetworkError
+                }
+            })
 
         let args = SmartDataLoaderFields(
             loadDataIdentifier        : url                          ,
