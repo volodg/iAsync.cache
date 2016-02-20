@@ -16,6 +16,7 @@ public extension NSError {
 
     var canRepeateError: Bool {
         return self.isNetworkError
+            || self is HttpError
             || self is JsonParserError
             || self is ParseJsonDataError
             || self is CanNotCreateImageError
