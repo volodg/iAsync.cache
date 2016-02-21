@@ -61,10 +61,10 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
             let block = { (cancel: SimpleBlock) -> () in
 
-                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<NSNull, NSError> in
+                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, NSError> in
 
                     self.removeOldData()
-                    return .Success(NSNull())
+                    return .Success(())
                 }
 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
