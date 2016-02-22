@@ -78,11 +78,10 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         })
     }
 
-    //JTODO check using of migrateDB method when multithreaded
     func migrateDB(dbInfo: DBInfo) {
 
-        let currentDbInfo = dbInfo.currentDbVersionsByName
-        let currVersionNum   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
+        let currentDbInfo  = dbInfo.currentDbVersionsByName
+        let currVersionNum = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
 
         guard let currVersionNum_ = currVersionNum else { return }
 
