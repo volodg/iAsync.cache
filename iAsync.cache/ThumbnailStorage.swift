@@ -46,7 +46,7 @@ final public class ThumbnailStorage {
 
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: Selector("onMemoryWarning:"),
+            selector: Selector("onMemoryWarning:"),//TODO use #selector
             name: UIApplicationDidReceiveMemoryWarningNotification,
             object: nil)
     }
