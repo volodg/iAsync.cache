@@ -29,7 +29,7 @@ public class CacheAdapter : AsyncRestKitCache {
 
     public func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, NSError> {
 
-        return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<Void, NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, NSError> in
 
             self.cacheFactory().setData(data, forKey:key)
             return .Success(())
@@ -38,7 +38,7 @@ public class CacheAdapter : AsyncRestKitCache {
 
     public func cachedDataLoaderForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
 
-        return asyncStreamWithJob(cacheQueueName, job: { (progress: AnyObject -> Void) -> Result<(date: NSDate, data: NSData), NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: NSDate, data: NSData), NSError> in
 
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
 
