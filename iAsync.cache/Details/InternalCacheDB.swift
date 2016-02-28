@@ -59,7 +59,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
             let timer = Timer()
             autoremoveSchedulersByCacheName[self.cacheDBInfo.dbPropertyName] = timer
 
-            let block = { (cancel: SimpleBlock) -> () in
+            let block = { (cancel: SimpleBlock) in
 
                 let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, NSError> in
 

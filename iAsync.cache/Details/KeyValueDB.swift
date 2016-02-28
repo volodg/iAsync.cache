@@ -513,10 +513,10 @@ final private class JSQLiteDB {
 
             let cacheSizePragma = "PRAGMA cache_size = 1000"
 
-            let pragmaResult = cacheSizePragma.withCString({ (cStr: UnsafePointer<Int8>) -> Bool in
+            let pragmaResult = cacheSizePragma.withCString { cStr in
 
                 return bridging_sqlite3_exec(self.db, cStr, nil, nil, nil) == BRIDGING_SQLITE_OK
-            })
+            }
 
             if !pragmaResult {
                 NSLog("Error: failed to execute pragma statement: \(cacheSizePragma) with message '\(self.errorMessage)'.")
@@ -527,7 +527,7 @@ final private class JSQLiteDB {
 
     func prepareQuery(sql: String, statement: UnsafeMutablePointer<COpaquePointer>) -> Bool {
 
-        return sql.withCString { cStr -> Bool in
+        return sql.withCString { cStr in
 
             return bridging_sqlite3_prepare_v2(self.db, cStr, -1, statement, nil) == BRIDGING_SQLITE_OK
         }
@@ -535,7 +535,7 @@ final private class JSQLiteDB {
 
     func execQuery(sql: String) -> Bool {
 
-        return sql.withCString { cStr -> Bool in
+        return sql.withCString { cStr in
 
             var errorMessage: UnsafeMutablePointer<Int8> = nil
 

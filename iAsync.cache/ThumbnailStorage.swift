@@ -98,16 +98,14 @@ final public class ThumbnailStorage {
             case .Upload(let chunk):
                 return chunk
             }
-            }.map { ($0.response, $0.responseData) }
+        }.map { ($0.response, $0.responseData) }
 
         let args = SmartDataLoaderFields(
-            loadDataIdentifier        : url                          ,
-            dataStream                : dataStream                   ,
-            analyzerForData           : imageDataToUIImageBinder(url),
-            cacheKey                  : url.absoluteString           ,
-            ignoreFreshDataLoadFail   : true                         ,
-            cache                     : createImageCacheAdapter()    ,
-            cacheDataLifeTimeInSeconds: self.dynamicType.cacheDataLifeTimeInSeconds
+            dataStream        : dataStream                   ,
+            analyzerForData   : imageDataToUIImageBinder(url),
+            cacheKey          : url.absoluteString           ,
+            cache             : createImageCacheAdapter()    ,
+            strategy          : .CacheFirst(self.dynamicType.cacheDataLifeTimeInSeconds)
         )
 
         let stream = jSmartDataLoaderWithCache(args).fixAndLogError()
@@ -163,7 +161,7 @@ final public class ThumbnailStorage {
 
 //TODO try to use NSURLCache?
 //example - https://github.com/Alamofire/AlamofireImage
-private func imageDataToUIImageBinder(url: NSURL) -> SmartDataLoaderFields<NSURL, UIImage, NSHTTPURLResponse>.AnalyzerType {
+private func imageDataToUIImageBinder(url: NSURL) -> SmartDataLoaderFields<UIImage, NSHTTPURLResponse>.AnalyzerType {
 
     return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncStream<UIImage, AnyObject, NSError> in
 

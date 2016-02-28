@@ -27,7 +27,6 @@ final public class CacheDBInfo : NSObject {
     }
 
     public var autoRemoveByLastAccessDate: NSTimeInterval {
-
         return (autoRemove?["lastAccessDateInHours"] as? NSTimeInterval).flatMap { $0 * 3600.0 } ?? 0.0
     }
 
@@ -36,12 +35,10 @@ final public class CacheDBInfo : NSObject {
     }
 
     public var autoRemoveByMaxSizeInMB: Double {
-
         return (autoRemove?["maxSizeInMB"] as? NSNumber).flatMap { $0.doubleValue } ?? 0.0
     }
 
     public init(plistInfo: NSDictionary, dbPropertyName: String) {
-
         self.info = plistInfo
         self.dbPropertyName = dbPropertyName
     }
