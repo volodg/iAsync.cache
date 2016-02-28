@@ -69,7 +69,7 @@ final public class ThumbnailStorage {
                     return .Success(image)
                 }
                 return nil
-            }, setter: { event -> Void in
+            }, setter: { event in
                 switch event {
                 case .Success(let value):
                     self.imagesByUrl.setObject(value, forKey: url)
@@ -165,7 +165,7 @@ private func imageDataToUIImageBinder(url: NSURL) -> SmartDataLoaderFields<UIIma
 
     return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncStream<UIImage, AnyObject, NSError> in
 
-        return asyncStreamWithJob { (progress: AnyObject -> Void) -> Result<UIImage, NSError> in
+        return asyncStreamWithJob { _ -> Result<UIImage, NSError> in
 
             let image = UIImage.safeThreadImageWithData(imageData.1)
 
