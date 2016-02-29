@@ -16,6 +16,18 @@ import ReactiveKit
 
 public typealias CacheFactory = () -> CacheDB
 
+public class NoChacheDataError : SilentError {
+
+    init(key: String) {
+        let description = "no cached data for key: \(key)"
+        super.init(description: description)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 public class CacheAdapter : AsyncRestKitCache {
 
     private let cacheFactory  : CacheFactory
@@ -46,8 +58,7 @@ public class CacheAdapter : AsyncRestKitCache {
                 return .Success((date: result.1, data: result.0))
             }
 
-            let description = "no cached data for key: \(key)"
-            return .Failure(SilentError(description:description))
+            return .Failure(NoChacheDataError(key: key))
         })
     }
 }
