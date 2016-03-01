@@ -34,9 +34,4 @@ final public class CacheLoadImageError : CacheError {
         let result = "\(self.dynamicType) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLogDescription)"
         return result
     }
-
-    public override func writeErrorWithLogger () {
-
-        iAsync_utils_logger.logError(errorLogDescription)
-    }
 }

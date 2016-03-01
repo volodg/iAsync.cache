@@ -9,14 +9,16 @@
 import Foundation
 
 import iAsync_restkit
-import iAsync_async
 import iAsync_utils
+import iAsync_reactiveKit
+
+import ReactiveKit
 
 private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
 private let internalCacheDBLockObject = NSObject()
 
-//TODO move as private to JFFCaches
+//TODO should be private?
 final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
     let cacheDBInfo: CacheDBInfo
@@ -57,21 +59,18 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
             let timer = Timer()
             autoremoveSchedulersByCacheName[self.cacheDBInfo.dbPropertyName] = timer
 
-            let block = { (cancel: SimpleBlock) -> () in
+            let block = { (cancel: SimpleBlock) in
 
-                let loadDataBlock = { () -> AsyncResult<NSNull, NSError> in
+                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, NSError> in
 
                     self.removeOldData()
-                    return .Success(NSNull())
+                    return .Success(())
                 }
 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                let loader = async(job: loadDataBlock, queueName: queueName)
-
-                runAsync(loader, onFinish: { (result: AsyncResult<NSNull, NSError>) in
-
-                    result.error?.writeErrorWithLogger()
-                })
+                asyncStreamWithJob(queueName, job: loadDataBlock).on(failure: { error -> () in
+                    error.writeErrorWithLogger()
+                }).run()
             }
             block({})
 
@@ -79,11 +78,10 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         })
     }
 
-    //JTODO check using of migrateDB method when multithreaded
     func migrateDB(dbInfo: DBInfo) {
 
-        let currentDbInfo = dbInfo.currentDbVersionsByName
-        let currVersionNum   = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
+        let currentDbInfo  = dbInfo.currentDbVersionsByName
+        let currVersionNum = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
 
         guard let currVersionNum_ = currVersionNum else { return }
 

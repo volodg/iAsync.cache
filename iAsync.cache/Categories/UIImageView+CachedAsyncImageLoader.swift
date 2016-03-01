@@ -8,69 +8,54 @@
 
 import Foundation
 
-import iAsync_async
 import iAsync_utils
 
 import UIKit
+import ReactiveKit
 
-private var iAsync_AsycImageURLHolder: Void?
+private var iAsync_AsycImageProperties: Void?
+
+private class Properties {
+    var dispose = DisposeBag()
+}
 
 public extension UIImageView {
 
-    private var iAsync_cache_AsycImageURL: NSURL? {
+    private var iAsync_cache_Properties: Properties {
         get {
-            return objc_getAssociatedObject(self, &iAsync_AsycImageURLHolder) as? NSURL
+            if let result = objc_getAssociatedObject(self, &iAsync_AsycImageProperties) as? Properties {
+                return result
+            }
+            let result = Properties()
+            self.iAsync_cache_Properties = result
+            return result
         }
         set (newValue) {
-            objc_setAssociatedObject(self, &iAsync_AsycImageURLHolder, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &iAsync_AsycImageProperties, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
-    }
-
-    private func jffSetImage(image: UIImage?, url: NSURL) {
-
-        if image == nil || iAsync_cache_AsycImageURL != url {
-            return
-        }
-
-        self.image = image
     }
 
     func setImageWithURL(url: NSURL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         image = placeholder
 
-        iAsync_cache_AsycImageURL = url
-
         guard let url = url else { return }
 
-        let doneCallback = { [weak self] (result: AsyncResult<UIImage, NSError>) -> () in
+        iAsync_cache_Properties.dispose.dispose()
 
-            guard let self_ = self else { return }
-
-            switch result {
-            case .Success(let value):
-
-                let image = value
-
-                callBack?(image)
-
-                self_.jffSetImage(image, url:url)
-            case .Failure:
-
-                callBack?(noImage)
-
-                self_.jffSetImage(noImage, url:url)
-            case .Interrupted:
+        let thumb  = thumbnailStorage.thumbnailStreamForUrl(url)
+        let stream = thumb.on(success: { [weak self] result in
+            callBack?(result)
+            self?.image = result
+        }, failure: { [weak self] error -> () in
+            if error is AsyncInterruptedError {
                 callBack?(nil)
-                break
-            case .Unsubscribed:
-                callBack?(nil)
-                break
+                return
             }
-        }
 
-        let storage = thumbnailStorage
-        let loader  = storage.thumbnailLoaderForUrl(url)
-        runAsync(loader, onFinish: doneCallback)
+            callBack?(noImage)
+            self?.image = noImage
+        })
+        stream.run().disposeIn(iAsync_cache_Properties.dispose)
     }
 }
