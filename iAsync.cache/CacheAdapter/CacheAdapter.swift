@@ -10,9 +10,23 @@ import Foundation
 
 import iAsync_utils
 import iAsync_restkit
-import iAsync_async
+import iAsync_reactiveKit
+
+import ReactiveKit
 
 public typealias CacheFactory = () -> CacheDB
+
+public class NoChacheDataError : SilentError {
+
+    init(key: String) {
+        let description = "no cached data for key: \(key)"
+        super.init(description: description)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 public class CacheAdapter : AsyncRestKitCache {
 
@@ -25,18 +39,18 @@ public class CacheAdapter : AsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
 
-    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncTypes<Void, NSError>.Async {
+    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, NSError> {
 
-        return async(job: { () -> AsyncResult<Void, NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, NSError> in
 
             self.cacheFactory().setData(data, forKey:key)
             return .Success(())
-        }, queueName: cacheQueueName)
+        })
     }
 
-    public func cachedDataLoaderForKey(key: String) -> AsyncTypes<(date: NSDate, data: NSData), NSError>.Async {
+    public func cachedDataLoaderForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
 
-        return async(job: { () -> AsyncResult<(date: NSDate, data: NSData), NSError> in
+        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: NSDate, data: NSData), NSError> in
 
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
 
@@ -44,8 +58,7 @@ public class CacheAdapter : AsyncRestKitCache {
                 return .Success((date: result.1, data: result.0))
             }
 
-            let description = "no cached data for key: \(key)"
-            return .Failure(SilentError(description:description))
-        }, queueName: cacheQueueName)
+            return .Failure(NoChacheDataError(key: key))
+        })
     }
 }

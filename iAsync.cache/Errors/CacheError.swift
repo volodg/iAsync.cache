@@ -11,7 +11,7 @@ import Foundation
 import iAsync_utils
 
 public class CacheError : Error {
-    
+
     public override class func iAsyncErrorsDomain() -> String {
         return "com.just_for_fun.cache.library"
     }

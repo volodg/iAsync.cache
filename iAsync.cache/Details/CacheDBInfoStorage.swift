@@ -9,24 +9,24 @@
 import Foundation
 
 final public class CacheDBInfoStorage {
-    
+
     internal let info: [String:CacheDBInfo]
-    
+
     public func infoByDBName(dbName: String) -> CacheDBInfo? {
-        
+
         return info[dbName]
     }
-    
+
     init(plistInfo: NSDictionary) {
-        
+
         var info: [String:CacheDBInfo] = [:]
-        
+
         plistInfo.enumerateKeysAndObjectsUsingBlock( { (key: AnyObject!, value: AnyObject!, stop: UnsafeMutablePointer<ObjCBool>) -> () in
-            
+
             let keyStr = key as! String
             info[keyStr] = CacheDBInfo(plistInfo:value as! NSDictionary, dbPropertyName:keyStr)
         })
-        
+
         self.info = info
     }
 }
