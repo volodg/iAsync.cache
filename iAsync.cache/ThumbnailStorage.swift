@@ -62,9 +62,9 @@ final public class ThumbnailStorage {
 
         let stream: AsyncT = create(producer: { observer -> DisposableType? in
 
-            let stream = self.cachedInDBImageDataLoaderForUrl(url)
+            let cachedStream = self.cachedInDBImageDataLoaderForUrl(url)
 
-            let loader = self.cachedAsyncOp.mergedStream({ stream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, NSError>? in
+            let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, NSError>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
                     return .Success(image)
                 }
@@ -78,7 +78,7 @@ final public class ThumbnailStorage {
                 }
             })
 
-            return loader.observe(on: nil, observer: observer)
+            return stream.observe(on: nil, observer: observer)
         })
 
         return stream.logError()
