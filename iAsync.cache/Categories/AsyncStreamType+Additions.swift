@@ -10,7 +10,9 @@ import Foundation
 
 import iAsync_restkit
 import iAsync_network
-import iAsync_reactiveKit
+
+import protocol iAsync_reactiveKit.AsyncStreamType
+import struct iAsync_reactiveKit.AsyncStream
 
 public extension NSError {
 

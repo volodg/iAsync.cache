@@ -11,7 +11,14 @@ import Foundation
 import iAsync_network
 import iAsync_restkit
 import iAsync_utils
-import iAsync_reactiveKit
+import struct iAsync_reactiveKit.AsyncStream
+import class iAsync_reactiveKit.StrategyFifo
+import class iAsync_reactiveKit.MergedAsyncStream
+import class iAsync_reactiveKit.LimitedAsyncStreamsQueue
+import enum iAsync_reactiveKit.AsyncEvent
+import enum iAsync_reactiveKit.AsyncStreamTypesTransform
+import func iAsync_reactiveKit.create
+import func iAsync_reactiveKit.asyncStreamWithJob
 
 import ReactiveKit
 

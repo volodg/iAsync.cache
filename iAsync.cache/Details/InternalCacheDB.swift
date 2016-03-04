@@ -10,7 +10,7 @@ import Foundation
 
 import iAsync_restkit
 import iAsync_utils
-import iAsync_reactiveKit
+import func iAsync_reactiveKit.asyncStreamWithJob
 
 import ReactiveKit
 
