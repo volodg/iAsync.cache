@@ -21,11 +21,10 @@ final public class CacheDBInfoStorage {
 
         var info: [String:CacheDBInfo] = [:]
 
-        plistInfo.enumerateKeysAndObjectsUsingBlock( { (key: AnyObject!, value: AnyObject!, stop: UnsafeMutablePointer<ObjCBool>) -> () in
-
+        for (key, value) in plistInfo {
             let keyStr = key as! String
             info[keyStr] = CacheDBInfo(plistInfo:value as! NSDictionary, dbPropertyName:keyStr)
-        })
+        }
 
         self.info = info
     }

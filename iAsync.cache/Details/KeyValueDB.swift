@@ -8,7 +8,8 @@
 
 import Foundation
 
-import iAsync_utils
+import let iAsync_utils.iAsync_utils_logger
+import func iAsync_utils.dispatch_queue_get_or_create
 
 private let createRecords =
 "CREATE TABLE IF NOT EXISTS records ( " +
@@ -264,7 +265,7 @@ internal class KeyValueDB {
         })
     }
 
-    func removeAllRecordsWithCallback(callback: SimpleBlock?) {
+    func removeAllRecordsWithCallback(callback: (() -> ())?) {
 
         ///First remove all files
         let query = "SELECT file_link FROM records;"

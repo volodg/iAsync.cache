@@ -31,12 +31,10 @@ final public class DBInfo {
             }
 
             let path = DBInfo.currentDBInfoFilePath()
-            let currentDbInfo: NSDictionary? = NSDictionary(contentsOfFile:path)
+            let currentDbInfo = NSDictionary(contentsOfFile:path)
 
-            if let currentDbInfo = currentDbInfo {
-                if currentDbInfo.count > 0 {
-                    self._currentDbVersionsByName = currentDbInfo
-                }
+            if let currentDbInfo = currentDbInfo where currentDbInfo.count > 0 {
+                self._currentDbVersionsByName = currentDbInfo
             }
             return self._currentDbVersionsByName
         })
