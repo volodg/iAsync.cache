@@ -17,7 +17,7 @@ import ReactiveKit
 
 public typealias CacheFactory = () -> CacheDB
 
-public class NoChacheDataError : SilentError {
+public class NoCacheDataError : SilentError {
 
     init(key: String) {
         let description = "no cached data for key: \(key)"
@@ -59,7 +59,7 @@ public class CacheAdapter : AsyncRestKitCache {
                 return .Success((date: result.1, data: result.0))
             }
 
-            return .Failure(NoChacheDataError(key: key))
+            return .Failure(NoCacheDataError(key: key))
         })
     }
 }
