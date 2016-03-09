@@ -12,7 +12,11 @@ import iAsync_utils
 
 final public class CacheLoadImageError : CacheError {
 
-    let nativeError: NSError
+    public let nativeError: NSError
+
+    override public var canRepeateError: Bool {
+        return nativeError.canRepeateError
+    }
 
     required public init(nativeError: NSError) {
 
