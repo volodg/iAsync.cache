@@ -53,9 +53,9 @@ final public class ThumbnailStorage {
 
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: Selector("onMemoryWarning:"),//TODO use #selector
-            name: UIApplicationDidReceiveMemoryWarningNotification,
-            object: nil)
+            selector: #selector(ThumbnailStorage.onMemoryWarning(_:)),
+            name    : UIApplicationDidReceiveMemoryWarningNotification,
+            object  : nil)
     }
 
     private let cachedAsyncOp = MergedAsyncStream<NSURL, UIImage, AnyObject, NSError>()
