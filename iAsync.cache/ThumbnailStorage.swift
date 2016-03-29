@@ -63,6 +63,11 @@ final public class ThumbnailStorage {
 
     public typealias AsyncT = AsyncStream<UIImage, AnyObject, NSError>
 
+    public func putToCachedData(data: NSData, key: String) -> AsyncStream<Void, AnyObject, NSError> {
+
+        return createImageCacheAdapter().loaderToSetData(data, forKey: key)
+    }
+
     public func thumbnailStreamForUrl(url: NSURL?) -> AsyncT {
 
         guard let url = url where !url.isNoImageDataURL else { return AsyncT.failed(with: CacheNoURLError()) }
