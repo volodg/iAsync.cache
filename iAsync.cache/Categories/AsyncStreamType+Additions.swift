@@ -31,7 +31,7 @@ public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error
     func toJson() -> AsyncStream<AnyObject, AnyObject, NSError> {
 
         let stream = self.mapNext2AnyObject()
-        return stream.flatMap { JsonTools.jsonLoader($0.responseData, context: $0) }
+        return stream.flatMap { JsonTools.jsonStream($0.responseData, context: $0) }
     }
 }
 

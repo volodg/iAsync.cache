@@ -74,7 +74,7 @@ final public class ThumbnailStorage {
 
         let stream: AsyncT = create(producer: { observer -> DisposableType? in
 
-            let cachedStream = self.cachedInDBImageDataLoaderForUrl(url)
+            let cachedStream = self.cachedInDBImageDataStreamForUrl(url)
 
             let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, NSError>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
@@ -101,7 +101,7 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    private func cachedInDBImageDataLoaderForUrl(url: NSURL) -> AsyncT {
+    private func cachedInDBImageDataStreamForUrl(url: NSURL) -> AsyncT {
 
         let dataStream = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
             switch info {
@@ -112,7 +112,7 @@ final public class ThumbnailStorage {
             }
         }.map { ($0.response, $0.responseData) }
 
-        let args = SmartDataLoaderFields(
+        let args = SmartDataStreamFields(
             dataStream        : dataStream                   ,
             analyzerForData   : imageDataToUIImageBinder(url),
             cacheKey          : url.absoluteString           ,
@@ -120,7 +120,7 @@ final public class ThumbnailStorage {
             strategy          : .CacheFirst(self.dynamicType.cacheDataLifeTimeInSeconds)
         )
 
-        let stream = jSmartDataLoaderWithCache(args).fixAndLogError()
+        let stream = jSmartDataStreamWithCache(args).fixAndLogError()
         return stream.mapError { CacheLoadImageError(nativeError: $0) }
     }
 
@@ -148,9 +148,9 @@ final public class ThumbnailStorage {
             return Transformer.transformStreamsType(stream, transformer: balanced)
         }
 
-        override func cachedDataLoaderForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
+        override func cachedDataStreamForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, NSError> {
 
-            let stream = super.cachedDataLoaderForKey(key)
+            let stream = super.cachedDataStreamForKey(key)
             return Transformer.transformStreamsType(stream, transformer: balanced)
         }
     }
@@ -173,7 +173,7 @@ final public class ThumbnailStorage {
 
 //TODO try to use NSURLCache?
 //example - https://github.com/Alamofire/AlamofireImage
-private func imageDataToUIImageBinder(url: NSURL) -> SmartDataLoaderFields<UIImage, NSHTTPURLResponse>.AnalyzerType {
+private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<UIImage, NSHTTPURLResponse>.AnalyzerType {
 
     return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncStream<UIImage, AnyObject, NSError> in
 

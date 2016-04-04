@@ -1,5 +1,5 @@
 //
-//  UIImageView+CachedAsyncImageLoader.swift
+//  UIImageView+CachedAsyncImageStream.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 26.09.14.
