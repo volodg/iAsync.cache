@@ -8,17 +8,10 @@
 
 import Foundation
 
+import iAsync_utils
 import iAsync_network
 import iAsync_restkit
-import iAsync_utils
-import struct iAsync_reactiveKit.AsyncStream
-import class iAsync_reactiveKit.StrategyFifo
-import class iAsync_reactiveKit.MergedAsyncStream
-import class iAsync_reactiveKit.LimitedAsyncStreamsQueue
-import enum iAsync_reactiveKit.AsyncEvent
-import enum iAsync_reactiveKit.AsyncStreamTypesTransform
-import func iAsync_reactiveKit.create
-import func iAsync_reactiveKit.asyncStreamWithJob
+import iAsync_reactiveKit
 
 import ReactiveKit
 
@@ -177,7 +170,7 @@ final public class ThumbnailStorage {
 //example - https://github.com/Alamofire/AlamofireImage
 private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<UIImage, NSHTTPURLResponse>.AnalyzerType {
 
-    return { (imageData: (DataRequestContext<NSHTTPURLResponse>, NSData)) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> in
+    return { imageData -> AsyncStream<UIImage, AnyObject, ErrorWithContext> in
 
         return asyncStreamWithJob { _ -> Result<UIImage, ErrorWithContext> in
 
@@ -188,7 +181,7 @@ private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<UIIma
             }
 
             let error = CanNotCreateImageError(url: url)
-            let contextError = ErrorWithContext(error: CanNotCreateImageError(url: url), context: "imageDataToUIImageBinder")
+            let contextError = ErrorWithContext(error: error, context: "imageDataToUIImageBinder")
             return .Failure(contextError)
         }
     }
