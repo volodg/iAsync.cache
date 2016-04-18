@@ -48,7 +48,7 @@ public extension UIImageView {
             callBack?(result)
             self?.image = result
         }, failure: { [weak self] error -> () in
-            if error is AsyncInterruptedError {
+            if error.error is AsyncInterruptedError {
                 callBack?(nil)
                 return
             }

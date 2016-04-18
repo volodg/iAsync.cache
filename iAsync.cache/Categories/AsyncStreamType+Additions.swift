@@ -8,6 +8,7 @@
 
 import Foundation
 
+import iAsync_utils
 import iAsync_restkit
 import iAsync_network
 
@@ -26,16 +27,16 @@ public extension NSError {
     }
 }
 
-public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error == NSError {
+public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error == ErrorWithContext {
 
-    func toJson() -> AsyncStream<AnyObject, AnyObject, NSError> {
+    func toJson() -> AsyncStream<AnyObject, AnyObject, ErrorWithContext> {
 
         let stream = self.mapNext2AnyObject()
         return stream.flatMap { JsonTools.jsonStream($0.responseData, context: $0) }
     }
 }
 
-public extension AsyncStreamType where Error == NSError {
+public extension AsyncStreamType where Error == ErrorWithContext {
 
     public func withDefReconnect() -> AsyncStream<Value, Next, Error> {
 
@@ -45,7 +46,7 @@ public extension AsyncStreamType where Error == NSError {
             case .Success:
                 return true
             case .Failure(let error):
-                return !error.canRepeateError
+                return !error.error.canRepeateError
             }
         })
     }

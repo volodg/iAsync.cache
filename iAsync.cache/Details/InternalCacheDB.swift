@@ -61,16 +61,14 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
             let block = { (cancel: (() -> ())) in
 
-                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, NSError> in
+                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, ErrorWithContext> in
 
                     self.removeOldData()
                     return .Success(())
                 }
 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                asyncStreamWithJob(queueName, job: loadDataBlock).on(failure: { error -> () in
-                    error.writeErrorWithLogger()
-                }).run()
+                asyncStreamWithJob(queueName, job: loadDataBlock).logError().run()
             }
             block({})
 
