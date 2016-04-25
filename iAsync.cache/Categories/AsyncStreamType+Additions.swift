@@ -38,7 +38,7 @@ public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error
 
 public extension AsyncStreamType where Error == ErrorWithContext {
 
-    public func withDefReconnect() -> AsyncStream<Value, Next, Error> {
+    public func fixWithDefReconnect() -> AsyncStream<Value, Next, Error> {
 
         return self.retry(3, delay: 2.0, until: { result -> Bool in
 
@@ -53,6 +53,6 @@ public extension AsyncStreamType where Error == ErrorWithContext {
 
     public func fixAndLogError() -> AsyncStream<Value, Next, Error> {
 
-        return withDefReconnect().logError()
+        return fixWithDefReconnect().logError()
     }
 }
