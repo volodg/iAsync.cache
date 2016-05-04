@@ -44,7 +44,7 @@ final public class Caches {
 
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
 
-        return InternalCacheDB(cacheDBInfo:cacheInfo)
+        return InternalCacheDB(cacheDBInfo: cacheInfo)
     }
 
     func cacheByName(name: String) -> CacheDB? {

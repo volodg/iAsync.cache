@@ -59,7 +59,7 @@ final public class DBInfo {
             private static func createJDBInfo() -> DBInfo {
                 let bundle      = NSBundle(forClass: DBInfo.self)
                 let defaultPath = bundle.pathForResource("JCacheDBInfo", ofType:"plist")
-                return DBInfo(infoPath:defaultPath!)
+                return DBInfo(infoPath: defaultPath!)
             }
         }
         return Static.instance
@@ -75,7 +75,7 @@ final public class DBInfo {
                 mutableCurrentVersions[key] = info.version
             }
 
-            let currentVersions: NSDictionary = mutableCurrentVersions.copy() as! NSDictionary
+            let currentVersions = mutableCurrentVersions.copy() as! NSDictionary
 
             if let currentDbVersionsByName = self.currentDbVersionsByName {
                 if currentDbVersionsByName.isEqual(currentVersions) {

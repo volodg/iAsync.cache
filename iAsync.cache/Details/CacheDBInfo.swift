@@ -19,7 +19,7 @@ final public class CacheDBInfo : NSObject {
     }
 
     public var version: Int {
-        return info["version"]! as? Int ?? 0
+        return info["version"] as? Int ?? 0
     }
 
     public var timeToLiveInHours: NSTimeInterval {
