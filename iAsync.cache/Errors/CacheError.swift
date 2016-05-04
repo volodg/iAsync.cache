@@ -8,8 +8,6 @@
 
 import Foundation
 
-import iAsync_utils
-
 public class CacheError : UtilsError {
 
     public override class func iAsyncErrorsDomain() -> String {

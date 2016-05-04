@@ -1,5 +1,5 @@
 //
-//  AsyncStreamType+Additions.swift
+//  AsyncStreamType+CacheAdditions.swift
 //  iAsync_cache
 //
 //  Created by Gorbenko Vladimir on 18/02/16.
@@ -7,13 +7,6 @@
 //
 
 import Foundation
-
-import iAsync_utils
-import iAsync_restkit
-import iAsync_network
-
-import protocol iAsync_reactiveKit.AsyncStreamType
-import struct iAsync_reactiveKit.AsyncStream
 
 public extension NSError {
 

@@ -8,8 +8,6 @@
 
 import Foundation
 
-import iAsync_utils
-
 private var dbInfoOnce: dispatch_once_t = 0
 private var dbInfoInstance: DBInfo!
 

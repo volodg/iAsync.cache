@@ -8,8 +8,6 @@
 
 import Foundation
 
-import iAsync_restkit
-
 private var sharedCachesInstance: Caches?
 
 final public class Caches {

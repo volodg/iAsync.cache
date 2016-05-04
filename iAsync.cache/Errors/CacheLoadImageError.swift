@@ -8,8 +8,6 @@
 
 import Foundation
 
-import iAsync_utils
-
 final public class CacheLoadImageError : CacheError {
 
     public let nativeError: NSError
