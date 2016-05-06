@@ -46,7 +46,7 @@ final public class DBInfo {
 
     init(infoDictionary: NSDictionary) {
 
-        dbInfoByNames = CacheDBInfoStorage(plistInfo:infoDictionary)
+        dbInfoByNames = CacheDBInfoStorage(plistInfo: infoDictionary)
     }
 
     internal static func defaultDBInfo() -> DBInfo {

@@ -1,5 +1,5 @@
 //
-//  JFFKeyValueDB.swift
+//  KeyValueDB.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 11.08.14.
@@ -80,7 +80,7 @@ internal class KeyValueDB {
             return db
         }
 
-        let db = JSQLiteDB(dbName:cacheFileName)
+        let db = JSQLiteDB(dbName: cacheFileName)
 
         _db = db
 
@@ -453,7 +453,7 @@ internal class KeyValueDB {
 
 private func getOrCreateDispatchQueueForFile(file: String) -> dispatch_queue_t {
 
-    let queueName = "com.jff.embedded_sources.dynamic.\(file)"
+    let queueName = "com.embedded_sources.dynamic.\(file)"
     let result = dispatch_queue_get_or_create(label: queueName, attr: DISPATCH_QUEUE_CONCURRENT)
     return result
 }

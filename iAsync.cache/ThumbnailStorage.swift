@@ -15,9 +15,9 @@ import UIKit
 //alternatives:
 //1 - https://github.com/rs/SDWebImage
 
-private let cacheQueueName = "com.embedded_sources.jffcache.thumbnail_storage.cache"
+private let cacheQueueName = "com.embedded_sources.cache.thumbnail_storage.cache"
 
-private let noDataUrlStr = "nodata://jff.cache.com"
+private let noDataUrlStr = "nodata://embedded.cache.com"
 
 public extension NSURL {
 
