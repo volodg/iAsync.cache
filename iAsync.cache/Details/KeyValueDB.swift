@@ -59,10 +59,10 @@ private func fileSizeForPath(path: String) -> Int64? {
     do {
         fileDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
     } catch let error as NSError {
-        iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)")
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)", context: #function)
         fileDictionary = nil
     } catch _ {
-        iAsync_utils_logger.logError("no file attributes for file with path: \(path)")
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path)", context: #function)
         fileDictionary = nil
     }
 
@@ -489,7 +489,7 @@ final private class JSQLiteDB {
                         withIntermediateDirectories: true,
                         attributes: nil)
                 } catch {
-                    iAsync_utils_logger.logError("unexpected system state 3")
+                    iAsync_utils_logger.logError("unexpected system state 3", context: #function)
                 }
             }
 
