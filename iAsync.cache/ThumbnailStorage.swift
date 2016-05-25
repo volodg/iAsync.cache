@@ -20,9 +20,9 @@ import UIKit
 //alternatives:
 //1 - https://github.com/rs/SDWebImage
 
-private let cacheQueueName = "com.embedded_sources.jffcache.thumbnail_storage.cache"
+private let cacheQueueName = "com.embedded_sources.cache.thumbnail_storage.cache"
 
-private let noDataUrlStr = "nodata://jff.cache.com"
+private let noDataUrlStr = "nodata://embedded.cache.com"
 
 public extension NSURL {
 
@@ -64,7 +64,7 @@ final public class ThumbnailStorage {
     public func thumbnailStreamForUrl(url: NSURL?) -> AsyncT {
 
         guard let url = url where !url.isNoImageDataURL else {
-            let contextError = ErrorWithContext(error: CacheNoURLError(), context: "thumbnailStreamForUrl.isNoImageDataURL")
+            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
             return AsyncT.failed(with: contextError)
         }
 
@@ -116,7 +116,7 @@ final public class ThumbnailStorage {
             strategy       : .CacheFirst(self.dynamicType.cacheDataLifeTimeInSeconds))
 
         let stream = jSmartDataStreamWithCache(args).fixAndLogError()
-        return stream.mapError { ErrorWithContext(error: CacheLoadImageError(nativeError: $0.error), context: "\($0.context)" + " + cachedInDBImageDataStreamForUrl") }
+        return stream.mapError { ErrorWithContext(error: CacheLoadImageError(nativeError: $0.error), context: "\($0.context)" + " + " + #function) }
     }
 
     private static var cacheDataLifeTimeInSeconds: NSTimeInterval {
@@ -181,7 +181,7 @@ private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<UIIma
             }
 
             let error = CanNotCreateImageError(url: url)
-            let contextError = ErrorWithContext(error: error, context: "imageDataToUIImageBinder")
+            let contextError = ErrorWithContext(error: error, context: #function)
             return .Failure(contextError)
         }
     }

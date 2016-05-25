@@ -1,5 +1,5 @@
 //
-//  JFFKeyValueDB.swift
+//  KeyValueDB.swift
 //  iAsync_cache
 //
 //  Created by Vladimir Gorbenko on 11.08.14.
@@ -62,10 +62,10 @@ private func fileSizeForPath(path: String) -> Int64? {
     do {
         fileDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
     } catch let error as NSError {
-        iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)")
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)", context: #function)
         fileDictionary = nil
     } catch _ {
-        iAsync_utils_logger.logError("no file attributes for file with path: \(path)")
+        iAsync_utils_logger.logError("no file attributes for file with path: \(path)", context: #function)
         fileDictionary = nil
     }
 
@@ -83,7 +83,7 @@ internal class KeyValueDB {
             return db
         }
 
-        let db = JSQLiteDB(dbName:cacheFileName)
+        let db = JSQLiteDB(dbName: cacheFileName)
 
         _db = db
 
@@ -456,7 +456,7 @@ internal class KeyValueDB {
 
 private func getOrCreateDispatchQueueForFile(file: String) -> dispatch_queue_t {
 
-    let queueName = "com.jff.embedded_sources.dynamic.\(file)"
+    let queueName = "com.embedded_sources.dynamic.\(file)"
     let result = dispatch_queue_get_or_create(label: queueName, attr: DISPATCH_QUEUE_CONCURRENT)
     return result
 }
@@ -492,7 +492,7 @@ final private class JSQLiteDB {
                         withIntermediateDirectories: true,
                         attributes: nil)
                 } catch {
-                    iAsync_utils_logger.logError("unexpected system state 3")
+                    iAsync_utils_logger.logError("unexpected system state 3", context: #function)
                 }
             }
 

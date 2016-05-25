@@ -23,7 +23,7 @@ final public class Caches {
         }
 
         let dbInfo = DBInfo.defaultDBInfo()
-        let result = Caches(dbInfo:dbInfo)
+        let result = Caches(dbInfo: dbInfo)
         sharedCachesInstance = result
 
         return result
@@ -90,7 +90,7 @@ final public class Caches {
             return result
         }
 
-        let result = InternalCacheDB(cacheDBInfo:cacheDBInfo)
+        let result = InternalCacheDB(cacheDBInfo: cacheDBInfo)
         result.runAutoRemoveDataSchedulerIfNeeds()
         cacheDbByName[dbPropertyName] = result
 
