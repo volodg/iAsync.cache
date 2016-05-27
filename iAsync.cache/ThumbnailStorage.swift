@@ -51,8 +51,9 @@ final public class ThumbnailStorage {
             object  : nil)
     }
 
-    private let cachedAsyncOp = MergedAsyncStream<NSURL, UIImage, AnyObject, ErrorWithContext>()
-    private let imagesByUrl   = NSCache()
+    private let cachedAsyncOp2 = MergedAsyncStream<NSURL, NSData, AnyObject, ErrorWithContext>()
+    private let cachedAsyncOp  = MergedAsyncStream<NSURL, UIImage, AnyObject, ErrorWithContext>()
+    private let imagesByUrl    = NSCache()
 
     public typealias AsyncT = AsyncStream<UIImage, AnyObject, ErrorWithContext>
 
@@ -61,16 +62,35 @@ final public class ThumbnailStorage {
         return createImageCacheAdapter().loaderToSetData(data, forKey: key)
     }
 
-    public func thumbnailStreamForUrl(url: NSURL?) -> AsyncT {
+    public func imageDataStreamForUrl(url: NSURL?) -> AsyncStream<NSData, AnyObject, ErrorWithContext> {
 
         guard let url = url where !url.isNoImageDataURL else {
             let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
-            return AsyncT.failed(with: contextError)
+            return AsyncStream.failed(with: contextError)
+        }
+
+        let stream: AsyncStream<NSData, AnyObject, ErrorWithContext> = create(producer: { observer -> DisposableType? in
+
+            let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.1 }
+
+            let stream = self.cachedAsyncOp2.mergedStream({ cachedStream }, key: url)
+
+            return stream.observe(on: nil, observer: observer)
+        })
+
+        return stream.logError()
+    }
+
+    public func imageStreamForUrl(url: NSURL?) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> {
+
+        guard let url = url where !url.isNoImageDataURL else {
+            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
+            return AsyncStream.failed(with: contextError)
         }
 
         let stream: AsyncT = create(producer: { observer -> DisposableType? in
 
-            let cachedStream = self.cachedInDBImageDataStreamForUrl(url)
+            let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.0 }
 
             let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, ErrorWithContext>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
@@ -97,7 +117,7 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    private func cachedInDBImageDataStreamForUrl(url: NSURL) -> AsyncT {
+    private func cachedInDBImageDataStreamForUrl(url: NSURL) -> AsyncStream<(UIImage, NSData), AnyObject, ErrorWithContext> {
 
         let dataStream = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
             switch info {
@@ -168,16 +188,16 @@ final public class ThumbnailStorage {
 
 //TODO try to use NSURLCache?
 //example - https://github.com/Alamofire/AlamofireImage
-private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<UIImage, NSHTTPURLResponse>.AnalyzerType {
+private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<(UIImage, NSData), NSHTTPURLResponse>.AnalyzerType {
 
-    return { imageData -> AsyncStream<UIImage, AnyObject, ErrorWithContext> in
+    return { imageData -> AsyncStream<(UIImage, NSData), AnyObject, ErrorWithContext> in
 
-        return asyncStreamWithJob { _ -> Result<UIImage, ErrorWithContext> in
+        return asyncStreamWithJob { _ -> Result<(UIImage, NSData), ErrorWithContext> in
 
             let image = UIImage.safeThreadImageWithData(imageData.1)
 
             if let image = image {
-                return .Success(image)
+                return .Success((image, imageData.1))
             }
 
             let error = CanNotCreateImageError(url: url)

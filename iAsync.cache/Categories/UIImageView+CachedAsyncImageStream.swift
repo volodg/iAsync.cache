@@ -43,7 +43,7 @@ public extension UIImageView {
 
         iAsync_cache_Properties.dispose.dispose()
 
-        let thumb  = thumbnailStorage.thumbnailStreamForUrl(url)
+        let thumb  = thumbnailStorage.imageStreamForUrl(url)
         let stream = thumb.on(success: { [weak self] result in
             callBack?(result)
             self?.image = result
