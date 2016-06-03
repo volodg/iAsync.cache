@@ -476,9 +476,9 @@ final private class JSQLiteDB {
 
         dispatchQueue = getOrCreateDispatchQueueForFile(dbName)
 
-        let dbPath = String.documentsPathByAppendingPathComponent(dbName)
+        let dbPath = dbName.documentsPath
 
-        folder = (dbPath as NSString).stringByDeletingLastPathComponent
+        folder = dbPath.folder
 
         dispatch_barrier_sync(dispatchQueue, {
 
@@ -496,7 +496,7 @@ final private class JSQLiteDB {
                 }
             }
 
-            let openResult = dbPath.withCString { cStr -> Bool in
+            let openResult = dbPath.path.withCString { cStr -> Bool in
 
                 let result = bridging_sqlite3_open(cStr, &self.db) == BRIDGING_SQLITE_OK
                 if !result {

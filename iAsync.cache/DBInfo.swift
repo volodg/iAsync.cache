@@ -31,7 +31,7 @@ final public class DBInfo {
             }
 
             let path = DBInfo.currentDBInfoFilePath()
-            let currentDbInfo = NSDictionary(contentsOfFile:path)
+            let currentDbInfo = path.dictionaryContent()
 
             if let currentDbInfo = currentDbInfo where currentDbInfo.count > 0 {
                 self._currentDbVersionsByName = currentDbInfo
@@ -86,12 +86,12 @@ final public class DBInfo {
             self._currentDbVersionsByName = currentVersions
 
             let path = DBInfo.currentDBInfoFilePath()
-            currentVersions.writeToFile(path, atomically:true)
+            path.writeToFile(currentVersions)
             path.addSkipBackupAttribute()
         })
     }
 
-    static func currentDBInfoFilePath() -> String {
-        return String.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
+    static func currentDBInfoFilePath() -> DocumentPath {
+        return "JCurrentDBVersions.data".documentsPath
     }
 }
