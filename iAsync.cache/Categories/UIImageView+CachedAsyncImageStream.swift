@@ -9,6 +9,7 @@
 import Foundation
 
 import iAsync_utils
+import iAsync_reactiveKit
 
 import UIKit
 import ReactiveKit
@@ -37,14 +38,24 @@ public extension UIImageView {
 
     func setImageWithURL(url: NSURL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
-        image = placeholder
+        let thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>
+        if let url = url {
+            thumbStream = thumbnailStorage.imageStreamForUrl(url)
+        } else {
+            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
+            thumbStream = AsyncStream.failed(with: contextError)
+        }
 
-        guard let url = url else { return }
+        setImageWithStream(thumbStream, placeholder: placeholder, noImage: noImage, callBack: callBack)
+    }
+
+    func setImageWithStream(thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+
+        image = placeholder
 
         iAsync_cache_Properties.dispose.dispose()
 
-        let thumb  = thumbnailStorage.imageStreamForUrl(url)
-        let stream = thumb.on(success: { [weak self] result in
+        let stream = thumbStream.on(success: { [weak self] result in
             callBack?(result)
             self?.image = result
         }, failure: { [weak self] error -> () in
