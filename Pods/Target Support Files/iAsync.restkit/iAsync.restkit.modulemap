@@ -1,0 +1,6 @@
+framework module iAsync_restkit {
+  umbrella header "iAsync.restkit-umbrella.h"
+
+  export *
+  module * { export * }
+}

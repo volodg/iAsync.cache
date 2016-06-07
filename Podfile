@@ -3,18 +3,17 @@ use_frameworks!
 
 def import_pods
 
-    pod 'Result'        , :path => '../../Result-swift-2.0'
-    pod 'iAsync.async'  , :path => '../iAsync.async'
-    pod 'iAsync.utils'  , :path => '../iAsync.utils'
-    pod 'iAsync.restkit', :path => '../iAsync.restkit'
-    pod 'iAsync.network', :path => '../iAsync.network'
-    
+    pod 'iAsync.reactiveKit', :path => '../iAsync.reactiveKit'
+    pod 'iAsync.utils'      , :path => '../iAsync.utils'
+    pod 'iAsync.restkit'    , :path => '../iAsync.restkit'
+    pod 'iAsync.network'    , :path => '../iAsync.network'
+
 end
 
-target 'iAsync.cache', :exclusive => true do
+target 'iAsync.cache' do
     import_pods
 end
 
-target 'iAsync.cacheTests', :exclusive => true do
+target 'iAsync.cacheTests' do
     import_pods
 end
