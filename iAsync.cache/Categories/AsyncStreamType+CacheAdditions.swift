@@ -27,6 +27,7 @@ public extension NSError {
 
 public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error == ErrorWithContext {
 
+    @warn_unused_result
     func toJson() -> AsyncStream<AnyObject, AnyObject, ErrorWithContext> {
 
         let stream = self.mapNext2AnyObject()
@@ -36,6 +37,7 @@ public extension AsyncStreamType where Self.Value == NetworkResponse, Self.Error
 
 public extension AsyncStreamType where Error == ErrorWithContext {
 
+    @warn_unused_result
     public func fixWithDefReconnect() -> AsyncStream<Value, Next, Error> {
 
         return self.retry(3, delay: 2.0, until: { result -> Bool in
@@ -49,6 +51,7 @@ public extension AsyncStreamType where Error == ErrorWithContext {
         })
     }
 
+    @warn_unused_result
     public func fixAndLogError() -> AsyncStream<Value, Next, Error> {
 
         return fixWithDefReconnect().logError()
