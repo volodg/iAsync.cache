@@ -12,7 +12,7 @@ final public class CacheNoURLError : CacheError {
 
     init() {
 
-        let str = "iAsync_CACHE_NO_URL_ERROR"
+        let str = "JFF_CACHE_NO_URL_ERROR"
         super.init(description: str)
     }
 

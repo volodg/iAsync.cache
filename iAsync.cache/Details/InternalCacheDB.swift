@@ -23,7 +23,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
         self.cacheDBInfo = cacheDBInfo
 
-        super.init(cacheFileName: cacheDBInfo.fileName)
+        super.init(cacheFileName:cacheDBInfo.fileName)
     }
 
     private func removeOldData() {
@@ -48,14 +48,12 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
         synced(internalCacheDBLockObject, { () -> () in
 
-            let dbPropertyName = self.cacheDBInfo.dbPropertyName
-
-            if autoremoveSchedulersByCacheName[dbPropertyName] != nil {
+            if autoremoveSchedulersByCacheName[self.cacheDBInfo.dbPropertyName] != nil {
                 return
             }
 
             let timer = Timer()
-            autoremoveSchedulersByCacheName[dbPropertyName] = timer
+            autoremoveSchedulersByCacheName[self.cacheDBInfo.dbPropertyName] = timer
 
             let block = { (cancel: (() -> ())) in
 

@@ -34,7 +34,7 @@ final public class CacheLoadImageError : CacheError {
     override public func writeErrorWithLogger(context: AnyObject) {
 
         //TODO refactor this if, use log type instead of isNetworkError
-        guard !nativeError.isNetworkError else { writeErrorToNSLog(context); return }
+        guard !nativeError.isNetworkError else { writeErrorToNSLog(); return }
 
         super.writeErrorWithLogger(context)
     }

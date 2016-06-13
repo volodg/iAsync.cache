@@ -22,15 +22,8 @@ final public class CacheDBInfoStorage {
         var info: [String:CacheDBInfo] = [:]
 
         for (key, value) in plistInfo {
-            if let keyStr = key as? String {
-                if let plistInfo = value as? NSDictionary {
-                    info[keyStr] = CacheDBInfo(plistInfo: plistInfo, dbPropertyName: keyStr)
-                } else {
-                    iAsync_utils_logger.logError("plistInfo: \(plistInfo) not a NSDictionary", context: #function)
-                }
-            } else {
-                iAsync_utils_logger.logError("key: \(key) not a string", context: #function)
-            }
+            let keyStr = key as! String
+            info[keyStr] = CacheDBInfo(plistInfo:value as! NSDictionary, dbPropertyName:keyStr)
         }
 
         self.info = info
