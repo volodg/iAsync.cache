@@ -56,17 +56,28 @@ public extension UIImageView {
         iAsync_cache_Properties.dispose.dispose()
 
         let stream = thumbStream.on(success: { [weak self] result in
-            callBack?(result)
-            self?.image = result
+
+            self?.setImageOrNotifyViaCallback(callBack, image: result)
         }, failure: { [weak self] error -> () in
+
             if error.error is AsyncInterruptedError {
                 callBack?(nil)
                 return
             }
 
-            callBack?(noImage)
-            self?.image = noImage
+            self?.setImageOrNotifyViaCallback(callBack, image: noImage)
         })
         stream.run().disposeIn(iAsync_cache_Properties.dispose)
+    }
+
+    private func setImageOrNotifyViaCallback(callback :((UIImage?)->Void)?, image :UIImage?) {
+
+        if let callback_ = callback {
+
+            callback_(image)
+        } else {
+
+            self.image = image
+        }
     }
 }
