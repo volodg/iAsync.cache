@@ -473,7 +473,7 @@ final private class JSQLiteDB {
 
         dispatchQueue = getOrCreateDispatchQueueForFile(dbName)
 
-        let dbPath = String.documentsPathByAppendingPathComponent(dbName)
+        let dbPath = dbName.documentsPath.path
 
         folder = (dbPath as NSString).stringByDeletingLastPathComponent
 

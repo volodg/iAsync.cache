@@ -90,6 +90,6 @@ final public class DBInfo {
     }
 
     static func currentDBInfoFilePath() -> String {
-        return String.documentsPathByAppendingPathComponent("JCurrentDBVersions.data")
+        return "JCurrentDBVersions.data".documentsPath.path
     }
 }
