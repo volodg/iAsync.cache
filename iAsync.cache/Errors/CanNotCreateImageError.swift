@@ -27,7 +27,7 @@ final public class CanNotCreateImageError : CacheError {
         return self.dynamicType.init(url: url)
     }
 
-    override public func writeErrorWithLogger(context: AnyObject) {}
+    override public func writeErrorWithLogger(context: String) {}
 
     override public var errorLogDescription: String {
         return "\(self.dynamicType) : \(localizedDescription) url: \(url)"

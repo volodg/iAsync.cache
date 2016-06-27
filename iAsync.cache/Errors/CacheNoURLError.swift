@@ -20,5 +20,5 @@ final public class CacheNoURLError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func writeErrorWithLogger(context: AnyObject) {}
+    public override func writeErrorWithLogger(context: String) {}
 }
