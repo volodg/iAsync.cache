@@ -33,17 +33,12 @@ final public class CacheLoadImageError : CacheError {
         return self.dynamicType.init(nativeError: nativeError)
     }
 
-    override public func writeErrorWithLogger(context: String) {
-
-        //TODO refactor this if, use log type instead of isNetworkError
-        guard !nativeError.isNetworkError else { writeErrorToNSLog(context); return }
-
-        super.writeErrorWithLogger(context)
+    override public var logTarget: Int {
+        return nativeError.logTarget
     }
 
-    override public var errorLogDescription: String {
-
-        let result = "\(self.dynamicType) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLogDescription)"
+    override public var errorLogText: String {
+        let result = "\(self.dynamicType) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
         return result
     }
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+import iAsync_utils
+
 final public class CacheNoURLError : CacheError {
 
     init() {
@@ -20,5 +22,5 @@ final public class CacheNoURLError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func writeErrorWithLogger(context: String) {}
+    override public var logTarget: Int { return LogTarget.Nothing.rawValue }
 }

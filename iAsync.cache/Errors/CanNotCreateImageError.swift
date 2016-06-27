@@ -8,6 +8,8 @@
 
 import Foundation
 
+import iAsync_utils
+
 final public class CanNotCreateImageError : CacheError {
 
     private let url: NSURL
@@ -27,9 +29,12 @@ final public class CanNotCreateImageError : CacheError {
         return self.dynamicType.init(url: url)
     }
 
-    override public func writeErrorWithLogger(context: String) {}
+    override public var logTarget: Int { return LogTarget.Logger.rawValue }
 
-    override public var errorLogDescription: String {
-        return "\(self.dynamicType) : \(localizedDescription) url: \(url)"
+    override public var errorLog: NSDictionary {
+
+        var result = super.errorLog as! [String:String]
+        result["RequestURL"] = url.description
+        return result
     }
 }
