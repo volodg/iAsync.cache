@@ -15,7 +15,7 @@ import iAsync_reactiveKit
 
 public extension NSError {
 
-    var canRepeateError: Bool {
+    var canRepeatError: Bool {
         return self.isNetworkError
             || self is HttpError
             || self is NSNoNetworkError
@@ -46,7 +46,7 @@ public extension AsyncStreamType where Error == ErrorWithContext {
             case .Success:
                 return true
             case .Failure(let error):
-                return !error.error.canRepeateError
+                return !error.error.canRepeatError
             }
         })
     }

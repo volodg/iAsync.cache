@@ -14,8 +14,8 @@ final public class CacheLoadImageError : CacheError {
 
     public let nativeError: NSError
 
-    override public var canRepeateError: Bool {
-        return nativeError.canRepeateError
+    override public var canRepeatError: Bool {
+        return nativeError.canRepeatError
     }
 
     required public init(nativeError: NSError) {
