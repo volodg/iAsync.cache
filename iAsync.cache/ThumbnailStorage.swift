@@ -135,7 +135,7 @@ final public class ThumbnailStorage {
         let args = SmartDataStreamFields(
             dataStream     : dataStream                   ,
             analyzerForData: imageDataToUIImageBinder(url),
-            cacheKey       : url.absoluteString           ,
+            cacheKey       : url.absoluteString!           ,
             cache          : createImageCacheAdapter()    ,
             strategy       : .CacheFirst(self.dynamicType.cacheDataLifeTimeInSeconds))
 
