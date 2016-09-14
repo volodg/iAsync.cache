@@ -31,9 +31,9 @@ final public class CanNotCreateImageError : CacheError {
 
     override public var logTarget: Int { return LogTarget.Logger.rawValue }
 
-    override public var errorLog: NSDictionary {
+    override public var errorLog: [String:String] {
 
-        var result = super.errorLog as! [String:String]
+        var result = super.errorLog
         result["RequestURL"] = url.description
         return result
     }
