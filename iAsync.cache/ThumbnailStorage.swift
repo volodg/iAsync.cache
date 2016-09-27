@@ -57,13 +57,11 @@ final public class ThumbnailStorage {
 
     public typealias AsyncT = AsyncStream<UIImage, AnyObject, ErrorWithContext>
 
-    @warn_unused_result
     public func putToCachedData(data: NSData, key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
         return createImageCacheAdapter().loaderToSetData(data, forKey: key)
     }
 
-    @warn_unused_result
     public func imageDataStreamForUrl(url: NSURL?) -> AsyncStream<NSData, AnyObject, ErrorWithContext> {
 
         guard let url = url where !url.isNoImageDataURL else {
@@ -83,7 +81,6 @@ final public class ThumbnailStorage {
         return stream.logError()
     }
 
-    @warn_unused_result
     public func imageStreamForUrl(url: NSURL?) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> {
 
         guard let url = url where !url.isNoImageDataURL else {
@@ -120,7 +117,6 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    @warn_unused_result
     private func cachedInDBImageDataStreamForUrl(url: NSURL) -> AsyncStream<(UIImage, NSData), AnyObject, ErrorWithContext> {
 
         let dataStream = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
@@ -161,14 +157,12 @@ final public class ThumbnailStorage {
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
 
-        @warn_unused_result
         override func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
             let stream = super.loaderToSetData(data, forKey:key)
             return Transformer.transformStreamsType(stream, transformer: balanced)
         }
 
-        @warn_unused_result
         override func cachedDataStreamForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, ErrorWithContext> {
 
             let stream = super.cachedDataStreamForKey(key)
