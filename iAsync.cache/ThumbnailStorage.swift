@@ -14,6 +14,7 @@ import iAsync_restkit
 import iAsync_reactiveKit
 
 import enum ReactiveKit.Result
+import protocol ReactiveKit.Disposable
 import ReactiveKit_old//???
 
 import UIKit
@@ -70,7 +71,7 @@ final public class ThumbnailStorage {
             return AsyncStream.failed(with: contextError)
         }
 
-        let stream: AsyncStream<NSData, AnyObject, ErrorWithContext> = create(producer: { observer -> DisposableType? in
+        let stream: AsyncStream<NSData, AnyObject, ErrorWithContext> = create(producer: { observer -> Disposable? in
 
             let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.1 }
 
@@ -89,7 +90,7 @@ final public class ThumbnailStorage {
             return AsyncStream.failed(with: contextError)
         }
 
-        let stream: AsyncT = create(producer: { observer -> DisposableType? in
+        let stream: AsyncT = create(producer: { observer -> Disposable? in
 
             let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.0 }
 
