@@ -13,7 +13,7 @@ import iAsync_restkit
 import struct iAsync_reactiveKit.AsyncStream
 import func iAsync_reactiveKit.asyncStreamWithJob
 
-import ReactiveKit
+import ReactiveKit_old
 
 public typealias CacheFactory = () -> CacheDB
 

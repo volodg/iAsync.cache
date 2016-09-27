@@ -12,7 +12,7 @@ import iAsync_restkit
 import iAsync_utils
 import func iAsync_reactiveKit.asyncStreamWithJob
 
-import ReactiveKit
+import ReactiveKit_old
 
 private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
 
