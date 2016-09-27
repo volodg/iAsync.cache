@@ -13,6 +13,7 @@ import iAsync_network
 import iAsync_restkit
 import iAsync_reactiveKit
 
+import enum ReactiveKit.Result
 import ReactiveKit_old//???
 
 import UIKit
