@@ -40,7 +40,6 @@ public class CacheAdapter : AsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
 
-    @warn_unused_result
     public func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
@@ -50,7 +49,6 @@ public class CacheAdapter : AsyncRestKitCache {
         })
     }
 
-    @warn_unused_result
     public func cachedDataStreamForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: NSDate, data: NSData), ErrorWithContext> in
