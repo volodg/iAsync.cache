@@ -70,13 +70,13 @@ final public class ThumbnailStorage {
             return AsyncStream.failed(with: contextError)
         }
 
-        let stream: AsyncStream<NSData, AnyObject, ErrorWithContext> = create(producer: { observer -> Disposable? in
+        let stream: AsyncStream<NSData, AnyObject, ErrorWithContext> = create(producer: { observer -> Disposable in
 
             let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.1 }
 
             let stream = self.cachedAsyncOp2.mergedStream({ cachedStream }, key: url)
 
-            return stream.observe(on: nil, observer: observer)
+            return stream.observe(observer)
         })
 
         return stream.logError()
@@ -89,7 +89,7 @@ final public class ThumbnailStorage {
             return AsyncStream.failed(with: contextError)
         }
 
-        let stream: AsyncT = create(producer: { observer -> Disposable? in
+        let stream: AsyncT = create(producer: { observer -> Disposable in
 
             let cachedStream = self.cachedInDBImageDataStreamForUrl(url).map { $0.0 }
 
@@ -107,7 +107,7 @@ final public class ThumbnailStorage {
                 }
             })
 
-            return stream.observe(on: nil, observer: observer)
+            return stream.observe(observer)
         })
 
         return stream.logError()
