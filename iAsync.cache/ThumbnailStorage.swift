@@ -95,12 +95,12 @@ final public class ThumbnailStorage {
 
             let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, ErrorWithContext>? in
                 if let image = self.imagesByUrl.objectForKey(url) as? UIImage {
-                    return .Success(image)
+                    return .success(image)
                 }
                 return nil
             }, setter: { event in
                 switch event {
-                case .Success(let value):
+                case .success(let value):
                     self.imagesByUrl.setObject(value, forKey: url)
                 default:
                     break
@@ -198,12 +198,12 @@ private func imageDataToUIImageBinder(url: NSURL) -> SmartDataStreamFields<(UIIm
             let image = UIImage.safeThreadImageWithData(imageData.1)
 
             if let image = image {
-                return .Success((image, imageData.1))
+                return .success((image, imageData.1))
             }
 
             let error = CanNotCreateImageError(url: url)
             let contextError = ErrorWithContext(error: error, context: #function)
-            return .Failure(contextError)
+            return .failure(contextError)
         }
     }
 }

@@ -45,7 +45,7 @@ public class CacheAdapter : AsyncRestKitCache {
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
 
             self.cacheFactory().setData(data, forKey:key)
-            return .Success(())
+            return .success(())
         })
     }
 
@@ -56,11 +56,11 @@ public class CacheAdapter : AsyncRestKitCache {
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
 
             if let result = result {
-                return .Success((date: result.1, data: result.0))
+                return .success((date: result.1, data: result.0))
             }
 
             let contextError = ErrorWithContext(error: NoCacheDataError(key: key), context: #function)
-            return .Failure(contextError)
+            return .failure(contextError)
         })
     }
 }
