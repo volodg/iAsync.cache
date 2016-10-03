@@ -17,7 +17,7 @@ import enum ReactiveKit.Result
 
 public typealias CacheFactory = () -> CacheDB
 
-public class NoCacheDataError : SilentError {
+open class NoCacheDataError : SilentError {
 
     init(key: String) {
         let description = "no cached data for key: \(key)"
@@ -29,18 +29,18 @@ public class NoCacheDataError : SilentError {
     }
 }
 
-public class CacheAdapter : AsyncRestKitCache {
+open class CacheAdapter : AsyncRestKitCache {
 
-    private let cacheFactory  : CacheFactory
-    private let cacheQueueName: String
+    fileprivate let cacheFactory  : CacheFactory
+    fileprivate let cacheQueueName: String
 
-    public init(cacheFactory: CacheFactory, cacheQueueName: String) {
+    public init(cacheFactory: @escaping CacheFactory, cacheQueueName: String) {
 
         self.cacheQueueName = cacheQueueName
         self.cacheFactory   = cacheFactory
     }
 
-    public func loaderToSetData(data: NSData, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
+    open func loaderToSetData(_ data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
 
@@ -49,9 +49,9 @@ public class CacheAdapter : AsyncRestKitCache {
         })
     }
 
-    public func cachedDataStreamForKey(key: String) -> AsyncStream<(date: NSDate, data: NSData), AnyObject, ErrorWithContext> {
+    open func cachedDataStreamForKey(_ key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
 
-        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: NSDate, data: NSData), ErrorWithContext> in
+        return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: Date, data: Data), ErrorWithContext> in
 
             let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
 

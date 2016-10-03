@@ -22,5 +22,5 @@ final public class CacheNoURLError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public var logTarget: Int { return LogTarget.Nothing.rawValue }
+    //override public var logTarget: Int { return LogTarget.Nothing.rawValue }
 }

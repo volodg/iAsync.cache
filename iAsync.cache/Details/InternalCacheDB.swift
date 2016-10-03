@@ -14,7 +14,7 @@ import func iAsync_reactiveKit.asyncStreamWithJob
 
 import enum ReactiveKit.Result
 
-private var autoremoveSchedulersByCacheName: [String:Timer] = [:]
+private var autoremoveSchedulersByCacheName: [String:iAsync_utils.Timer] = [:]
 
 private let internalCacheDBLockObject = NSObject()
 
@@ -30,13 +30,13 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         super.init(cacheFileName: cacheDBInfo.fileName)
     }
 
-    private func removeOldData() {
+    fileprivate func removeOldData() {
 
         let removeRarelyAccessDataDelay = cacheDBInfo.autoRemoveByLastAccessDate
 
         if removeRarelyAccessDataDelay > 0.0 {
 
-            let fromDate = NSDate().dateByAddingTimeInterval(-removeRarelyAccessDataDelay)
+            let fromDate = Date().addingTimeInterval(-removeRarelyAccessDataDelay)
 
             removeRecordsToAccessDate(fromDate)
         }
@@ -63,14 +63,14 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
 
             let block = { (cancel: (() -> ())) in
 
-                let loadDataBlock = { (progress: AnyObject -> Void) -> Result<Void, ErrorWithContext> in
+                let loadDataBlock = { (progress: (AnyObject) -> Void) -> Result<Void, ErrorWithContext> in
 
                     self.removeOldData()
                     return .success(())
                 }
 
                 let queueName = "com.embedded_sources.dbcache.thread_to_remove_old_data"
-                asyncStreamWithJob(queueName, job: loadDataBlock).logError().run()
+                _ = asyncStreamWithJob(queueName, job: loadDataBlock).logError().run()
             }
             block({})
 
@@ -78,7 +78,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         })
     }
 
-    func migrateDB(dbInfo: DBInfo) {
+    func migrateDB(_ dbInfo: DBInfo) {
 
         let currentDbInfo  = dbInfo.currentDbVersionsByName
         let currVersionNum = currentDbInfo?[cacheDBInfo.dbPropertyName] as? NSNumber
@@ -86,7 +86,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         guard let currVersionNum_ = currVersionNum else { return }
 
         let lastVersion    = cacheDBInfo.version
-        let currentVersion = currVersionNum_.integerValue
+        let currentVersion = currVersionNum_.intValue
 
         if lastVersion > currentVersion {
             removeAllRecordsWithCallback(nil)

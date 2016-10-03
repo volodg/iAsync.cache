@@ -10,9 +10,9 @@ import Foundation
 
 import iAsync_utils
 
-public class CacheError : UtilsError {
+open class CacheError : UtilsError {
 
-    public override class func iAsyncErrorsDomain() -> String {
+    open override class func iAsyncErrorsDomain() -> String {
         return "com.just_for_fun.cache.library"
     }
 }

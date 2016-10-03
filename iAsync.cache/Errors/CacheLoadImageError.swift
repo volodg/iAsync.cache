@@ -28,17 +28,12 @@ final public class CacheLoadImageError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-
-        return self.dynamicType.init(nativeError: nativeError)
-    }
-
-    override public var logTarget: Int {
+    /*override public var logTarget: Int {
         return nativeError.logTarget
     }
 
-    override public var errorLogText: String {
-        let result = "\(self.dynamicType) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
+    override open var errorLogText: String {
+        let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
         return result
-    }
+    }*/
 }

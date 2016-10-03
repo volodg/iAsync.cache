@@ -10,13 +10,13 @@ import Foundation
 
 public protocol CacheDB {
 
-    func dataForKey(key: String) -> NSData?
+    func dataForKey(_ key: String) -> Data?
 
-    func dataAndLastUpdateDateForKey(key: String) -> (NSData, NSDate)?
+    func dataAndLastUpdateDateForKey(_ key: String) -> (Data, Date)?
 
-    func setData(data: NSData?, forKey key: String)
+    func setData(_ data: Data?, forKey key: String)
 
-    func removeRecordsForKey(key: String)
+    func removeRecordsForKey(_ key: String)
 
-    func removeAllRecordsWithCallback(callback: (() -> Void)?)
+    func removeAllRecordsWithCallback(_ callback: (() -> Void)?)
 }
