@@ -12,7 +12,7 @@ import iAsync_utils
 
 final public class CacheNoURLError : CacheError {
 
-    init() {
+    override init() {
 
         let str = "iAsync_CACHE_NO_URL_ERROR"
         super.init(description: str)
