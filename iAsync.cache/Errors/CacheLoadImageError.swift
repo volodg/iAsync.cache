@@ -23,12 +23,6 @@ final public class CacheLoadImageError : CacheError {
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    /*swift3
-    override open var errorLogText: String {
-        let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
-        return result
-    }*/
 }
 
 public extension LoggedObject where Self : CacheLoadImageError {
@@ -40,6 +34,14 @@ public extension LoggedObject where Self : CacheLoadImageError {
         }
 
         return LogTarget.nothing
+    }
+
+    var errorLogText: String {
+
+        let errorLog = (nativeError as? LoggedObject)?.errorLogText ?? "\(nativeError)"
+
+        let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(errorLog)"
+        return result
     }
 }
 
