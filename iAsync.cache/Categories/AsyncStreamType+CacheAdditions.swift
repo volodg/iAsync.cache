@@ -13,18 +13,6 @@ import iAsync_network
 import iAsync_restkit
 import iAsync_reactiveKit
 
-public extension NSError {
-
-    open var canRepeatError: Bool {
-        return self.isNetworkError
-            || self is HttpError
-            || self is NSNoNetworkError
-            || self is JsonParserError
-            || self is ParseJsonDataError
-            || self is CanNotCreateImageError
-    }
-}
-
 public protocol CanRepeatError {
 
     var canRepeatError: Bool { get }
@@ -62,7 +50,11 @@ public extension AsyncStreamType where ErrorT == ErrorWithContext {
             case .success:
                 return true
             case .failure(let error):
-                return !error.error.canRepeatError
+
+                if let error_ = error.error as? CanRepeatError {
+                    return !error_.canRepeatError
+                }
+                return true
             }
         })
     }

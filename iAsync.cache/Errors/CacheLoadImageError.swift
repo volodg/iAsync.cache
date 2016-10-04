@@ -25,10 +25,11 @@ final public class CacheLoadImageError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /*override public var logTarget: Int {
+    /*swift3 override public var logTarget: Int {
         return nativeError.logTarget
     }
 
+     swift3 
     override open var errorLogText: String {
         let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
         return result
@@ -39,6 +40,9 @@ extension CanRepeatError where Self : CacheLoadImageError {
 
     public var canRepeatError: Bool {
 
-        return nativeError.canRepeatError
+        if let error_ = nativeError as? CanRepeatError {
+            return error_.canRepeatError
+        }
+        return false
     }
 }
