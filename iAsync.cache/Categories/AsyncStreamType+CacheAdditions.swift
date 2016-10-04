@@ -15,7 +15,25 @@ import iAsync_reactiveKit
 
 public extension NSError {
 
+    open var canRepeatError: Bool {
+        return self.isNetworkError
+            || self is HttpError
+            || self is NSNoNetworkError
+            || self is JsonParserError
+            || self is ParseJsonDataError
+            || self is CanNotCreateImageError
+    }
+}
+
+public protocol CanRepeatError {
+
+    var canRepeatError: Bool { get }
+}
+
+public extension CanRepeatError where Self : NSError {
+
     var canRepeatError: Bool {
+
         return self.isNetworkError
             || self is HttpError
             || self is NSNoNetworkError

@@ -9,14 +9,11 @@
 import Foundation
 
 import iAsync_utils
+import iAsync_cache
 
 final public class CacheLoadImageError : CacheError {
 
     public let nativeError: NSError
-
-    /*todo swift3 override public var canRepeatError: Bool {
-        return nativeError.canRepeatError
-    }*/
 
     required public init(nativeError: NSError) {
 
@@ -36,4 +33,12 @@ final public class CacheLoadImageError : CacheError {
         let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
         return result
     }*/
+}
+
+extension CanRepeatError where Self : CacheLoadImageError {
+
+    public var canRepeatError: Bool {
+
+        return nativeError.canRepeatError
+    }
 }
