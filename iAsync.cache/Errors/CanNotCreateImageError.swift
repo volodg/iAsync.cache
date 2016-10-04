@@ -23,9 +23,12 @@ final public class CanNotCreateImageError : CacheError {
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
 
-    /*swift3
-     override public var errorLog: [String:String] {
+public extension LoggedObject where Self : CanNotCreateImageError {
+
+    //todo test
+    /*public var errorLog: [String:String] {
 
         var result = super.errorLog
         result["RequestURL"] = url.description
