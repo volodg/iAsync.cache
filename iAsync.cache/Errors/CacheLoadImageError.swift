@@ -9,7 +9,6 @@
 import Foundation
 
 import iAsync_utils
-import iAsync_cache
 
 final public class CacheLoadImageError : CacheError {
 
@@ -25,15 +24,23 @@ final public class CacheLoadImageError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /*swift3 override public var logTarget: Int {
-        return nativeError.logTarget
-    }
-
-     swift3 
+    /*swift3
     override open var errorLogText: String {
         let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
         return result
     }*/
+}
+
+public extension LoggedObject where Self : CacheLoadImageError {
+
+    var logTarget: LogTarget {
+
+        if let obj = nativeError as? LoggedObject {
+            return obj.logTarget
+        }
+
+        return LogTarget.nothing
+    }
 }
 
 extension CanRepeatError where Self : CacheLoadImageError {

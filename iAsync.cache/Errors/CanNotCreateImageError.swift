@@ -24,12 +24,16 @@ final public class CanNotCreateImageError : CacheError {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /*override public var logTarget: Int { return LogTarget.Logger.rawValue }
-
-    override public var errorLog: [String:String] {
+    /*swift3
+     override public var errorLog: [String:String] {
 
         var result = super.errorLog
         result["RequestURL"] = url.description
         return result
     }*/
+}
+
+public extension LoggedObject where Self : CanNotCreateImageError {
+
+    var logTarget: LogTarget { return LogTarget.logger }
 }
