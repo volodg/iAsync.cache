@@ -44,7 +44,7 @@ public extension AsyncStreamType where ErrorT == ErrorWithContext {
 
     public func fixWithDefReconnect() -> AsyncStream<ValueT, NextT, ErrorT> {
 
-        return self.retry(3, delay: 2.0, until: { result -> Bool in
+        return self.retry(3, delay: .seconds(2), until: { result -> Bool in
 
             switch result {
             case .success:
