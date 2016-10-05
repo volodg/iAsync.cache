@@ -500,7 +500,7 @@ final private class JSQLiteDB {
 
                 let result = bridging_sqlite3_open(cStr, &self.db) == BRIDGING_SQLITE_OK
                 if !result {
-                    NSLog("open - \(self.errorMessage) path: \(dbPath)")
+                    print("open - \(self.errorMessage) path: \(dbPath)")
                 }
                 return result
             }

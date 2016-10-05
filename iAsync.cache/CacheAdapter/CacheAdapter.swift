@@ -17,7 +17,7 @@ import enum ReactiveKit.Result
 
 public typealias CacheFactory = () -> CacheDB
 
-open class NoCacheDataError : SilentError {
+public class NoCacheDataError : SilentError {
 
     init(key: String) {
         let description = "no cached data for key: \(key)"
@@ -40,7 +40,7 @@ open class CacheAdapter : AsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
 
-    open func loaderToSetData(_ data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
+    public func loaderToSetData(_ data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
 
@@ -49,7 +49,7 @@ open class CacheAdapter : AsyncRestKitCache {
         })
     }
 
-    open func cachedDataStreamForKey(_ key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
+    public func cachedDataStreamForKey(_ key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: Date, data: Data), ErrorWithContext> in
 
