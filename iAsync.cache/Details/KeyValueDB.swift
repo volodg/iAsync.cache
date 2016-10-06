@@ -20,35 +20,35 @@ private let createRecords =
 
 private extension String {
 
-    func cacheDBFileLinkPathWithFolder(folder: String) -> String {
+    func cacheDBFileLinkPathWithFolder(_ folder: String) -> String {
 
-        let result = (folder as NSString).stringByAppendingPathComponent(self)
+        let result = (folder as NSString).appendingPathComponent(self)
         return result
     }
 
-    func cacheDBFileLinkRemoveFileWithFolder(folder: String) {
+    func cacheDBFileLinkRemoveFileWithFolder(_ folder: String) {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
         do {
-            try NSFileManager.defaultManager().removeItemAtPath(path)
+            try FileManager.default.removeItem(atPath: path)
         } catch {
             print("iAsync_utils.DBError: can not remove file: \(path)")
         }
     }
 
-    func cacheDBFileLinkSaveData(data: NSData, folder: String) {
+    func cacheDBFileLinkSaveData(_ data: Data, folder: String) {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
-        let url = NSURL(fileURLWithPath:path, isDirectory:false)
-        data.writeToURL(url, atomically:false)
+        let url = URL(fileURLWithPath:path, isDirectory:false)
+        try? data.write(to: url, options: [])
         path.addSkipBackupAttribute()
     }
 
-    func cacheDBFileLinkDataWithFolder(folder: String) -> NSData? {
+    func cacheDBFileLinkDataWithFolder(_ folder: String) -> Data? {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
         do {
-            let result = try NSData(contentsOfFile: path, options: .DataReadingMappedIfSafe)
+            let result = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
             return result
         } catch {
             return nil
@@ -56,11 +56,11 @@ private extension String {
     }
 }
 
-private func fileSizeForPath(path: String) -> Int64? {
+private func fileSizeForPath(_ path: String) -> Int64? {
 
-    let fileDictionary: [String : AnyObject]?
+    let fileDictionary: [FileAttributeKey : Any]?
     do {
-        fileDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+        fileDictionary = try FileManager.default.attributesOfItem(atPath: path)
     } catch let error as NSError {
         iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)", context: #function)
         fileDictionary = nil
@@ -69,15 +69,15 @@ private func fileSizeForPath(path: String) -> Int64? {
         fileDictionary = nil
     }
 
-    return (fileDictionary?[NSFileSize] as? NSNumber)?.longLongValue
+    return (fileDictionary?[FileAttributeKey.size] as? NSNumber)?.int64Value
 }
 
 internal class KeyValueDB {
 
-    private let cacheFileName: String
+    fileprivate let cacheFileName: String
 
-    private var _db: JSQLiteDB?
-    private var db: JSQLiteDB {
+    fileprivate var _db: JSQLiteDB?
+    fileprivate var db: JSQLiteDB {
         if let db = _db {
 
             return db
@@ -87,8 +87,8 @@ internal class KeyValueDB {
 
         _db = db
 
-        dispatch_barrier_async(db.dispatchQueue, {
-            self.db.execQuery(createRecords)
+        db.dispatchQueue.async(flags: .barrier, execute: {
+            _ = self.db.execQuery(createRecords)
             return ()
         })
 
@@ -100,36 +100,36 @@ internal class KeyValueDB {
         self.cacheFileName = cacheFileName
     }
 
-    func dataForKey(key: String) -> NSData? {
+    func dataForKey(_ key: String) -> Data? {
 
         let result = dataAndLastUpdateDateForKey(key)
         return result?.0
     }
 
-    func dataAndLastUpdateDateForKey(recordId: String) -> (NSData, NSDate)? {
+    func dataAndLastUpdateDateForKey(_ recordId: String) -> (Data, Date)? {
 
         let linkIndex: Int32 = 0
         let dateIndex: Int32 = 1
 
         let query = "SELECT file_link, update_time FROM records WHERE record_id='\(recordId)';";
 
-        var result: (NSData, NSDate)?
+        var result: (Data, Date)?
 
-        dispatch_sync(db.dispatchQueue, {
+        db.dispatchQueue.sync(execute: {
 
             //var statement: UnsafeMutablePointer<Void> = nil
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
 
             if self.db.prepareQuery(query, statement:&statement) {
                 if bridging_sqlite3_step(statement) == BRIDGING_SQLITE_ROW {
 
                     let str = bridging_sqlite3_column_text(statement, linkIndex)
-                    let fileLink = String.fromCString(UnsafePointer<CChar>(str))!
+                    let fileLink = String(cString: UnsafePointer<UInt8>(str!))
                     let data = fileLink.cacheDBFileLinkDataWithFolder(self.db.folder)
 
                     if let data = data {
                         let dateInetrval = bridging_sqlite3_column_double(statement, dateIndex)
-                        let updateDate = NSDate(timeIntervalSince1970:dateInetrval)
+                        let updateDate = Date(timeIntervalSince1970:dateInetrval)
                         result = (data, updateDate)
                     }
                 }
@@ -145,7 +145,7 @@ internal class KeyValueDB {
         return nil
     }
 
-    func setData(data: NSData?, forKey recordId: String) {
+    func setData(_ data: Data?, forKey recordId: String) {
 
         let fileLink = fileLinkForRecordId(recordId)
 
@@ -153,7 +153,7 @@ internal class KeyValueDB {
             if let data = data {
                 updateData(data, forRecord:recordId, fileLink:fileLink)
             } else {
-                removeRecordsForRecordId(recordId, fileLink:fileLink)
+                removeRecordsForRecordId(recordId as AnyObject, fileLink:fileLink)
             }
             return
         }
@@ -163,15 +163,15 @@ internal class KeyValueDB {
         }
     }
 
-    private func updateData(data: NSData, forRecord recordId: String, fileLink: String) {
+    fileprivate func updateData(_ data: Data, forRecord recordId: String, fileLink: String) {
 
         fileLink.cacheDBFileLinkSaveData(data, folder:self.db.folder)
 
         let updateQuery = "UPDATE records SET update_time='\(currentTime)', access_time='\(currentTime)' WHERE record_id='\(recordId)';"
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
             if self.prepareQuery(updateQuery, statement:&statement) {
                 if bridging_sqlite3_step(statement) != BRIDGING_SQLITE_DONE {
                     NSLog("\(updateQuery) - \(self.errorMessage)")
@@ -182,29 +182,29 @@ internal class KeyValueDB {
         })
     }
 
-    func removeRecordsToUpdateDate(date: NSDate) {
+    func removeRecordsToUpdateDate(_ date: Date) {
 
         removeRecordsToDate(date, dateFieldName:"update_time")
     }
 
-    func removeRecordsToAccessDate(date: NSDate) {
+    func removeRecordsToAccessDate(_ date: Date) {
 
         removeRecordsToDate(date, dateFieldName:"access_time")
     }
 
-    func removeRecordsForKey(recordId: String) {
+    func removeRecordsForKey(_ recordId: String) {
 
         if let fileLink = fileLinkForRecordId(recordId) {
 
-            removeRecordsForRecordId(recordId, fileLink:fileLink)
+            removeRecordsForRecordId(recordId as AnyObject, fileLink:fileLink)
         }
     }
 
-    func removeRecordsWhileTotalSizeMoreThenBytes(sizeInBytes: Int64) {
+    func removeRecordsWhileTotalSizeMoreThenBytes(_ sizeInBytes: Int64) {
 
         let selectQuery = "SELECT file_link FROM records ORDER BY access_time" //ORDER BY ASC is default
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
             let totalSize = self.folderSize()
             var filesRemoved: Int64 = 0
@@ -213,7 +213,7 @@ internal class KeyValueDB {
 
                 var sizeToRemove = totalSize - sizeInBytes
 
-                var statement: COpaquePointer = nil
+                var statement: OpaquePointer? = nil
 
                 let selectQuery2 = "\(selectQuery);"
                 if self.db.prepareQuery(selectQuery2, statement:&statement) {
@@ -223,7 +223,7 @@ internal class KeyValueDB {
                         autoreleasepool {
 
                             let str = bridging_sqlite3_column_text(statement, 0)
-                            let fileLink = String.fromCString(UnsafePointer<CChar>(str))!
+                            let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
                             //remove file
                             let filePath = fileLink.cacheDBFileLinkPathWithFolder(self.db.folder)
@@ -237,7 +237,7 @@ internal class KeyValueDB {
                             }
 
                             do {
-                                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+                                try FileManager.default.removeItem(atPath: filePath)
                             } catch {
                                 print("iAsync_utils.DBError2: can not remove file: \(filePath)")
                             }
@@ -253,7 +253,7 @@ internal class KeyValueDB {
 
                 let removeQuery = "DELETE FROM records WHERE file_link IN (\(selectQuery) LIMIT \(filesRemoved));"
 
-                var statement: COpaquePointer = nil
+                var statement: OpaquePointer? = nil
                 if self.prepareQuery(removeQuery, statement:&statement) {
                     if bridging_sqlite3_step(statement) != BRIDGING_SQLITE_DONE {
                         NSLog("\(removeQuery) - \(self.errorMessage)")
@@ -265,21 +265,21 @@ internal class KeyValueDB {
         })
     }
 
-    func removeAllRecordsWithCallback(callback: (() -> ())?) {
+    func removeAllRecordsWithCallback(_ callback: (() -> ())?) {
 
         ///First remove all files
         let query = "SELECT file_link FROM records;"
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
             if self.db.prepareQuery(query, statement:&statement) {
                 while bridging_sqlite3_step(statement) == BRIDGING_SQLITE_ROW {
 
                     autoreleasepool {
 
                         let str = bridging_sqlite3_column_text(statement, 0)
-                        let fileLink = String.fromCString(UnsafePointer<CChar>(str))!
+                        let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
                         //JTODO remove files in separate tread, do nont wait it
                         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
@@ -303,43 +303,43 @@ internal class KeyValueDB {
         })
     }
 
-    private var currentTime: NSTimeInterval {
-        return NSDate().timeIntervalSince1970
+    fileprivate var currentTime: TimeInterval {
+        return Date().timeIntervalSince1970
     }
 
-    private func execQuery(sql: String) -> Bool {
+    fileprivate func execQuery(_ sql: String) -> Bool {
         return db.execQuery(sql)
     }
 
-    private func prepareQuery(sql: String, statement: UnsafeMutablePointer<COpaquePointer>) -> Bool {
+    fileprivate func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
         return db.prepareQuery(sql, statement: statement)
     }
 
-    private var errorMessage: String? {
+    fileprivate var errorMessage: String? {
         return db.errorMessage
     }
 
-    private func updateAccessTime(recordID: String) {
+    fileprivate func updateAccessTime(_ recordID: String) {
 
-        dispatch_barrier_async(db.dispatchQueue, {
-            self.execQuery("UPDATE records SET access_time='\(self.currentTime)' WHERE record_id='\(recordID)';")
+        db.dispatchQueue.async(flags: .barrier, execute: {
+            _ = self.execQuery("UPDATE records SET access_time='\(self.currentTime)' WHERE record_id='\(recordID)';")
             return ()
         })
     }
 
-    private func fileLinkForRecordId(recordId: String) -> String? {
+    fileprivate func fileLinkForRecordId(_ recordId: String) -> String? {
 
         let query = "SELECT file_link FROM records WHERE record_id='\(recordId)';"
 
         var result: String?
 
-        dispatch_sync(db.dispatchQueue, {
+        db.dispatchQueue.sync(execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
             if self.db.prepareQuery(query, statement:&statement) {
                 if bridging_sqlite3_step(statement) == BRIDGING_SQLITE_ROW {
                     let address = bridging_sqlite3_column_text(statement, 0)
-                    result = String.fromCString(UnsafePointer<CChar>(address))
+                    result = String(cString: UnsafePointer<UInt8>(address!))
                 }
                 bridging_sqlite3_finalize(statement)
             }
@@ -348,15 +348,15 @@ internal class KeyValueDB {
         return result
     }
 
-    private func removeRecordsForRecordId(recordId: AnyObject, fileLink: String) {
+    fileprivate func removeRecordsForRecordId(_ recordId: AnyObject, fileLink: String) {
 
         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
 
         let removeQuery = "DELETE FROM records WHERE record_id='\(recordId)';"
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
             if self.prepareQuery(removeQuery, statement:&statement) {
                 if bridging_sqlite3_step(statement) != BRIDGING_SQLITE_DONE {
                     NSLog("\(removeQuery) - \(self.errorMessage)")
@@ -367,15 +367,15 @@ internal class KeyValueDB {
         })
     }
 
-    private func addData(data: NSData, forRecord recordId: String) {
+    fileprivate func addData(_ data: Data, forRecord recordId: String) {
 
-        let fileLink = NSUUID().UUIDString
+        let fileLink = UUID().uuidString
 
         let addQuery = "INSERT INTO records (record_id, file_link, update_time, access_time) VALUES ('\(recordId)', '\(fileLink)', '\(currentTime)', '\(currentTime)');"
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
             if self.prepareQuery(addQuery, statement:&statement) {
                 if bridging_sqlite3_step(statement) == BRIDGING_SQLITE_DONE {
                     fileLink.cacheDBFileLinkSaveData(data, folder:self.db.folder)
@@ -391,14 +391,14 @@ internal class KeyValueDB {
     }
 
     //JTODO test !!!!
-    private func removeRecordsToDate(date: NSDate, dateFieldName fieldName: String) {
+    fileprivate func removeRecordsToDate(_ date: Date, dateFieldName fieldName: String) {
 
         ///First remove all files
         let query = "SELECT file_link FROM records WHERE \(fieldName) < '\(date.timeIntervalSince1970)';"
 
-        dispatch_barrier_async(db.dispatchQueue, {
+        db.dispatchQueue.async(flags: .barrier, execute: {
 
-            var statement: COpaquePointer = nil
+            var statement: OpaquePointer? = nil
 
             if self.db.prepareQuery(query, statement:&statement) {
                 while bridging_sqlite3_step(statement) == BRIDGING_SQLITE_ROW {
@@ -406,7 +406,7 @@ internal class KeyValueDB {
                     autoreleasepool {
 
                         let str = bridging_sqlite3_column_text(statement, 0)
-                        let fileLink = String.fromCString(UnsafePointer<CChar>(str))!
+                        let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
                         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
                     }
@@ -418,7 +418,7 @@ internal class KeyValueDB {
 
             let removeQuery = "DELETE FROM records WHERE \(fieldName) < '\(date.timeIntervalSince1970)';"
 
-            var queryStatement: COpaquePointer = nil
+            var queryStatement: OpaquePointer? = nil
 
             if self.prepareQuery(removeQuery, statement:&queryStatement) {
                 if bridging_sqlite3_step(queryStatement) != BRIDGING_SQLITE_DONE {
@@ -430,11 +430,11 @@ internal class KeyValueDB {
         })
     }
 
-    private func folderSize() -> Int64 {
+    fileprivate func folderSize() -> Int64 {
 
         let folderPath  = self.db.folder
-        let fileManager = NSFileManager.defaultManager()
-        let filesEnumerator = fileManager.enumeratorAtPath(folderPath)
+        let fileManager = FileManager.default
+        let filesEnumerator = fileManager.enumerator(atPath: folderPath)
 
         var fileSize: Int64 = 0
 
@@ -444,7 +444,7 @@ internal class KeyValueDB {
 
                 autoreleasepool {
 
-                    let path = (folderPath as NSString).stringByAppendingPathComponent(fileName)
+                    let path = (folderPath as NSString).appendingPathComponent(fileName)
                     fileSize += fileSizeForPath(path) ?? 0
                 }
             }
@@ -454,19 +454,19 @@ internal class KeyValueDB {
     }
 }
 
-private func getOrCreateDispatchQueueForFile(file: String) -> dispatch_queue_t {
+private func getOrCreateDispatchQueueForFile(_ file: String) -> DispatchQueue {
 
     let queueName = "com.embedded_sources.dynamic.\(file)"
-    let result = dispatch_queue_get_or_create(label: queueName, attr: DISPATCH_QUEUE_CONCURRENT)
+    let result = dispatch_queue_get_or_create(label: queueName, attr: DispatchQueue.Attributes.concurrent)
     return result
 }
 
 final private class JSQLiteDB {
 
-    private var db: COpaquePointer = nil
-    let dispatchQueue: dispatch_queue_t
+    fileprivate var db: OpaquePointer? = nil
+    let dispatchQueue: DispatchQueue
 
-    private let folder: String
+    fileprivate let folder: String
 
     deinit {
         bridging_sqlite3_close(db)
@@ -480,15 +480,15 @@ final private class JSQLiteDB {
 
         folder = dbPath.folder
 
-        dispatch_barrier_sync(dispatchQueue, {
+        dispatchQueue.sync(flags: .barrier, execute: {
 
-            let manager = NSFileManager.defaultManager()
+            let manager = FileManager.default
 
-            if !manager.fileExistsAtPath(self.folder) {
+            if !manager.fileExists(atPath: self.folder) {
 
                 do {
-                    try manager.createDirectoryAtPath(
-                        self.folder,
+                    try manager.createDirectory(
+                        atPath: self.folder,
                         withIntermediateDirectories: true,
                         attributes: nil)
                 } catch {
@@ -500,7 +500,7 @@ final private class JSQLiteDB {
 
                 let result = bridging_sqlite3_open(cStr, &self.db) == BRIDGING_SQLITE_OK
                 if !result {
-                    NSLog("open - \(self.errorMessage) path: \(dbPath)")
+                    print("open - \(self.errorMessage) path: \(dbPath)")
                 }
                 return result
             }
@@ -526,7 +526,7 @@ final private class JSQLiteDB {
         })
     }
 
-    func prepareQuery(sql: String, statement: UnsafeMutablePointer<COpaquePointer>) -> Bool {
+    func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
 
         return sql.withCString { cStr in
 
@@ -534,11 +534,11 @@ final private class JSQLiteDB {
         }
     }
 
-    func execQuery(sql: String) -> Bool {
+    func execQuery(_ sql: String) -> Bool {
 
         return sql.withCString { cStr in
 
-            var errorMessage: UnsafeMutablePointer<Int8> = nil
+            var errorMessage: UnsafeMutablePointer<Int8>? = nil
 
             if bridging_sqlite3_exec(self.db, cStr, nil, nil, &errorMessage) != BRIDGING_SQLITE_OK {
 
@@ -553,6 +553,6 @@ final private class JSQLiteDB {
     }
 
     var errorMessage: String? {
-        return String.fromCString(bridging_sqlite3_errmsg(db))
+        return String(cString: bridging_sqlite3_errmsg(db))
     }
 }

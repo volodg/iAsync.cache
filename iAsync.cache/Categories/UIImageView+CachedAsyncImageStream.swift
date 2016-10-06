@@ -12,7 +12,8 @@ import iAsync_utils
 import iAsync_reactiveKit
 
 import UIKit
-import ReactiveKit_old
+
+import class ReactiveKit.DisposeBag
 
 private var iAsync_AsycImageProperties: Void?
 
@@ -22,7 +23,7 @@ private class Properties {
 
 public extension UIImageView {
 
-    private var iAsync_cache_Properties: Properties {
+    fileprivate var iAsync_cache_Properties: Properties {
         get {
             if let result = objc_getAssociatedObject(self, &iAsync_AsycImageProperties) as? Properties {
                 return result
@@ -36,7 +37,7 @@ public extension UIImageView {
         }
     }
 
-    func setImageWithURL(url: NSURL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+    func setImageWithURL(_ url: URL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         let thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>
         if let url = url {
@@ -49,7 +50,7 @@ public extension UIImageView {
         setImageWithStream(thumbStream, placeholder: placeholder, noImage: noImage, callBack: callBack)
     }
 
-    func setImageWithStream(thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+    func setImageWithStream(_ thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         image = placeholder
 
@@ -70,7 +71,7 @@ public extension UIImageView {
         stream.run().disposeIn(iAsync_cache_Properties.dispose)
     }
 
-    private func setImageOrNotifyViaCallback(callback :((UIImage?)->Void)?, image :UIImage?) {
+    fileprivate func setImageOrNotifyViaCallback(_ callback :((UIImage?)->Void)?, image :UIImage?) {
 
         if let callback_ = callback {
 

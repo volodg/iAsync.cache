@@ -12,7 +12,7 @@ final public class CacheDBInfo : NSObject {
 
     public let dbPropertyName: String
 
-    private let info: NSDictionary
+    fileprivate let info: NSDictionary
 
     public var fileName: String {
         return info["fileName"]! as! String
@@ -22,15 +22,15 @@ final public class CacheDBInfo : NSObject {
         return info["version"] as? Int ?? 0
     }
 
-    public var timeToLiveInHours: NSTimeInterval {
-        return info["timeToLiveInHours"] as? NSTimeInterval ?? 0.0
+    public var timeToLiveInHours: TimeInterval {
+        return info["timeToLiveInHours"] as? TimeInterval ?? 0.0
     }
 
-    public var autoRemoveByLastAccessDate: NSTimeInterval {
-        return (autoRemove?["lastAccessDateInHours"] as? NSTimeInterval).flatMap { $0 * 3600.0 } ?? 0.0
+    public var autoRemoveByLastAccessDate: TimeInterval {
+        return (autoRemove?["lastAccessDateInHours"] as? TimeInterval).flatMap { $0 * 3600.0 } ?? 0.0
     }
 
-    private var autoRemove: NSDictionary? {
+    fileprivate var autoRemove: NSDictionary? {
         return info["autoRemove"] as? NSDictionary
     }
 

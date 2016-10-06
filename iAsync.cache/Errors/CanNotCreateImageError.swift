@@ -12,9 +12,9 @@ import iAsync_utils
 
 final public class CanNotCreateImageError : CacheError {
 
-    private let url: NSURL
+    fileprivate let url: URL
 
-    public required init(url: NSURL) {
+    public required init(url: URL) {
 
         self.url = url
         super.init(description: "can not create image with given data")
@@ -23,18 +23,20 @@ final public class CanNotCreateImageError : CacheError {
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
 
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
+public extension LoggedObject where Self : CanNotCreateImageError {
 
-        return self.dynamicType.init(url: url)
-    }
-
-    override public var logTarget: Int { return LogTarget.Logger.rawValue }
-
-    override public var errorLog: [String:String] {
+    //todo test
+    /*public var errorLog: [String:String] {
 
         var result = super.errorLog
         result["RequestURL"] = url.description
         return result
-    }
+    }*/
+}
+
+public extension LoggedObject where Self : CanNotCreateImageError {
+
+    var logTarget: LogTarget { return LogTarget.logger }
 }

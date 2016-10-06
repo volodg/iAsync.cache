@@ -10,14 +10,14 @@ import Foundation
 
 import iAsync_utils
 
-private var dbInfoOnce: dispatch_once_t = 0
+private var dbInfoOnce: Int = 0
 private var dbInfoInstance: DBInfo!
 
 final public class DBInfo {
 
     public let dbInfoByNames: CacheDBInfoStorage
 
-    private var _currentDbVersionsByName: NSDictionary?
+    fileprivate var _currentDbVersionsByName: NSDictionary?
     var currentDbVersionsByName: NSDictionary? {
 
         if let result = _currentDbVersionsByName {
@@ -33,7 +33,7 @@ final public class DBInfo {
             let path = DBInfo.currentDBInfoFilePath()
             let currentDbInfo = path.dictionaryContent()
 
-            if let currentDbInfo = currentDbInfo where currentDbInfo.count > 0 {
+            if let currentDbInfo = currentDbInfo , currentDbInfo.count > 0 {
                 self._currentDbVersionsByName = currentDbInfo
             }
             return self._currentDbVersionsByName
@@ -56,9 +56,9 @@ final public class DBInfo {
         struct Static {
             static let instance = Static.createJDBInfo()
 
-            private static func createJDBInfo() -> DBInfo {
-                let bundle      = NSBundle(forClass: DBInfo.self)
-                let defaultPath = bundle.pathForResource("JCacheDBInfo", ofType:"plist")
+            fileprivate static func createJDBInfo() -> DBInfo {
+                let bundle      = Bundle(for: DBInfo.self)
+                let defaultPath = bundle.path(forResource: "JCacheDBInfo", ofType:"plist")
                 return DBInfo(infoPath: defaultPath!)
             }
         }
@@ -86,7 +86,7 @@ final public class DBInfo {
             self._currentDbVersionsByName = currentVersions
 
             let path = DBInfo.currentDBInfoFilePath()
-            path.writeToFile(currentVersions)
+            _ = path.writeToFile(currentVersions)
             path.addSkipBackupAttribute()
         })
     }

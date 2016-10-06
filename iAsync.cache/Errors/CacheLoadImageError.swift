@@ -14,10 +14,6 @@ final public class CacheLoadImageError : CacheError {
 
     public let nativeError: NSError
 
-    override public var canRepeatError: Bool {
-        return nativeError.canRepeatError
-    }
-
     required public init(nativeError: NSError) {
 
         self.nativeError = nativeError
@@ -27,18 +23,35 @@ final public class CacheLoadImageError : CacheError {
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
 
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
+public extension LoggedObject where Self : CacheLoadImageError {
 
-        return self.dynamicType.init(nativeError: nativeError)
+    var logTarget: LogTarget {
+
+        if let obj = nativeError as? LoggedObject {
+            return obj.logTarget
+        }
+
+        return LogTarget.nothing
     }
 
-    override public var logTarget: Int {
-        return nativeError.logTarget
-    }
+    var errorLogText: String {
 
-    override public var errorLogText: String {
-        let result = "\(self.dynamicType) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(nativeError.errorLog)"
+        let errorLog = (nativeError as? LoggedObject)?.errorLogText ?? "\(nativeError)"
+
+        let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(errorLog)"
         return result
+    }
+}
+
+extension CanRepeatError where Self : CacheLoadImageError {
+
+    public var canRepeatError: Bool {
+
+        if let error_ = nativeError as? CanRepeatError {
+            return error_.canRepeatError
+        }
+        return false
     }
 }

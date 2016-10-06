@@ -21,6 +21,9 @@ final public class CacheNoURLError : CacheError {
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
 
-    override public var logTarget: Int { return LogTarget.Nothing.rawValue }
+public extension LoggedObject where Self : CacheNoURLError {
+
+    var logTarget: LogTarget { return LogTarget.nothing }
 }

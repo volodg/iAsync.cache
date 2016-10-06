@@ -29,7 +29,7 @@ final public class Caches {
         return result
     }
 
-    public static func setSharedCaches(caches: Caches) {
+    public static func setSharedCaches(_ caches: Caches) {
 
         sharedCachesInstance = caches
     }
@@ -40,14 +40,14 @@ final public class Caches {
         self.setupCachesWithDBInfo()
     }
 
-    public static func createCacheForName(name: String, dbInfo: DBInfo) -> CacheDB {
+    public static func createCacheForName(_ name: String, dbInfo: DBInfo) -> CacheDB {
 
         let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
 
         return InternalCacheDB(cacheDBInfo: cacheInfo)
     }
 
-    func cacheByName(name: String) -> CacheDB? {
+    func cacheByName(_ name: String) -> CacheDB? {
 
         return cacheDbByName[name]
     }
@@ -62,14 +62,14 @@ final public class Caches {
         return cacheByName(Caches.thumbnailDBName())!
     }
 
-    static func createThumbnailDB(dbInfo: DBInfo) -> CacheDB {
+    static func createThumbnailDB(_ dbInfo: DBInfo) -> CacheDB {
 
         return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
     }
 
-    func createThumbnailDB(dbInfo: DBInfo? = nil) -> CacheDB {
+    func createThumbnailDB(_ dbInfo: DBInfo? = nil) -> CacheDB {
 
-        return self.dynamicType.createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
+        return type(of: self).createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
     }
 
     public func migrateDBs() {
@@ -82,9 +82,9 @@ final public class Caches {
         dbInfo.saveCurrentDBInfoVersions()
     }
 
-    private var cacheDbByName: [String:InternalCacheDB] = [:]
+    fileprivate var cacheDbByName: [String:InternalCacheDB] = [:]
 
-    private func registerAndCreateCacheDBWithName(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
+    fileprivate func registerAndCreateCacheDBWithName(_ dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
 
         if let result = self.cacheDbByName[dbPropertyName] {
             return result
@@ -97,11 +97,11 @@ final public class Caches {
         return result
     }
 
-    private func setupCachesWithDBInfo() {
+    fileprivate func setupCachesWithDBInfo() {
 
         for (dbName, dbInfo_) in dbInfo.dbInfoByNames.info {
 
-            self.registerAndCreateCacheDBWithName(dbName, cacheDBInfo:dbInfo_)
+            _ = self.registerAndCreateCacheDBWithName(dbName, cacheDBInfo:dbInfo_)
         }
     }
 }
