@@ -120,7 +120,7 @@ final public class ThumbnailStorage {
 
     fileprivate func cachedInDBImageDataStreamForUrl(_ url: URL) -> AsyncStream<(UIImage, Data), AnyObject, ErrorWithContext> {
 
-        let dataStream = network.dataStream(url, postData: nil, headers: nil).mapNext { info -> AnyObject in
+        let dataStream = network.dataStreamWith(url: url).mapNext { info -> AnyObject in
             switch info {
             case .download(let chunk):
                 return chunk
