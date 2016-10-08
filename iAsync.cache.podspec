@@ -75,7 +75,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "iAsync.cache/**/*.{swift,m,h}"
+  s.source_files  = "Sources/**/*.{swift,m,h}"
   # s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "iAsync.cache/iAsync.cache-Bridging-Header.h"
@@ -90,7 +90,7 @@ Pod::Spec.new do |s|
   #
 
   # s.resource  = "icon.png"
-  s.resource = "iAsync.cache/Resources/JCacheDBInfo.plist"
+  s.resource = "Sources/Resources/JCacheDBInfo.plist"
 
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
