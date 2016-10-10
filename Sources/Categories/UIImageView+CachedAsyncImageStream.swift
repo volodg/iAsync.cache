@@ -37,20 +37,20 @@ public extension UIImageView {
         }
     }
 
-    func setImageWithURL(_ url: URL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+    func setImageWith(url: URL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         let thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>
         if let url = url {
-            thumbStream = thumbnailStorage.imageStreamForUrl(url)
+            thumbStream = thumbnailStorage.imageStreamFor(url: url)
         } else {
             let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
             thumbStream = AsyncStream.failed(with: contextError)
         }
 
-        setImageWithStream(thumbStream, placeholder: placeholder, noImage: noImage, callBack: callBack)
+        setImageWith(thumbStream: thumbStream, placeholder: placeholder, noImage: noImage, callBack: callBack)
     }
 
-    func setImageWithStream(_ thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+    func setImageWith(thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         image = placeholder
 
@@ -58,7 +58,7 @@ public extension UIImageView {
 
         let stream = thumbStream.on(success: { [weak self] result in
 
-            self?.setImageOrNotifyViaCallback(callBack, image: result)
+            self?.setImageOrNotifyVia(callback: callBack, image: result)
         }, failure: { [weak self] error -> () in
 
             if error.error is AsyncInterruptedError {
@@ -66,12 +66,12 @@ public extension UIImageView {
                 return
             }
 
-            self?.setImageOrNotifyViaCallback(callBack, image: noImage)
+            self?.setImageOrNotifyVia(callback: callBack, image: noImage)
         })
         stream.run().disposeIn(iAsync_cache_Properties.dispose)
     }
 
-    fileprivate func setImageOrNotifyViaCallback(_ callback :((UIImage?)->Void)?, image :UIImage?) {
+    fileprivate func setImageOrNotifyVia(callback :((UIImage?)->Void)?, image :UIImage?) {
 
         if let callback_ = callback {
 

@@ -86,7 +86,7 @@ final public class DBInfo {
             self._currentDbVersionsByName = currentVersions
 
             let path = DBInfo.currentDBInfoFilePath()
-            _ = path.writeToFile(currentVersions)
+            _ = path.writeToFile(dict: currentVersions)
             path.addSkipBackupAttribute()
         })
     }

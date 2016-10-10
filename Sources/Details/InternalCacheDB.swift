@@ -74,7 +74,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
             }
             block({})
 
-            let _ = timer.addBlock(block, delay:.seconds(3600))
+            let _ = timer.add(actionBlock: block, delay:.seconds(3600))
         })
     }
 
