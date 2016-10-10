@@ -100,13 +100,13 @@ internal class KeyValueDB {
         self.cacheFileName = cacheFileName
     }
 
-    func dataForKey(_ key: String) -> Data? {
+    func dataFor(key: String) -> Data? {
 
-        let result = dataAndLastUpdateDateForKey(key)
+        let result = dataAndLastUpdateDateFor(key: key)
         return result?.0
     }
 
-    func dataAndLastUpdateDateForKey(_ recordId: String) -> (Data, Date)? {
+    func dataAndLastUpdateDateFor(key recordId: String) -> (Data, Date)? {
 
         let linkIndex: Int32 = 0
         let dateIndex: Int32 = 1
@@ -145,13 +145,13 @@ internal class KeyValueDB {
         return nil
     }
 
-    func setData(_ data: Data?, forKey recordId: String) {
+    func set(data: Data?, forKey recordId: String) {
 
         let fileLink = fileLinkForRecordId(recordId)
 
         if let fileLink = fileLink {
             if let data = data {
-                updateData(data, forRecord:recordId, fileLink:fileLink)
+                update(data: data, forRecord:recordId, fileLink:fileLink)
             } else {
                 removeRecordsForRecordId(recordId as AnyObject, fileLink:fileLink)
             }
@@ -163,7 +163,7 @@ internal class KeyValueDB {
         }
     }
 
-    fileprivate func updateData(_ data: Data, forRecord recordId: String, fileLink: String) {
+    fileprivate func update(data: Data, forRecord recordId: String, fileLink: String) {
 
         fileLink.cacheDBFileLinkSaveData(data, folder:self.db.folder)
 
@@ -192,7 +192,7 @@ internal class KeyValueDB {
         removeRecordsToDate(date, dateFieldName:"access_time")
     }
 
-    func removeRecordsForKey(_ recordId: String) {
+    func removeRecordsFor(key recordId: String) {
 
         if let fileLink = fileLinkForRecordId(recordId) {
 
@@ -265,7 +265,7 @@ internal class KeyValueDB {
         })
     }
 
-    func removeAllRecordsWithCallback(_ callback: (() -> ())?) {
+    func removeAllRecordsWith(callback: (() -> ())?) {
 
         ///First remove all files
         let query = "SELECT file_link FROM records;"

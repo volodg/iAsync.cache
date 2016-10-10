@@ -44,7 +44,7 @@ open class CacheAdapter : AsyncRestKitCache {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
 
-            self.cacheFactory().setData(data, forKey:key)
+            self.cacheFactory().set(data: data, forKey:key)
             return .success(())
         })
     }
@@ -53,7 +53,7 @@ open class CacheAdapter : AsyncRestKitCache {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: Date, data: Data), ErrorWithContext> in
 
-            let result = self.cacheFactory().dataAndLastUpdateDateForKey(key)
+            let result = self.cacheFactory().dataAndLastUpdateDateFor(key: key)
 
             if let result = result {
                 return .success((date: result.1, data: result.0))

@@ -14,7 +14,7 @@ final public class CacheDBInfoStorage {
 
     internal let info: [String:CacheDBInfo]
 
-    public func infoByDBName(_ dbName: String) -> CacheDBInfo? {
+    public func infoBy(dbName: String) -> CacheDBInfo? {
 
         return info[dbName]
     }

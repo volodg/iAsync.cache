@@ -29,7 +29,7 @@ final public class Caches {
         return result
     }
 
-    public static func setSharedCaches(_ caches: Caches) {
+    public static func setShared(caches: Caches) {
 
         sharedCachesInstance = caches
     }
@@ -40,14 +40,14 @@ final public class Caches {
         self.setupCachesWithDBInfo()
     }
 
-    public static func createCacheForName(_ name: String, dbInfo: DBInfo) -> CacheDB {
+    public static func createCacheFor(name: String, dbInfo: DBInfo) -> CacheDB {
 
-        let cacheInfo = dbInfo.dbInfoByNames.infoByDBName(name)!
+        let cacheInfo = dbInfo.dbInfoByNames.infoBy(dbName: name)!
 
         return InternalCacheDB(cacheDBInfo: cacheInfo)
     }
 
-    func cacheByName(_ name: String) -> CacheDB? {
+    func cacheBy(name: String) -> CacheDB? {
 
         return cacheDbByName[name]
     }
@@ -59,17 +59,17 @@ final public class Caches {
 
     func thumbnailDB() -> CacheDB {
 
-        return cacheByName(Caches.thumbnailDBName())!
+        return cacheBy(name: Caches.thumbnailDBName())!
     }
 
-    static func createThumbnailDB(_ dbInfo: DBInfo) -> CacheDB {
+    static func createThumbnailDBWith(dbInfo: DBInfo) -> CacheDB {
 
-        return createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo)
+        return createCacheFor(name: Caches.thumbnailDBName(), dbInfo: dbInfo)
     }
 
-    func createThumbnailDB(_ dbInfo: DBInfo? = nil) -> CacheDB {
+    func createThumbnailDBFor(dbInfo: DBInfo? = nil) -> CacheDB {
 
-        return type(of: self).createCacheForName(Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
+        return type(of: self).createCacheFor(name: Caches.thumbnailDBName(), dbInfo: dbInfo ?? self.dbInfo)
     }
 
     public func migrateDBs() {
@@ -84,7 +84,7 @@ final public class Caches {
 
     fileprivate var cacheDbByName: [String:InternalCacheDB] = [:]
 
-    fileprivate func registerAndCreateCacheDBWithName(_ dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
+    fileprivate func registerAndCreateCacheDBWith(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
 
         if let result = self.cacheDbByName[dbPropertyName] {
             return result
@@ -101,7 +101,7 @@ final public class Caches {
 
         for (dbName, dbInfo_) in dbInfo.dbInfoByNames.info {
 
-            _ = self.registerAndCreateCacheDBWithName(dbName, cacheDBInfo:dbInfo_)
+            _ = self.registerAndCreateCacheDBWith(dbPropertyName: dbName, cacheDBInfo:dbInfo_)
         }
     }
 }

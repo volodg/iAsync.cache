@@ -143,7 +143,7 @@ final public class ThumbnailStorage {
     fileprivate static var cacheDataLifeTimeInSeconds: TimeInterval {
 
         let dbInfoByNames = Caches.sharedCaches().dbInfo.dbInfoByNames
-        let info = dbInfoByNames.infoByDBName(Caches.thumbnailDBName())!
+        let info = dbInfoByNames.infoBy(dbName: Caches.thumbnailDBName())!
         return info.timeToLiveInHours * 3600.0
     }
 
@@ -152,7 +152,7 @@ final public class ThumbnailStorage {
         init() {
 
             let cacheFactory = { () -> CacheDB in
-                return Caches.sharedCaches().createThumbnailDB()
+                return Caches.sharedCaches().createThumbnailDBFor(dbInfo: nil)
             }
 
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
@@ -161,13 +161,13 @@ final public class ThumbnailStorage {
         override func loaderToSet(data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
 
             let stream = super.loaderToSet(data: data, forKey:key)
-            return Transformer.transformStreamsType(stream, transformer: balanced)
+            return Transformer.transform(stream: stream, transformer: balanced)
         }
 
         override func cachedDataStreamFor(key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
 
             let stream = super.cachedDataStreamFor(key: key)
-            return Transformer.transformStreamsType(stream, transformer: balanced)
+            return Transformer.transform(stream: stream, transformer: balanced)
         }
     }
 
