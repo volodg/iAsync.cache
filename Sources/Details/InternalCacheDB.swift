@@ -78,6 +78,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         })
     }
 
+    //todo rename?
     func migrateDB(_ dbInfo: DBInfo) {
 
         let currentDbInfo  = dbInfo.currentDbVersionsByName

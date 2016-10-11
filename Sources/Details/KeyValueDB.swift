@@ -20,12 +20,14 @@ private let createRecords =
 
 private extension String {
 
+    //todo rename?
     func cacheDBFileLinkPathWithFolder(_ folder: String) -> String {
 
         let result = (folder as NSString).appendingPathComponent(self)
         return result
     }
 
+    //todo rename?
     func cacheDBFileLinkRemoveFileWithFolder(_ folder: String) {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
@@ -36,6 +38,7 @@ private extension String {
         }
     }
 
+    //todo rename?
     func cacheDBFileLinkSaveData(_ data: Data, folder: String) {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
@@ -44,6 +47,7 @@ private extension String {
         path.addSkipBackupAttribute()
     }
 
+    //todo rename?
     func cacheDBFileLinkDataWithFolder(_ folder: String) -> Data? {
 
         let path = cacheDBFileLinkPathWithFolder(folder)
@@ -56,6 +60,7 @@ private extension String {
     }
 }
 
+//todo rename?
 private func fileSizeForPath(_ path: String) -> Int64? {
 
     let fileDictionary: [FileAttributeKey : Any]?
@@ -182,11 +187,13 @@ internal class KeyValueDB {
         })
     }
 
+    //todo rename?
     func removeRecordsToUpdateDate(_ date: Date) {
 
         removeRecordsToDate(date, dateFieldName:"update_time")
     }
 
+    //todo rename?
     func removeRecordsToAccessDate(_ date: Date) {
 
         removeRecordsToDate(date, dateFieldName:"access_time")
@@ -200,6 +207,7 @@ internal class KeyValueDB {
         }
     }
 
+    //todo rename?
     func removeRecordsWhileTotalSizeMoreThenBytes(_ sizeInBytes: Int64) {
 
         let selectQuery = "SELECT file_link FROM records ORDER BY access_time" //ORDER BY ASC is default
@@ -307,10 +315,12 @@ internal class KeyValueDB {
         return Date().timeIntervalSince1970
     }
 
+    //todo rename?
     fileprivate func execQuery(_ sql: String) -> Bool {
         return db.execQuery(sql)
     }
 
+    //todo rename?
     fileprivate func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
         return db.prepareQuery(sql, statement: statement)
     }
@@ -319,6 +329,7 @@ internal class KeyValueDB {
         return db.errorMessage
     }
 
+    //todo rename?
     fileprivate func updateAccessTime(_ recordID: String) {
 
         db.dispatchQueue.async(flags: .barrier, execute: {
@@ -327,6 +338,7 @@ internal class KeyValueDB {
         })
     }
 
+    //todo rename?
     fileprivate func fileLinkForRecordId(_ recordId: String) -> String? {
 
         let query = "SELECT file_link FROM records WHERE record_id='\(recordId)';"
@@ -348,6 +360,7 @@ internal class KeyValueDB {
         return result
     }
 
+    //todo rename?
     fileprivate func removeRecordsForRecordId(_ recordId: AnyObject, fileLink: String) {
 
         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
@@ -367,6 +380,7 @@ internal class KeyValueDB {
         })
     }
 
+    //todo rename?
     fileprivate func addData(_ data: Data, forRecord recordId: String) {
 
         let fileLink = UUID().uuidString
@@ -391,6 +405,7 @@ internal class KeyValueDB {
     }
 
     //JTODO test !!!!
+    //todo rename?
     fileprivate func removeRecordsToDate(_ date: Date, dateFieldName fieldName: String) {
 
         ///First remove all files
@@ -454,6 +469,7 @@ internal class KeyValueDB {
     }
 }
 
+//todo rename?
 private func getOrCreateDispatchQueueForFile(_ file: String) -> DispatchQueue {
 
     let queueName = "com.embedded_sources.dynamic.\(file)"
@@ -526,6 +542,7 @@ final private class JSQLiteDB {
         })
     }
 
+    //todo rename?
     func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
 
         return sql.withCString { cStr in
@@ -534,6 +551,7 @@ final private class JSQLiteDB {
         }
     }
 
+    //todo rename?
     func execQuery(_ sql: String) -> Bool {
 
         return sql.withCString { cStr in
