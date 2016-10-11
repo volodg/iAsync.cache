@@ -17,7 +17,7 @@ final public class DBInfo {
 
     public let dbInfoByNames: CacheDBInfoStorage
 
-    fileprivate var _currentDbVersionsByName: NSDictionary?
+    private var _currentDbVersionsByName: NSDictionary?
     var currentDbVersionsByName: NSDictionary? {
 
         if let result = _currentDbVersionsByName {
@@ -56,7 +56,7 @@ final public class DBInfo {
         struct Static {
             static let instance = Static.createJDBInfo()
 
-            fileprivate static func createJDBInfo() -> DBInfo {
+            private static func createJDBInfo() -> DBInfo {
                 let bundle      = Bundle(for: DBInfo.self)
                 let defaultPath = bundle.path(forResource: "JCacheDBInfo", ofType:"plist")
                 return DBInfo(infoPath: defaultPath!)

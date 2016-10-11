@@ -12,7 +12,7 @@ import iAsync_utils
 
 final public class CanNotCreateImageError : CacheError {
 
-    fileprivate let url: URL
+    private let url: URL
 
     public required init(url: URL) {
 

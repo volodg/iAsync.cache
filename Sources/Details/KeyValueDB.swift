@@ -79,10 +79,10 @@ private func fileSizeForPath(_ path: String) -> Int64? {
 
 internal class KeyValueDB {
 
-    fileprivate let cacheFileName: String
+    private let cacheFileName: String
 
-    fileprivate var _db: JSQLiteDB?
-    fileprivate var db: JSQLiteDB {
+    private var _db: JSQLiteDB?
+    private var db: JSQLiteDB {
         if let db = _db {
 
             return db
@@ -168,7 +168,7 @@ internal class KeyValueDB {
         }
     }
 
-    fileprivate func update(data: Data, forRecord recordId: String, fileLink: String) {
+    private func update(data: Data, forRecord recordId: String, fileLink: String) {
 
         fileLink.cacheDBFileLinkSaveData(data, folder:self.db.folder)
 
@@ -311,26 +311,26 @@ internal class KeyValueDB {
         })
     }
 
-    fileprivate var currentTime: TimeInterval {
+    private var currentTime: TimeInterval {
         return Date().timeIntervalSince1970
     }
 
     //todo rename?
-    fileprivate func execQuery(_ sql: String) -> Bool {
+    private func execQuery(_ sql: String) -> Bool {
         return db.execQuery(sql)
     }
 
     //todo rename?
-    fileprivate func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
+    private func prepareQuery(_ sql: String, statement: UnsafeMutablePointer<OpaquePointer?>) -> Bool {
         return db.prepareQuery(sql, statement: statement)
     }
 
-    fileprivate var errorMessage: String? {
+    private var errorMessage: String? {
         return db.errorMessage
     }
 
     //todo rename?
-    fileprivate func updateAccessTime(_ recordID: String) {
+    private func updateAccessTime(_ recordID: String) {
 
         db.dispatchQueue.async(flags: .barrier, execute: {
             _ = self.execQuery("UPDATE records SET access_time='\(self.currentTime)' WHERE record_id='\(recordID)';")
@@ -339,7 +339,7 @@ internal class KeyValueDB {
     }
 
     //todo rename?
-    fileprivate func fileLinkForRecordId(_ recordId: String) -> String? {
+    private func fileLinkForRecordId(_ recordId: String) -> String? {
 
         let query = "SELECT file_link FROM records WHERE record_id='\(recordId)';"
 
@@ -361,7 +361,7 @@ internal class KeyValueDB {
     }
 
     //todo rename?
-    fileprivate func removeRecordsForRecordId(_ recordId: AnyObject, fileLink: String) {
+    private func removeRecordsForRecordId(_ recordId: AnyObject, fileLink: String) {
 
         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
 
@@ -381,7 +381,7 @@ internal class KeyValueDB {
     }
 
     //todo rename?
-    fileprivate func addData(_ data: Data, forRecord recordId: String) {
+    private func addData(_ data: Data, forRecord recordId: String) {
 
         let fileLink = UUID().uuidString
 
@@ -406,7 +406,7 @@ internal class KeyValueDB {
 
     //JTODO test !!!!
     //todo rename?
-    fileprivate func removeRecordsToDate(_ date: Date, dateFieldName fieldName: String) {
+    private func removeRecordsToDate(_ date: Date, dateFieldName fieldName: String) {
 
         ///First remove all files
         let query = "SELECT file_link FROM records WHERE \(fieldName) < '\(date.timeIntervalSince1970)';"
@@ -445,7 +445,7 @@ internal class KeyValueDB {
         })
     }
 
-    fileprivate func folderSize() -> Int64 {
+    private func folderSize() -> Int64 {
 
         let folderPath  = self.db.folder
         let fileManager = FileManager.default
@@ -479,7 +479,7 @@ private func getOrCreateDispatchQueueForFile(_ file: String) -> DispatchQueue {
 
 final private class JSQLiteDB {
 
-    fileprivate var db: OpaquePointer? = nil
+    private var db: OpaquePointer? = nil
     let dispatchQueue: DispatchQueue
 
     fileprivate let folder: String

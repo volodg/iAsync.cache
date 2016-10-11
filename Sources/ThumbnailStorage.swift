@@ -52,9 +52,9 @@ final public class ThumbnailStorage {
             object  : nil)
     }
 
-    fileprivate let cachedAsyncOp2 = MergedAsyncStream<URL, Data, AnyObject, ErrorWithContext>()
-    fileprivate let cachedAsyncOp  = MergedAsyncStream<URL, UIImage, AnyObject, ErrorWithContext>()
-    fileprivate let imagesByUrl    = NSCache<NSURL, UIImage>()
+    private let cachedAsyncOp2 = MergedAsyncStream<URL, Data, AnyObject, ErrorWithContext>()
+    private let cachedAsyncOp  = MergedAsyncStream<URL, UIImage, AnyObject, ErrorWithContext>()
+    private let imagesByUrl    = NSCache<NSURL, UIImage>()
 
     public typealias AsyncT = AsyncStream<UIImage, AnyObject, ErrorWithContext>
 
@@ -118,7 +118,7 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    fileprivate func cachedInDBImageDataStreamFor(url: URL) -> AsyncStream<(UIImage, Data), AnyObject, ErrorWithContext> {
+    private func cachedInDBImageDataStreamFor(url: URL) -> AsyncStream<(UIImage, Data), AnyObject, ErrorWithContext> {
 
         let dataStream = network.dataStreamWith(url: url).mapNext { info -> AnyObject in
             switch info {
@@ -140,14 +140,14 @@ final public class ThumbnailStorage {
         return stream.mapError { ErrorWithContext(error: CacheLoadImageError(nativeError: $0.error), context: "\($0.context)" + " + " + #function) }
     }
 
-    fileprivate static var cacheDataLifeTimeInSeconds: TimeInterval {
+    private static var cacheDataLifeTimeInSeconds: TimeInterval {
 
         let dbInfoByNames = Caches.sharedCaches().dbInfo.dbInfoByNames
         let info = dbInfoByNames.infoBy(dbName: Caches.thumbnailDBName())!
         return info.timeToLiveInHours * 3600.0
     }
 
-    final fileprivate class ImageCacheAdapter : CacheAdapter {
+    final private class ImageCacheAdapter : CacheAdapter {
 
         init() {
 
@@ -171,7 +171,7 @@ final public class ThumbnailStorage {
         }
     }
 
-    fileprivate func createImageCacheAdapter() -> ImageCacheAdapter {
+    private func createImageCacheAdapter() -> ImageCacheAdapter {
 
         let result = ImageCacheAdapter()
         return result

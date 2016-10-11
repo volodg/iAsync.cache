@@ -31,8 +31,8 @@ public class NoCacheDataError : SilentError {
 
 open class CacheAdapter : AsyncRestKitCache {
 
-    fileprivate let cacheFactory  : CacheFactory
-    fileprivate let cacheQueueName: String
+    private let cacheFactory  : CacheFactory
+    private let cacheQueueName: String
 
     public init(cacheFactory: @escaping CacheFactory, cacheQueueName: String) {
 

@@ -23,7 +23,7 @@ private class Properties {
 
 public extension UIImageView {
 
-    fileprivate var iAsync_cache_Properties: Properties {
+    private var iAsync_cache_Properties: Properties {
         get {
             if let result = objc_getAssociatedObject(self, &iAsync_AsycImageProperties) as? Properties {
                 return result
@@ -71,7 +71,7 @@ public extension UIImageView {
         stream.run().disposeIn(iAsync_cache_Properties.dispose)
     }
 
-    fileprivate func setImageOrNotifyVia(callback :((UIImage?)->Void)?, image :UIImage?) {
+    private func setImageOrNotifyVia(callback :((UIImage?)->Void)?, image :UIImage?) {
 
         if let callback_ = callback {
 

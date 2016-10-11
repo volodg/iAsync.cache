@@ -82,9 +82,9 @@ final public class Caches {
         dbInfo.saveCurrentDBInfoVersions()
     }
 
-    fileprivate var cacheDbByName: [String:InternalCacheDB] = [:]
+    private var cacheDbByName: [String:InternalCacheDB] = [:]
 
-    fileprivate func registerAndCreateCacheDBWith(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
+    private func registerAndCreateCacheDBWith(dbPropertyName: String, cacheDBInfo: CacheDBInfo) -> CacheDB {
 
         if let result = self.cacheDbByName[dbPropertyName] {
             return result
@@ -97,7 +97,7 @@ final public class Caches {
         return result
     }
 
-    fileprivate func setupCachesWithDBInfo() {
+    private func setupCachesWithDBInfo() {
 
         for (dbName, dbInfo_) in dbInfo.dbInfoByNames.info {
 

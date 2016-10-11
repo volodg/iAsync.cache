@@ -30,7 +30,7 @@ final internal class InternalCacheDB : KeyValueDB, CacheDB {
         super.init(cacheFileName: cacheDBInfo.fileName)
     }
 
-    fileprivate func removeOldData() {
+    private func removeOldData() {
 
         let removeRarelyAccessDataDelay = cacheDBInfo.autoRemoveByLastAccessDate
 
