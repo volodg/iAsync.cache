@@ -65,7 +65,7 @@ final public class ThumbnailStorage {
 
     public func imageDataStreamFor(url: URL?) -> AsyncStream<Data, AnyObject, ErrorWithContext> {
 
-        guard let url = url , !url.isNoImageDataURL else {
+        guard let url = url, !url.isNoImageDataURL else {
             let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
             return AsyncStream.failed(with: contextError)
         }
@@ -84,7 +84,7 @@ final public class ThumbnailStorage {
 
     public func imageStreamFor(url: URL?) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> {
 
-        guard let url = url , !url.isNoImageDataURL else {
+        guard let url = url, !url.isNoImageDataURL else {
             let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
             return AsyncStream.failed(with: contextError)
         }

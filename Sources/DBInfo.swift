@@ -33,7 +33,7 @@ final public class DBInfo {
             let path = DBInfo.currentDBInfoFilePath()
             let currentDbInfo = path.dictionaryContent()
 
-            if let currentDbInfo = currentDbInfo , currentDbInfo.count > 0 {
+            if let currentDbInfo = currentDbInfo, currentDbInfo.count > 0 {
                 self._currentDbVersionsByName = currentDbInfo
             }
             return self._currentDbVersionsByName
