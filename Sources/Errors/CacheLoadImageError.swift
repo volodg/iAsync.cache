@@ -30,16 +30,9 @@ final public class CacheLoadImageError : CacheError {
         let result = "\(type(of: self)) : \(localizedDescription) nativeError: \(nativeError.errorLogText)"
         return result
     }
-}
 
-extension CanRepeatError where Self : CacheLoadImageError {
+    override open var canRepeatError: Bool {
 
-    /*swift3*/
-    public var canRepeatError: Bool {
-
-        if let error_ = nativeError as? CanRepeatError {
-            return error_.canRepeatError
-        }
-        return false
+        return nativeError.canRepeatError || nativeError.isNetworkError
     }
 }

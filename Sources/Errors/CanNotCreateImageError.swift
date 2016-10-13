@@ -28,4 +28,9 @@ final public class CanNotCreateImageError : CacheError {
     }
 
     open override var logTarget: LogTarget { return LogTarget.logger }
+
+    override open var canRepeatError: Bool {
+
+        return true
+    }
 }
