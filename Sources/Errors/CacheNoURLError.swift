@@ -17,10 +17,6 @@ final public class CacheNoURLError : CacheError {
         let str = "iAsync_CACHE_NO_URL_ERROR"
         super.init(description: str)
     }
-
-    required public init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 public extension LoggedObject where Self : CacheNoURLError {

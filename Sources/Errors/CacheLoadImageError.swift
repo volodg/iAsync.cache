@@ -12,41 +12,29 @@ import iAsync_utils
 
 final public class CacheLoadImageError : CacheError {
 
-    public let nativeError: NSError
+    public let nativeError: UtilsError
 
-    required public init(nativeError: NSError) {
+    required public init(nativeError: UtilsError) {
 
         self.nativeError = nativeError
         super.init(description: "J_CACHE_LOAD_IMAGE_ERROR")
     }
 
-    required public init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+    override open var logTarget: LogTarget {
 
-public extension LoggedObject where Self : CacheLoadImageError {
-
-    var logTarget: LogTarget {
-
-        if let obj = nativeError as? LoggedObject {
-            return obj.logTarget
-        }
-
-        return LogTarget.nothing
+        return nativeError.logTarget
     }
 
-    var errorLogText: String {
+    override open var errorLogText: String {
 
-        let errorLog = (nativeError as? LoggedObject)?.errorLogText ?? "\(nativeError)"
-
-        let result = "\(type(of: self)) : \(localizedDescription), domain : \(domain) code : \(code) nativeError: \(errorLog)"
+        let result = "\(type(of: self)) : \(localizedDescription) nativeError: \(nativeError.errorLogText)"
         return result
     }
 }
 
 extension CanRepeatError where Self : CacheLoadImageError {
 
+    /*swift3*/
     public var canRepeatError: Bool {
 
         if let error_ = nativeError as? CanRepeatError {

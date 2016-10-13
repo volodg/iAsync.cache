@@ -23,10 +23,6 @@ public class NoCacheDataError : SilentError {
         let description = "no cached data for key: \(key)"
         super.init(description: description)
     }
-
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 open class CacheAdapter : AsyncRestKitCache {

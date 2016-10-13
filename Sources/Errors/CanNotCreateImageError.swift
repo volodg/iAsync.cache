@@ -20,23 +20,12 @@ final public class CanNotCreateImageError : CacheError {
         super.init(description: "can not create image with given data")
     }
 
-    required public init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-public extension LoggedObject where Self : CanNotCreateImageError {
-
-    //todo test
-    /*public var errorLog: [String:String] {
+    open override var errorLog: [String:String] {
 
         var result = super.errorLog
         result["RequestURL"] = url.description
         return result
-    }*/
-}
+    }
 
-public extension LoggedObject where Self : CanNotCreateImageError {
-
-    var logTarget: LogTarget { return LogTarget.logger }
+    open override var logTarget: LogTarget { return LogTarget.logger }
 }
