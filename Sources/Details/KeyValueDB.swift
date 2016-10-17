@@ -158,7 +158,7 @@ internal class KeyValueDB {
             if let data = data {
                 update(data: data, forRecord:recordId, fileLink:fileLink)
             } else {
-                removeRecordsForRecordId(recordId as AnyObject, fileLink:fileLink)
+                removeRecordsForRecordId(recordId, fileLink:fileLink)
             }
             return
         }
@@ -203,7 +203,7 @@ internal class KeyValueDB {
 
         if let fileLink = fileLinkForRecordId(recordId) {
 
-            removeRecordsForRecordId(recordId as AnyObject, fileLink:fileLink)
+            removeRecordsForRecordId(recordId, fileLink:fileLink)
         }
     }
 
@@ -361,7 +361,7 @@ internal class KeyValueDB {
     }
 
     //todo rename?
-    private func removeRecordsForRecordId(_ recordId: AnyObject, fileLink: String) {
+    private func removeRecordsForRecordId(_ recordId: Any, fileLink: String) {
 
         fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
 
