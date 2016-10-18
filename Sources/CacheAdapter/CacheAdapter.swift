@@ -55,7 +55,7 @@ open class CacheAdapter : AsyncRestKitCache {
                 return .success((date: result.1, data: result.0))
             }
 
-            let contextError = ErrorWithContext(error: NoCacheDataError(key: key), context: #function)
+            let contextError = ErrorWithContext(utilsError: NoCacheDataError(key: key), context: #function)
             return .failure(contextError)
         })
     }

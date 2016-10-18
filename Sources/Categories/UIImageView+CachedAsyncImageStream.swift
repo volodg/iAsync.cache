@@ -43,7 +43,7 @@ public extension UIImageView {
         if let url = url {
             thumbStream = thumbnailStorage.imageStreamFor(url: url)
         } else {
-            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
+            let contextError = ErrorWithContext(utilsError: CacheNoURLError(), context: #function)
             thumbStream = AsyncStream.failed(with: contextError)
         }
 

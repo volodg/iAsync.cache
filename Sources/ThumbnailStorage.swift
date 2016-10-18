@@ -66,7 +66,7 @@ final public class ThumbnailStorage {
     public func imageDataStreamFor(url: URL?) -> AsyncStream<Data, AnyObject, ErrorWithContext> {
 
         guard let url = url, !url.isNoImageDataURL else {
-            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
+            let contextError = ErrorWithContext(utilsError: CacheNoURLError(), context: #function)
             return AsyncStream.failed(with: contextError)
         }
 
@@ -85,7 +85,7 @@ final public class ThumbnailStorage {
     public func imageStreamFor(url: URL?) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> {
 
         guard let url = url, !url.isNoImageDataURL else {
-            let contextError = ErrorWithContext(error: CacheNoURLError(), context: #function)
+            let contextError = ErrorWithContext(utilsError: CacheNoURLError(), context: #function)
             return AsyncStream.failed(with: contextError)
         }
 
@@ -137,7 +137,7 @@ final public class ThumbnailStorage {
             strategy       : .cacheFirst(type(of: self).cacheDataLifeTimeInSeconds))
 
         let stream = jSmartDataStreamWith(cacheArgs: args).fixAndLogError()
-        return stream.mapError { ErrorWithContext(error: CacheLoadImageError(nativeError: $0.error), context: "\($0.context)" + " + " + #function) }
+        return stream.mapError { ErrorWithContext(utilsError: CacheLoadImageError(nativeError: $0.error), context: "\($0.context)" + " + " + #function) }
     }
 
     private static var cacheDataLifeTimeInSeconds: TimeInterval {
@@ -202,7 +202,7 @@ private func imageDataToUIImageBinderFor(url: URL) -> SmartDataStreamFields<(UII
             }
 
             let error = CanNotCreateImageError(url: url)
-            let contextError = ErrorWithContext(error: error, context: #function)
+            let contextError = ErrorWithContext(utilsError: error, context: #function)
             return .failure(contextError)
         }
     }
