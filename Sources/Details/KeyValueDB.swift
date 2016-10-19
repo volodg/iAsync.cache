@@ -20,39 +20,35 @@ private let createRecords =
 
 private extension String {
 
-    //todo rename?
-    func cacheDBFileLinkPathWithFolder(_ folder: String) -> String {
+    func cacheDBFileLinkPath(withFolder folder: URL) -> URL {
 
-        let result = (folder as NSString).appendingPathComponent(self)
+        let result = folder.appendingPathComponent(self)
         return result
     }
 
-    //todo rename?
-    func cacheDBFileLinkRemoveFileWithFolder(_ folder: String) {
+    func cacheDBFileLinkRemoveFile(withFolder folder: URL) {
 
-        let path = cacheDBFileLinkPathWithFolder(folder)
+        let path = cacheDBFileLinkPath(withFolder: folder)
         do {
-            try FileManager.default.removeItem(atPath: path)
+            try FileManager.default.removeItem(at: path)
         } catch {
             print("iAsync_utils.DBError: can not remove file: \(path)")
         }
     }
 
     //todo rename?
-    func cacheDBFileLinkSaveData(_ data: Data, folder: String) {
+    func cacheDBFileLinkSaveData(_ data: Data, folder: URL) {
 
-        let path = cacheDBFileLinkPathWithFolder(folder)
-        let url = URL(fileURLWithPath:path, isDirectory:false)
+        var url = cacheDBFileLinkPath(withFolder: folder)
         try? data.write(to: url, options: [])
-        path.addSkipBackupAttribute()
+        url.addSkipBackupAttribute()
     }
 
-    //todo rename?
-    func cacheDBFileLinkDataWithFolder(_ folder: String) -> Data? {
+    func cacheDBFileLinkData(withFolder folder: URL) -> Data? {
 
-        let path = cacheDBFileLinkPathWithFolder(folder)
+        let path = cacheDBFileLinkPath(withFolder: folder)
         do {
-            let result = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+            let result = try Data(contentsOf: path, options: .mappedIfSafe)
             return result
         } catch {
             return nil
@@ -60,12 +56,11 @@ private extension String {
     }
 }
 
-//todo rename?
-private func fileSizeForPath(_ path: String) -> Int64? {
+private func fileSize(forPath path: URL) -> Int64? {
 
     let fileDictionary: [FileAttributeKey : Any]?
     do {
-        fileDictionary = try FileManager.default.attributesOfItem(atPath: path)
+        fileDictionary = try FileManager.default.attributesOfItem(atPath: path.path)
     } catch let error as NSError {
         iAsync_utils_logger.logError("no file attributes for file with path: \(path) error: \(error)", context: #function)
         fileDictionary = nil
@@ -130,7 +125,7 @@ internal class KeyValueDB {
 
                     let str = bridging_sqlite3_column_text(statement, linkIndex)
                     let fileLink = String(cString: UnsafePointer<UInt8>(str!))
-                    let data = fileLink.cacheDBFileLinkDataWithFolder(self.db.folder)
+                    let data = fileLink.cacheDBFileLinkData(withFolder: self.db.folder)
 
                     if let data = data {
                         let dateInetrval = bridging_sqlite3_column_double(statement, dateIndex)
@@ -170,7 +165,7 @@ internal class KeyValueDB {
 
     private func update(data: Data, forRecord recordId: String, fileLink: String) {
 
-        fileLink.cacheDBFileLinkSaveData(data, folder:self.db.folder)
+        fileLink.cacheDBFileLinkSaveData(data, folder: self.db.folder)
 
         let updateQuery = "UPDATE records SET update_time='\(currentTime)', access_time='\(currentTime)' WHERE record_id='\(recordId)';"
 
@@ -234,18 +229,18 @@ internal class KeyValueDB {
                             let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
                             //remove file
-                            let filePath = fileLink.cacheDBFileLinkPathWithFolder(self.db.folder)
-                            let fileSize = fileSizeForPath(filePath) ?? 0
+                            let filePath = fileLink.cacheDBFileLinkPath(withFolder: self.db.folder)
+                            let totalFileSize = fileSize(forPath: filePath) ?? 0
 
                             filesRemoved += 1
-                            if sizeToRemove > fileSize {
-                                sizeToRemove -= fileSize
+                            if sizeToRemove > totalFileSize {
+                                sizeToRemove -= totalFileSize
                             } else {
                                 sizeToRemove = 0
                             }
 
                             do {
-                                try FileManager.default.removeItem(atPath: filePath)
+                                try FileManager.default.removeItem(at: filePath)
                             } catch {
                                 print("iAsync_utils.DBError2: can not remove file: \(filePath)")
                             }
@@ -290,7 +285,7 @@ internal class KeyValueDB {
                         let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
                         //JTODO remove files in separate tread, do nont wait it
-                        fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
+                        fileLink.cacheDBFileLinkRemoveFile(withFolder: self.db.folder)
                     }
                 }
                 bridging_sqlite3_finalize(statement)
@@ -363,7 +358,7 @@ internal class KeyValueDB {
     //todo rename?
     private func removeRecordsForRecordId(_ recordId: Any, fileLink: String) {
 
-        fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
+        fileLink.cacheDBFileLinkRemoveFile(withFolder: self.db.folder)
 
         let removeQuery = "DELETE FROM records WHERE record_id='\(recordId)';"
 
@@ -423,7 +418,7 @@ internal class KeyValueDB {
                         let str = bridging_sqlite3_column_text(statement, 0)
                         let fileLink = String(cString: UnsafePointer<UInt8>(str!))
 
-                        fileLink.cacheDBFileLinkRemoveFileWithFolder(self.db.folder)
+                        fileLink.cacheDBFileLinkRemoveFile(withFolder: self.db.folder)
                     }
                 }
                 bridging_sqlite3_finalize(statement)
@@ -449,23 +444,22 @@ internal class KeyValueDB {
 
         let folderPath  = self.db.folder
         let fileManager = FileManager.default
-        let filesEnumerator = fileManager.enumerator(atPath: folderPath)
+        let filesEnumerator = fileManager.enumerator(at: folderPath, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
 
-        var fileSize: Int64 = 0
+        var totalFileSize: Int64 = 0
 
         if let filesEnumerator = filesEnumerator {
 
-            while let fileName = filesEnumerator.nextObject() as? String {
+            while let fileName = filesEnumerator.nextObject() as? URL {
 
                 autoreleasepool {
 
-                    let path = (folderPath as NSString).appendingPathComponent(fileName)
-                    fileSize += fileSizeForPath(path) ?? 0
+                    totalFileSize += fileSize(forPath: fileName) ?? 0
                 }
             }
         }
 
-        return fileSize
+        return totalFileSize
     }
 }
 
@@ -482,7 +476,7 @@ final private class JSQLiteDB {
     private var db: OpaquePointer? = nil
     let dispatchQueue: DispatchQueue
 
-    fileprivate let folder: String
+    fileprivate let folder: URL
 
     deinit {
         bridging_sqlite3_close(db)
@@ -500,11 +494,11 @@ final private class JSQLiteDB {
 
             let manager = FileManager.default
 
-            if !manager.fileExists(atPath: self.folder) {
+            if !manager.fileExists(atPath: self.folder.path) {
 
                 do {
                     try manager.createDirectory(
-                        atPath: self.folder,
+                        at: self.folder,
                         withIntermediateDirectories: true,
                         attributes: nil)
                 } catch {
@@ -512,7 +506,7 @@ final private class JSQLiteDB {
                 }
             }
 
-            let openResult = dbPath.path.withCString { cStr -> Bool in
+            let openResult = dbPath.filePath.path.withCString { cStr -> Bool in
 
                 let result = bridging_sqlite3_open(cStr, &self.db) == BRIDGING_SQLITE_OK
                 if !result {
