@@ -17,9 +17,8 @@ final public class CacheNoURLError : CacheError {
         let str = "iAsync_CACHE_NO_URL_ERROR"
         super.init(description: str)
     }
-}
 
-public extension LoggedObject where Self : CacheNoURLError {
-
-    var logTarget: LogTarget { return LogTarget.nothing }
+    public override var logTarget: LogTarget {
+        return LogTarget.nothing
+    }
 }
