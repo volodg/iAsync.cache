@@ -39,7 +39,7 @@ public extension UIImageView {
 
     func setImageWith(url: URL?, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
-        let thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>
+        let thumbStream: AsyncStream<UIImage, Any, ErrorWithContext>
         if let url = url {
             thumbStream = thumbnailStorage.imageStreamFor(url: url)
         } else {
@@ -50,7 +50,7 @@ public extension UIImageView {
         setImageWith(thumbStream: thumbStream, placeholder: placeholder, noImage: noImage, callBack: callBack)
     }
 
-    func setImageWith(thumbStream: AsyncStream<UIImage, AnyObject, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
+    func setImageWith(thumbStream: AsyncStream<UIImage, Any, ErrorWithContext>, placeholder: UIImage? = nil, noImage: UIImage? = nil, callBack:((UIImage?)->Void)? = nil) {
 
         image = placeholder
 

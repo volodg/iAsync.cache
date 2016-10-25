@@ -36,7 +36,7 @@ open class CacheAdapter : AsyncRestKitCache {
         self.cacheFactory   = cacheFactory
     }
 
-    public func loaderToSet(data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
+    public func loaderToSet(data: Data, forKey key: String) -> AsyncStream<Void, Any, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<Void, ErrorWithContext> in
 
@@ -45,7 +45,7 @@ open class CacheAdapter : AsyncRestKitCache {
         })
     }
 
-    public func cachedDataStreamFor(key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
+    public func cachedDataStreamFor(key: String) -> AsyncStream<(date: Date, data: Data), Any, ErrorWithContext> {
 
         return asyncStreamWithJob(cacheQueueName, job: { _ -> Result<(date: Date, data: Data), ErrorWithContext> in
 

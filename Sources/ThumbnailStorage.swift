@@ -52,25 +52,25 @@ final public class ThumbnailStorage {
             object  : nil)
     }
 
-    private let cachedAsyncOp2 = MergedAsyncStream<URL, Data, AnyObject, ErrorWithContext>()
-    private let cachedAsyncOp  = MergedAsyncStream<URL, UIImage, AnyObject, ErrorWithContext>()
+    private let cachedAsyncOp2 = MergedAsyncStream<URL, Data, Any, ErrorWithContext>()
+    private let cachedAsyncOp  = MergedAsyncStream<URL, UIImage, Any, ErrorWithContext>()
     private let imagesByUrl    = NSCache<NSURL, UIImage>()
 
-    public typealias AsyncT = AsyncStream<UIImage, AnyObject, ErrorWithContext>
+    public typealias AsyncT = AsyncStream<UIImage, Any, ErrorWithContext>
 
-    public func putToCache(data: Data, key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
+    public func putToCache(data: Data, key: String) -> AsyncStream<Void, Any, ErrorWithContext> {
 
         return createImageCacheAdapter().loaderToSet(data: data, forKey: key)
     }
 
-    public func imageDataStreamFor(url: URL?) -> AsyncStream<Data, AnyObject, ErrorWithContext> {
+    public func imageDataStreamFor(url: URL?) -> AsyncStream<Data, Any, ErrorWithContext> {
 
         guard let url = url, !url.isNoImageDataURL else {
             let contextError = ErrorWithContext(utilsError: CacheNoURLError(), context: #function)
             return AsyncStream.failed(with: contextError)
         }
 
-        let stream: AsyncStream<Data, AnyObject, ErrorWithContext> = AsyncStream { observer -> Disposable in
+        let stream: AsyncStream<Data, Any, ErrorWithContext> = AsyncStream { observer -> Disposable in
 
             let cachedStream = self.cachedInDBImageDataStreamFor(url: url).map { $0.1 }
 
@@ -82,7 +82,7 @@ final public class ThumbnailStorage {
         return stream.logError()
     }
 
-    public func imageStreamFor(url: URL?) -> AsyncStream<UIImage, AnyObject, ErrorWithContext> {
+    public func imageStreamFor(url: URL?) -> AsyncStream<UIImage, Any, ErrorWithContext> {
 
         guard let url = url, !url.isNoImageDataURL else {
             let contextError = ErrorWithContext(utilsError: CacheNoURLError(), context: #function)
@@ -93,7 +93,7 @@ final public class ThumbnailStorage {
 
             let cachedStream = self.cachedInDBImageDataStreamFor(url: url).map { $0.0 }
 
-            let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, AnyObject, ErrorWithContext>? in
+            let stream = self.cachedAsyncOp.mergedStream({ cachedStream }, key: url, getter: { () -> AsyncEvent<UIImage, Any, ErrorWithContext>? in
                 if let image = self.imagesByUrl.object(forKey: url as NSURL) {
                     return .success(image)
                 }
@@ -118,9 +118,9 @@ final public class ThumbnailStorage {
         imagesByUrl.removeAllObjects()
     }
 
-    private func cachedInDBImageDataStreamFor(url: URL) -> AsyncStream<(UIImage, Data), AnyObject, ErrorWithContext> {
+    private func cachedInDBImageDataStreamFor(url: URL) -> AsyncStream<(UIImage, Data), Any, ErrorWithContext> {
 
-        let dataStream = network.dataStreamWith(url: url).mapNext { info -> AnyObject in
+        let dataStream = network.dataStreamWith(url: url).mapNext { info -> Any in
             switch info {
             case .download(let chunk):
                 return chunk
@@ -158,13 +158,13 @@ final public class ThumbnailStorage {
             super.init(cacheFactory: cacheFactory, cacheQueueName: cacheQueueName)
         }
 
-        override func loaderToSet(data: Data, forKey key: String) -> AsyncStream<Void, AnyObject, ErrorWithContext> {
+        override func loaderToSet(data: Data, forKey key: String) -> AsyncStream<Void, Any, ErrorWithContext> {
 
             let stream = super.loaderToSet(data: data, forKey:key)
             return Transformer.transform(stream: stream, transformer: balanced)
         }
 
-        override func cachedDataStreamFor(key: String) -> AsyncStream<(date: Date, data: Data), AnyObject, ErrorWithContext> {
+        override func cachedDataStreamFor(key: String) -> AsyncStream<(date: Date, data: Data), Any, ErrorWithContext> {
 
             let stream = super.cachedDataStreamFor(key: key)
             return Transformer.transform(stream: stream, transformer: balanced)
@@ -191,7 +191,7 @@ final public class ThumbnailStorage {
 //example - https://github.com/Alamofire/AlamofireImage
 private func imageDataToUIImageBinderFor(url: URL) -> SmartDataStreamFields<(UIImage, Data), HTTPURLResponse>.AnalyzerType {
 
-    return { imageData -> AsyncStream<(UIImage, Data), AnyObject, ErrorWithContext> in
+    return { imageData -> AsyncStream<(UIImage, Data), Any, ErrorWithContext> in
 
         return asyncStreamWithJob { _ -> Result<(UIImage, Data), ErrorWithContext> in
 
@@ -223,7 +223,7 @@ extension UIImage {
     }
 }
 
-private typealias Transformer = AsyncStreamTypesTransform<Void, (date: Date, data: Data), AnyObject, AnyObject, ErrorWithContext, ErrorWithContext>
+private typealias Transformer = AsyncStreamTypesTransform<Void, (date: Date, data: Data), Any, Any, ErrorWithContext, ErrorWithContext>
 
 //limit sqlite number of threads
 private let cacheBalancer = LimitedAsyncStreamsQueue<StrategyFifo<Transformer.PackedValueT, Transformer.PackedNextT, Transformer.PackedErrorT>>()

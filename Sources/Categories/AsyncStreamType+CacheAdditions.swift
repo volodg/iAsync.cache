@@ -15,7 +15,7 @@ import iAsync_reactiveKit
 
 public extension AsyncStreamType where ValueT == NetworkResponse, ErrorT == ErrorWithContext {
 
-    func toJson() -> AsyncStream<Any, AnyObject, ErrorWithContext> {
+    func toJson() -> AsyncStream<Any, Any, ErrorWithContext> {
 
         let stream = self.mapNext2AnyObject()
         return stream.flatMap { JsonTools.jsonStream(forData: $0.responseData, context: $0) }
