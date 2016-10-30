@@ -230,5 +230,5 @@ private let cacheBalancer = LimitedAsyncStreamsQueue<StrategyFifo<Transformer.Pa
 
 private func balanced(stream: Transformer.PackedAsyncStream) -> Transformer.PackedAsyncStream {
 
-    return cacheBalancer.balancedStream(stream, barrier:false)
+    return cacheBalancer.balanced(stream: stream, barrier:false)
 }
