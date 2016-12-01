@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '6BA7B33D44616D3D9FBFF329FA629310'
+               BlueprintIdentifier = '144FDAE0152FF10FC49A01F44ADD1285'
                BlueprintName = 'iAsync.network-Bundle'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'Bundle.bundle'>

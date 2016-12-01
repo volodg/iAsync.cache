@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5BA60D6F506BE690A88B95478955A49B"
-               BuildableName = "iAsync_restkit.framework"
-               BlueprintName = "iAsync.restkit"
+               BlueprintIdentifier = "E6E6B8B1155BF1F3F5A0DD31BC5DF67F"
+               BuildableName = "iAsync_cache.framework"
+               BlueprintName = "iAsync.cache"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5BA60D6F506BE690A88B95478955A49B"
-            BuildableName = "iAsync_restkit.framework"
-            BlueprintName = "iAsync.restkit"
+            BlueprintIdentifier = "E6E6B8B1155BF1F3F5A0DD31BC5DF67F"
+            BuildableName = "iAsync_cache.framework"
+            BlueprintName = "iAsync.cache"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

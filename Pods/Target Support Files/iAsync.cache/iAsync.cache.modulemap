@@ -1,0 +1,6 @@
+framework module iAsync_cache {
+  umbrella header "iAsync.cache-umbrella.h"
+
+  export *
+  module * { export * }
+}

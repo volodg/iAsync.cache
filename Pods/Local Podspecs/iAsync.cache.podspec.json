@@ -1,8 +1,8 @@
 {
-  "name": "iAsync.restkit",
+  "name": "iAsync.cache",
   "version": "0.0.1",
-  "summary": "iAsync.restkit lib provides tools used in other iAsync libraries",
-  "description": "iAsync.restkit lib provides tools used in other iAsync libraries\n\n* contains usefull Arrays, Dict, String extensions",
+  "summary": "iAsync.cache lib provides tools used in other iAsync libraries",
+  "description": "iAsync.cache lib provides tools used in other iAsync libraries\n\n* contains usefull Arrays, Dict, String extensions",
   "homepage": "https://www.facebook.com/vladimir.gorbenko.9",
   "license": {
     "type": "MIT",
@@ -16,15 +16,23 @@
     "ios": "8.0"
   },
   "source": {
-    "git": "https://github.com/volodg/iAsync.restkit.git",
+    "git": "https://github.com/volodg/iAsync.cache.git",
     "tag": "0.0.1"
   },
-  "source_files": "Sources/**/*.{swift}",
+  "source_files": "Sources/**/*.{swift,m,h}",
+  "resources": "Sources/Resources/JCacheDBInfo.plist",
+  "libraries": "sqlite3",
   "xcconfig": {
     "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES": "YES"
   },
   "dependencies": {
     "iAsync.utils": [
+
+    ],
+    "iAsync.network": [
+
+    ],
+    "iAsync.restkit": [
 
     ],
     "iAsync.reactiveKit": [

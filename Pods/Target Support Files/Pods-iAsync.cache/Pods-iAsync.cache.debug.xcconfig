@@ -1,10 +1,10 @@
+ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO
 CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES
-EMBEDDED_CONTENT_CONTAINS_SWIFT = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/ReactiveKit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.network" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.reactiveKit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.restkit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.utils"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/ReactiveKit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.cache" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.network" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.reactiveKit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.restkit" "$PODS_CONFIGURATION_BUILD_DIR/iAsync.utils"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -iquote "$PODS_CONFIGURATION_BUILD_DIR/ReactiveKit/ReactiveKit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.network/iAsync_network.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.reactiveKit/iAsync_reactiveKit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.restkit/iAsync_restkit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.utils/iAsync_utils.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -framework "ReactiveKit" -framework "iAsync_network" -framework "iAsync_reactiveKit" -framework "iAsync_restkit" -framework "iAsync_utils"
+OTHER_CFLAGS = $(inherited) -iquote "$PODS_CONFIGURATION_BUILD_DIR/ReactiveKit/ReactiveKit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.cache/iAsync_cache.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.network/iAsync_network.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.reactiveKit/iAsync_reactiveKit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.restkit/iAsync_restkit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/iAsync.utils/iAsync_utils.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -framework "ReactiveKit" -framework "iAsync_cache" -framework "iAsync_network" -framework "iAsync_reactiveKit" -framework "iAsync_restkit" -framework "iAsync_utils"
 OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
 PODS_BUILD_DIR = $BUILD_DIR
 PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

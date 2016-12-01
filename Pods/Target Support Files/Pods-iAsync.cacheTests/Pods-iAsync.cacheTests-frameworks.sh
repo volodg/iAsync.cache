@@ -85,6 +85,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/ReactiveKit/ReactiveKit.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/iAsync.cache/iAsync_cache.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.network/iAsync_network.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.reactiveKit/iAsync_reactiveKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.restkit/iAsync_restkit.framework"
@@ -92,6 +93,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/ReactiveKit/ReactiveKit.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/iAsync.cache/iAsync_cache.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.network/iAsync_network.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.reactiveKit/iAsync_reactiveKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/iAsync.restkit/iAsync_restkit.framework"

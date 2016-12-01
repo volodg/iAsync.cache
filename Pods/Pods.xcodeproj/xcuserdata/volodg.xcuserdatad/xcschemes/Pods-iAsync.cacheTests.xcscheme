@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F9EA1A2390DA6A9F751E9D106E807A0"
+               BlueprintIdentifier = "84BC472286421B03545FAE1AAC3C2F84"
                BuildableName = "Pods_iAsync_cacheTests.framework"
                BlueprintName = "Pods-iAsync.cacheTests"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F9EA1A2390DA6A9F751E9D106E807A0"
+            BlueprintIdentifier = "84BC472286421B03545FAE1AAC3C2F84"
             BuildableName = "Pods_iAsync_cacheTests.framework"
             BlueprintName = "Pods-iAsync.cacheTests"
             ReferencedContainer = "container:Pods.xcodeproj">

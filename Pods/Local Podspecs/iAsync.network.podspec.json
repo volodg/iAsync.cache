@@ -19,7 +19,7 @@
     "git": "https://github.com/volodg/iAsync.network.git",
     "tag": "0.0.2"
   },
-  "source_files": "Lib/**/*.{swift,m,h}",
+  "source_files": "Sources/**/*.{swift}",
   "ios": {
     "resource_bundles": {
       "Bundle": "Resources/*"

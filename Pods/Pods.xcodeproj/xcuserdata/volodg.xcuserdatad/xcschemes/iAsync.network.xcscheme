@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26A9D9435CA69EDBFEC5AE2C9E1F2AC0"
+               BlueprintIdentifier = "72077294426B9A586CBDB40C5CB6C053"
                BuildableName = "iAsync_network.framework"
                BlueprintName = "iAsync.network"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26A9D9435CA69EDBFEC5AE2C9E1F2AC0"
+            BlueprintIdentifier = "72077294426B9A586CBDB40C5CB6C053"
             BuildableName = "iAsync_network.framework"
             BlueprintName = "iAsync.network"
             ReferencedContainer = "container:Pods.xcodeproj">
